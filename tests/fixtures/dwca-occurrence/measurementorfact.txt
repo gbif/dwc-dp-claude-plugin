@@ -1,0 +1,2 @@
+occurrenceID	measurementType	measurementValue	measurementUnit
+o1	wing length	131	mm

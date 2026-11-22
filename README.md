@@ -29,6 +29,8 @@ You need Python 3.8 or later and DuckDB's Python package: `python3 -m pip instal
   recipes per kind of dataset.
 - `skills/dwc-dp/schemas/1.0/`: the DwC-DP 1.0 table schemas and profile, copied from
   [tdwg/dwc](https://github.com/tdwg/dwc) at a pinned commit (see `PINNED_VERSION.md`).
+- `skills/dwc-dp/vocabularies/`: the GBIF vocabularies GBIF reads some fields with (for example
+  `occurrenceStatus`, `lifeStage`, `typeStatus`), copied from the GBIF API.
 - `skills/dwc-dp/scripts/dwcdp.py`: a command-line tool on DuckDB. `python3 dwcdp.py --help`
   lists its commands; it works on its own too, for example `dwcdp.py check <folder>` on any DwC-DP
   package.
@@ -38,6 +40,7 @@ You need Python 3.8 or later and DuckDB's Python package: `python3 -m pip instal
 ```text
 python3 -m unittest discover tests
 python3 tools/pin_schemas.py <tdwg/dwc commit>   # move to a new DwC-DP pin
+python3 tools/pin_vocabularies.py                # copy the GBIF vocabularies again
 ```
 
 `CLAUDE.md` holds the rules for anyone, human or agent, working on the repository, and
@@ -46,4 +49,5 @@ python3 tools/pin_schemas.py <tdwg/dwc commit>   # move to a new DwC-DP pin
 ## License
 
 Apache 2.0, see [LICENSE](LICENSE). The DwC-DP schemas in `skills/dwc-dp/schemas/` are from the
-Darwin Core standard by TDWG, under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+Darwin Core standard by TDWG, under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). The
+vocabularies in `skills/dwc-dp/vocabularies/` are from the GBIF vocabulary server.

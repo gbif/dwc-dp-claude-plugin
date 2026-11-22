@@ -1,0 +1,714 @@
+{
+ "vocabulary": "TypeStatus",
+ "source": "release 0.0.1",
+ "concepts": [
+  {
+   "name": "Isosyntype",
+   "labels": [
+    "isosyntype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "ISOSYNTYPUS",
+    "Isosintipo",
+    "Isosintipo, Isosintipo"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Isoparatype",
+   "labels": [
+    "isoparatype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "Isoparatipo",
+    "Isoparatypus"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Isoneotype",
+   "labels": [
+    "isoneotype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "ISONEOTYPUS",
+    "Isoneotipo"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Isolectotype",
+   "labels": [
+    "isolectotype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "Isolectotipo",
+    "Isolectotipo, Isolectotipo",
+    "Isolectotypus",
+    "IsolectÃ³tipo",
+    "isolecto-",
+    "isolectotypes"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Isoepitype",
+   "labels": [
+    "isoepitype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "ISOEPITYPUS"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Iconotype",
+   "labels": [
+    "iconotype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "DRAWINGOFTYPE",
+    "FIGURÃ",
+    "FIGURÉ",
+    "Figured",
+    "Figuré(s) + Cité(s)",
+    "figured specimen",
+    "photograph/-copy of the Holotype"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Hypotype",
+   "labels": [
+    "hypotype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "HIPOTIPO"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Hapantotype",
+   "labels": [
+    "hapantotype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Extype",
+   "labels": [
+    "extype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Exsyntype",
+   "labels": [
+    "exsyntype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Exparatype",
+   "labels": [
+    "exparatype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Exneotype",
+   "labels": [
+    "exneotype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Exlectotype",
+   "labels": [
+    "exlectotype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Exisotype",
+   "labels": [
+    "exisotype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Exholotype",
+   "labels": [
+    "exholotype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Exepitype",
+   "labels": [
+    "exepitype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Epitype",
+   "labels": [
+    "epitype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "EPITYPUS",
+    "Epitipo"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Cotype",
+   "labels": [
+    "cotype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "COTYPES",
+    "Co-Type",
+    "Cotipo",
+    "Cotype(s)",
+    "Cotypus"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Allotype",
+   "labels": [
+    "allotype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "Alotipo",
+    "AlÃ³tipo",
+    "Alótipo"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Alloneotype",
+   "labels": [
+    "alloneotype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Allolectotype",
+   "labels": [
+    "allolectotype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Paratopotype",
+   "labels": [
+    "paratopotype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "Paratopotipo",
+    "Paratopotypes"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "TypeSeries",
+   "labels": [
+    "type series"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "Type Collection",
+    "type series"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Homeotype",
+   "labels": [
+    "homeotype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "Homeótipo",
+    "Homotype"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Metatype",
+   "labels": [
+    "metatype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "Metatype"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Clonotype",
+   "labels": [
+    "clonotype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "TypeStrain",
+   "labels": [
+    "type strain"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "Type Strain"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Topotype",
+   "labels": [
+    "topotype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "Topotipo",
+    "Topotypus",
+    "TopÃ³tipo",
+    "Topótipo",
+    "locotype",
+    "topotypes"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "SupplementaryType",
+   "labels": [
+    "supplementary type"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "Supplementary Type"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "SecondaryType",
+   "labels": [
+    "secondary type"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "Secondary Type"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Plesiotype",
+   "labels": [
+    "plesiotype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Plastotype",
+   "labels": [
+    "plastotype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Plastosyntype",
+   "labels": [
+    "plastosyntype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Plastoparatype",
+   "labels": [
+    "plastoparatype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Plastoneotype",
+   "labels": [
+    "plastoneotype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Plastolectotype",
+   "labels": [
+    "plastolectotype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Plastoisotype",
+   "labels": [
+    "plastoisotype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Plastoholotype",
+   "labels": [
+    "plastoholotype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Paraneotype",
+   "labels": [
+    "paraneotype"
+   ],
+   "alternativeLabels": [
+    "Neoparatype"
+   ],
+   "hiddenLabels": [
+    "Neoparatype"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Paralectotype",
+   "labels": [
+    "paralectotype"
+   ],
+   "alternativeLabels": [
+    "Lectoparatype"
+   ],
+   "hiddenLabels": [
+    "Lectoparatype",
+    "Paralectotipo",
+    "Paralectotype(s)",
+    "Paralectotypus",
+    "Paralectótipo",
+    "paralectotypes"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Holotype",
+   "labels": [
+    "holotype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "FHOLOTYPE",
+    "H",
+    "HOLO",
+    "HOLOTIPO",
+    "HOLOTYPEPROPARTE",
+    "HOLÓTIPO",
+    "Holotype of",
+    "Holotype.",
+    "Holotypus",
+    "HolÃ³tipo",
+    "holo-"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Paratype",
+   "labels": [
+    "paratype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "P",
+    "PARATIP",
+    "PARATIPOS",
+    "PARÃTIPO",
+    "Paratype of",
+    "Paratype(s)",
+    "Paratype.",
+    "Paratypus",
+    "ParÃ¡tipo",
+    "ParÃ¡tipos",
+    "Parátipo",
+    "Parátipos",
+    "para",
+    "paratipo",
+    "paratipo/s",
+    "paratypes"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Syntype",
+   "labels": [
+    "syntype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "PRIMARY SYNTYPE",
+    "SINTIP",
+    "SINTIPOS",
+    "Sintipo",
+    "Syntype of",
+    "Syntypes",
+    "Syntypus",
+    "SÃ­ntipo",
+    "Síntipo",
+    "sintipo/s",
+    "syntype(s)"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Neotype",
+   "labels": [
+    "neotype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "Neotipo",
+    "Neotypus",
+    "NeÃ³tipo",
+    "Neótipo",
+    "NÃ©otype",
+    "Néotype",
+    "neotype"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Lectotype",
+   "labels": [
+    "lectotype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "Lectotipo",
+    "Lectotype of",
+    "Lectotypus",
+    "LectÃ³tipo",
+    "Lectótipo",
+    "lecto"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Isotype",
+   "labels": [
+    "isotype"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "I",
+    "Isotipo, Isotipo",
+    "Isotype of",
+    "Isotypus",
+    "IsÃ³tipo",
+    "Isótipo",
+    "iso",
+    "iso-",
+    "isotipo",
+    "isotypes"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "OriginalMaterial",
+   "labels": [
+    "original material"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "Additional Material",
+    "Original material",
+    "Type material",
+    "Unknown type material",
+    "authentic material",
+    "authentic specimen"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "NotAType",
+   "labels": [
+    "not a type"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "NO APLICA",
+    "No",
+    "Non",
+    "Non-type",
+    "None",
+    "Nontype",
+    "Not a type",
+    "Not type",
+    "not typematerial",
+    "otros NO tipos o dudosos"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "TypeGenus",
+   "labels": [
+    "type genus"
+   ],
+   "alternativeLabels": [
+    "typus familiaris"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "TypeSpecies",
+   "labels": [
+    "type species"
+   ],
+   "alternativeLabels": [
+    "typus generis"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Type",
+   "labels": [
+    "type"
+   ],
+   "alternativeLabels": [
+    "typus"
+   ],
+   "hiddenLabels": [
+    "Holotype + Allotype",
+    "Holotype and Paratype",
+    "Holotype, Paratype",
+    "Holotype, Paratypes",
+    "PhysicalObject",
+    "T",
+    "Tipo",
+    "Tipo sin especificar",
+    "Type Fragment",
+    "Type [status unknown]",
+    "Type of",
+    "Type specimen (basionym and status not recorded).",
+    "UNSPECIFIEDKINDOFTYPE",
+    "fragment of a Type specimen",
+    "holotype + paratype",
+    "holotype + paratype(s)",
+    "holotype; paratype",
+    "lectotype + paralectotype(s)",
+    "otros tipos",
+    "part of type",
+    "type(s)",
+    "typen",
+    "types",
+    "typotype",
+    "typus",
+    "unspec. Type",
+    "unspecified kind of type"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  }
+ ]
+}

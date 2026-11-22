@@ -1,0 +1,536 @@
+{
+ "vocabulary": "Pathway",
+ "source": "release 1.0.3",
+ "concepts": [
+  {
+   "name": "otherTransport",
+   "labels": [
+    "Other means of transport"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "vehicles",
+   "labels": [
+    "Vehicles (car, train, etc.)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "hullFouling",
+   "labels": [
+    "Ship/boat hull fouling"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "ballastWater",
+   "labels": [
+    "Ship/boat ballast water"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "packingMaterial",
+   "labels": [
+    "Organic packing material, in particular wood packaging"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "people",
+   "labels": [
+    "People and their luggage/equipment (in particular tourism)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "machineryEquipment",
+   "labels": [
+    "Machinery/equipment"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "hitchhikersShip",
+   "labels": [
+    "Hitchhikers on ship/boat (excluding ballast water and hull fouling)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "hitchhikersAirplane",
+   "labels": [
+    "Hitchhikers in or on airplane"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "containerBulk",
+   "labels": [
+    "Container/bulk"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "fishingEquipment",
+   "labels": [
+    "Angling/fishing equipment"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "transportationHabitatMaterial",
+   "labels": [
+    "Transportation of habitat material (soil, vegetation, wood etc)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "timberTrade",
+   "labels": [
+    "Timber trade"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "seedContaminant",
+   "labels": [
+    "Seed contaminant"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "parasitesOnPlants",
+   "labels": [
+    "Parasites on plants (including species transported by host and vector)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "contaminantOnPlants",
+   "labels": [
+    "Contaminant on plants (except parasites, species transported by host/vector)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "parasitesOnAnimals",
+   "labels": [
+    "Parasites on animals (including organisms transported by host and vector)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "contaminantOnAnimals",
+   "labels": [
+    "Contaminant on animals (except parasites, organisms transported by host/vector)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "foodContaminant",
+   "labels": [
+    "Food contaminant (including of live food)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "contaminateBait",
+   "labels": [
+    "Contaminated bait"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "contaminantNursery",
+   "labels": [
+    "Contaminant nursery material"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "otherEscape",
+   "labels": [
+    "Other escape from confinement"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "liveFoodLiveBait",
+   "labels": [
+    "Live food and live bait"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "research",
+   "labels": [
+    "Research and ex-situ breeding (in facilities)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "ornamentalNonHorticulture",
+   "labels": [
+    "Ornamental purpose other than horticulture"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "horticulture",
+   "labels": [
+    "Horticulture"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "fur",
+   "labels": [
+    "Fur farms"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "forestry",
+   "labels": [
+    "Forestry (including reforestation)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "farmedAnimals",
+   "labels": [
+    "Farmed animals (including animals left under limited control)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "pet",
+   "labels": [
+    "Pet/aquarium/terrarium species (including live food for such species )"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "publicGardenZooAquaria",
+   "labels": [
+    "Botanic garden/zoo/aquaria (excluding domestic aquaria)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "aquacultureMariculture",
+   "labels": [
+    "Aquaculture/mariculture"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "agriculture",
+   "labels": [
+    "Agriculture (including biofuel feedstocks)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "otherIntentionalRelease",
+   "labels": [
+    "Other intentional release"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "releasedForUse",
+   "labels": [
+    "Released for use"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "conservationOrWildlifeManagement",
+   "labels": [
+    "Conservation or wildlife management"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "landscapeImprovement",
+   "labels": [
+    "Landscape improvement"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "hunting",
+   "labels": [
+    "Hunting"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "fisheryInTheWild",
+   "labels": [
+    "Fishery in the wild"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "erosionControl",
+   "labels": [
+    "Erosion control"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "biologicalControl",
+   "labels": [
+    "Biological control"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "naturalDispersal",
+   "labels": [
+    "Natural dispersal across borders of invasive alien organisms"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "tunnelsBridges",
+   "labels": [
+    "Tunnels and land bridges"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "waterwaysBasinsSeas",
+   "labels": [
+    "Interconnected waterways/basins/seas"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "unaided",
+   "labels": [
+    "Unaided"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "corridor",
+   "labels": [
+    "Corridor"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "transportStowaway",
+   "labels": [
+    "Transport-stowaway"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "transportContaminant",
+   "labels": [
+    "Transport-contaminant"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "escapeFromConfinement",
+   "labels": [
+    "Escape from confinement"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "releaseInNature",
+   "labels": [
+    "Release in nature"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "corridorAndDispersal",
+   "labels": [
+    "Corridor and dispersal"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "unintentional",
+   "labels": [
+    "Unintentional"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "intentional",
+   "labels": [
+    "Intentional"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  }
+ ]
+}

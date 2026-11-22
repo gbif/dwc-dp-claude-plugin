@@ -57,14 +57,23 @@ someone new, give each idea once in plain words, using their own data.
 - **Use only DwC-DP fields.** A column of theirs that has no field goes in an assertion table if
   one fits, or stays out, with their agreement. Never add custom columns to a DwC-DP table.
 - **Nothing leaves their machine.** Don't upload, post or email their data, or contact anyone on
-  their behalf. Look terms and vocabularies up in the vendored schemas, not on the web, unless
-  they agree.
+  their behalf. Terms and vocabularies are in the copies bundled with this skill (`describe`,
+  `find-term`, `vocab`); look nothing up on the web unless they agree.
+- **The goal is a valid package.** This skill ends when `check` passes on their package.
+  Publishing it is a separate step outside this skill.
 
 ## Stage 1: Inspect
 
 List their files. For each file, record the columns, the number of rows, what one row is (a site
 visit? a specimen? a photo?), and which columns repeat across rows. `load` each one into the
 working database and look at it with `sql`.
+
+A Darwin Core Archive (a `.zip` with `meta.xml`) goes in with `load-dwca`, which stages the core
+and each extension as `src_dwca_<row type>` tables, with columns named after their Darwin Core
+terms. Its `eml.xml` is the first source for Stage 6. The archive's columns already have Darwin
+Core names, but a DwC-DP table is not one archive file: the core usually splits into several
+tables (for example the event of each occurrence). Model it as any other data, with the recipe
+for archives when there is one.
 
 Ask what was done: who collected or observed what, where and when, by which method, and what
 happened to the material afterwards. Read any methods text or README they have. The answers decide
@@ -109,9 +118,17 @@ Keep values as they are. Convert only formats a field requires: dates to ISO 860
 commas to points in numeric fields. Say each conversion. When a value doesn't fit a field, ask;
 don't drop or reshape it on your own.
 
+GBIF reads some fields with its vocabularies, for example `occurrenceStatus`, `lifeStage`, `sex`
+and `typeStatus`. `vocab` lists these fields, and `vocab <table.field>` lists a field's concepts
+and labels. Where their value is a label of a concept, writing the concept name is clearer: show
+them the pairs and convert only the ones they agree to. A value that fits no concept stays as it
+is; `validate` warns about it.
+
 ## Stage 5: Validate
 
 `validate` reports what must be fixed and what is worth checking, in plain words with examples.
+It checks the schemas' rules (required fields, unique keys, links that resolve, value ranges) as
+errors, and GBIF's vocabularies as warnings, since DwC-DP itself requires none.
 Explain each problem in terms of their data, and fix it in `mapping.sql` (never in their files),
 or ask them when the fix is a decision. Run it until nothing must be fixed. Go through each
 warning with them; some are fine, for example an identifier that refers to an agent outside the
@@ -129,8 +146,7 @@ descriptions are copied from the DwC-DP schemas. `check <folder>` checks a finis
 also works on packages made elsewhere. Tell them what the folder holds and that they can open the
 CSVs in a spreadsheet.
 
-How the package is published (through the IPT or otherwise) is not settled yet. Say so, and point
-them to their GBIF node.
+This is where the skill ends. Publishing the package is not part of it.
 
 ## Read only if
 

@@ -1,0 +1,28 @@
+{
+ "source": "https://github.com/gbif/pipelines/blob/ee8d869e42426430c88c5ebaf72b7d82eda69ef8/gbif/ingestion/spark-jobs/pipelines.yaml",
+ "vocabularies": {
+  "http://rs.tdwg.org/dwc/terms/degreeOfEstablishment": "DegreeOfEstablishment",
+  "http://rs.tdwg.org/dwc/terms/lifeStage": "LifeStage",
+  "http://rs.tdwg.org/dwc/terms/establishmentMeans": "EstablishmentMeans",
+  "http://rs.tdwg.org/dwc/terms/pathway": "Pathway",
+  "http://rs.tdwg.org/dwc/terms/eventType": "eventType",
+  "GeologicalContext": "GeoTime",
+  "http://rs.tdwg.org/dwc/terms/typeStatus": "TypeStatus",
+  "http://rs.tdwg.org/dwc/terms/sex": "Sex",
+  "http://rs.tdwg.org/dwc/terms/occurrenceStatus": "OccurrenceStatus",
+  "http://rs.gbif.org/terms/1.0/DNADerivedData": "target_gene"
+ },
+ "geoTimeSource": "https://github.com/gbif/pipelines/blob/ee8d869e42426430c88c5ebaf72b7d82eda69ef8/sdks/core/src/main/java/org/gbif/pipelines/core/interpreters/core/GeologicalContextInterpreter.java",
+ "geoTimeTerms": [
+  "http://rs.tdwg.org/dwc/terms/earliestEonOrLowestEonothem",
+  "http://rs.tdwg.org/dwc/terms/latestEonOrHighestEonothem",
+  "http://rs.tdwg.org/dwc/terms/earliestEraOrLowestErathem",
+  "http://rs.tdwg.org/dwc/terms/latestEraOrHighestErathem",
+  "http://rs.tdwg.org/dwc/terms/earliestPeriodOrLowestSystem",
+  "http://rs.tdwg.org/dwc/terms/latestPeriodOrHighestSystem",
+  "http://rs.tdwg.org/dwc/terms/earliestEpochOrLowestSeries",
+  "http://rs.tdwg.org/dwc/terms/latestEpochOrHighestSeries",
+  "http://rs.tdwg.org/dwc/terms/earliestAgeOrLowestStage",
+  "http://rs.tdwg.org/dwc/terms/latestAgeOrHighestStage"
+ ]
+}

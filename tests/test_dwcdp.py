@@ -140,6 +140,49 @@ class Database(Base):
         self.assertIn("3", self.ok("sql", "SELECT count(*) FROM occurrence"))
 
 
+class DarwinCoreArchive(Base):
+    def test_zipped_archive_is_staged_with_term_names(self):
+        import zipfile
+        src = os.path.join(FIXTURES, "dwca-occurrence")
+        with zipfile.ZipFile(os.path.join(self.dir, "archive.zip"), "w") as z:
+            for f in os.listdir(src):
+                z.write(os.path.join(src, f), f)
+        out = self.ok("load-dwca", "archive.zip")
+        self.assertIn("2 rows as src_dwca_occurrence", out)
+        self.assertIn("1 rows as src_dwca_measurementorfact", out)
+        self.assertIn("eml.xml", out)
+        rows = self.ok("sql", "SELECT occurrenceID, individualCount, basisOfRecord FROM src_dwca_occurrence ORDER BY 1")
+        self.assertIn("o1            3                HumanObservation", rows)
+        header_rows = self.ok("sql", "SELECT count(*) AS n FROM src_dwca_occurrence WHERE id = 'occurrenceID'")
+        self.assertEqual(header_rows.split()[-1], "0")
+        self.assertEqual(sorted(f for f in os.listdir(self.dir) if not f.startswith("dwcdp.duckdb")), ["archive.zip"])
+
+    def test_unzipped_folder_works_too(self):
+        out = self.ok("load-dwca", os.path.join(FIXTURES, "dwca-occurrence"))
+        self.assertIn("coreid, measurementType, measurementValue, measurementUnit", out)
+
+
+class Vocabularies(Base):
+    def test_values_outside_gbif_vocabularies_are_warned_about(self):
+        self.toy()
+        with open(os.path.join(self.dir, "vocab.sql"), "w") as fh:
+            fh.write("UPDATE occurrence SET occurrenceStatus = 'seen' WHERE scientificName = 'Erithacus rubecula';"
+                     "UPDATE occurrence SET occurrenceStatus = 'Present' WHERE occurrence_pk LIKE 'A2%';"
+                     "UPDATE occurrence SET sex = 'female' WHERE occurrence_pk LIKE 'A1%Turdus%';")
+        self.ok("run", "vocab.sql")
+        out = self.ok("validate")
+        self.assertIn("1 value of occurrenceStatus is not in GBIF's OccurrenceStatus vocabulary", out)
+        self.assertIn("'seen'", out)
+        self.assertIn("deprecated in GBIF's OccurrenceStatus vocabulary", out)
+        self.assertIn("'Present → Detected'", out)
+        self.assertNotIn("of sex", out)
+
+    def test_vocab_lists_concepts_of_a_field(self):
+        out = self.ok("vocab", "occurrence.occurrenceStatus")
+        self.assertIn("NotDetected", out)
+        self.assertIn("Present (deprecated, use Detected)", out)
+
+
 class Check(Base):
     def test_package_from_before_1_0_is_refused_clearly(self):
         out = self.fails("check", os.path.join(FIXTURES, "natural-keys-package"))

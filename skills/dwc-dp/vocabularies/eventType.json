@@ -1,0 +1,240 @@
+{
+ "vocabulary": "eventType",
+ "source": "draft, read from the concepts API on 2026-11-22 (no release yet)",
+ "concepts": [
+  {
+   "name": "Project",
+   "labels": [
+    "Project",
+    "Proyecto"
+   ],
+   "alternativeLabels": [
+    "Research project"
+   ],
+   "hiddenLabels": [
+    "Proyecto",
+    "Proyecto 482 Convenio AUNAP-UDCA"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Expedition",
+   "labels": [
+    "Expedición",
+    "Expedition"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "Expedición"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "SubSurvey",
+   "labels": [
+    "Subsurvey"
+   ],
+   "alternativeLabels": [
+    "sub-survey"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Survey",
+   "labels": [
+    "Encuesta",
+    "Survey"
+   ],
+   "alternativeLabels": [
+    "Biodiversity assessment",
+    "Biosurvey",
+    "Monitor",
+    "Monitoring"
+   ],
+   "hiddenLabels": [
+    "Area Count",
+    "Botanical survey",
+    "Busqueda libre",
+    "Count",
+    "Encuesta",
+    "Inspect",
+    "Inspection",
+    "Inspection & Control",
+    "Investigate",
+    "Point Count",
+    "Search",
+    "Transect Count",
+    "Vegetation survey",
+    "event"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Inventory",
+   "labels": [
+    "Inventory"
+   ],
+   "alternativeLabels": [
+    "Baseline inventory",
+    "Bio-inventory",
+    "Species inventory"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Bioblitz",
+   "labels": [
+    "Bioblitz"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "SiteVisit",
+   "labels": [
+    "Site visit",
+    "Visita al sitio"
+   ],
+   "alternativeLabels": [
+    "site visit",
+    "siteVisit",
+    "sitevisit",
+    "station visit",
+    "stationVisit"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "SubSample",
+   "labels": [
+    "Subsample"
+   ],
+   "alternativeLabels": [
+    "Child sample",
+    "child_sample",
+    "sub-sample"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Sample",
+   "labels": [
+    "Sample"
+   ],
+   "alternativeLabels": [
+    "Sampling",
+    "parent_sample"
+   ],
+   "hiddenLabels": [
+    "Ancient collection",
+    "Collect",
+    "MaterialSample",
+    "Mist net",
+    "Muestra",
+    "Muestra de fecas",
+    "Muestreo",
+    "Red de niebla",
+    "TissueSample",
+    "Trampa Sherman",
+    "Trap",
+    "multispecimen sample",
+    "parent_sample",
+    "single specimen sample"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Sensor",
+   "labels": [
+    "Sensor"
+   ],
+   "alternativeLabels": [
+    "Deployment",
+    "MachineObservation",
+    "Trigger"
+   ],
+   "hiddenLabels": [
+    "Audio",
+    "Auditivo",
+    "Camara trampa",
+    "Captura",
+    "Cámara trampa",
+    "Cámara trampa | Observación",
+    "Deployment event",
+    "Detección auditiva",
+    "Detection",
+    "GPS collar deployment",
+    "MediaSample",
+    "OrganismCapture",
+    "OrganismRelease",
+    "Photograph",
+    "ReceiverDeployment",
+    "Registro con Audiomoth",
+    "SensorDetection",
+    "Station | Deployment event",
+    "TransmitterDetection",
+    "Video",
+    "camera trap",
+    "gps",
+    "tag attachment"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "NucleotideAnalysis",
+   "labels": [
+    "Nucleotide analysis"
+   ],
+   "alternativeLabels": [
+    "DNA analysis",
+    "Laboratory analysis"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Observation",
+   "labels": [
+    "Observación",
+    "Observation"
+   ],
+   "alternativeLabels": [
+    "Occurrence"
+   ],
+   "hiddenLabels": [
+    "Accession",
+    "Assay",
+    "Assertion",
+    "Chronolocation",
+    "ConditionReport",
+    "Find",
+    "Geolocation",
+    "Identification",
+    "MeasurementObservation",
+    "Observacion",
+    "Observación",
+    "Registration",
+    "Report",
+    "Trial"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  }
+ ]
+}

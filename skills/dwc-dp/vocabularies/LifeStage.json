@@ -1,0 +1,572 @@
+{
+ "vocabulary": "LifeStage",
+ "source": "release 1.0.4",
+ "concepts": [
+  {
+   "name": "Adult",
+   "labels": [
+    "Adult",
+    "Adulto",
+    "Volwassen"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "\"adult",
+    "A",
+    "Ad",
+    "Adult(s)",
+    "Adulta",
+    "Adulte",
+    "Adulto",
+    "Adultos",
+    "Adults",
+    "Postmetamorfico",
+    "Young adult",
+    "Young-Adult",
+    "a",
+    "ad",
+    "ad.",
+    "adullt",
+    "adult breeding",
+    "adult female",
+    "adult female - worker",
+    "adult male",
+    "adult non-breeding",
+    "adult unsexed",
+    "old",
+    "old adult",
+    "ovipositing female",
+    "teneral",
+    "young adult"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Juvenile",
+   "labels": [
+    "Juvenil",
+    "Juvenile"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "\"juvenile",
+    "Cría",
+    "Cub",
+    "J",
+    "Joven",
+    "Juv",
+    "Juv.",
+    "Juvenil",
+    "Juveniles",
+    "Smolt",
+    "Young",
+    "calf",
+    "cría",
+    "duckling",
+    "infant",
+    "jovem",
+    "juvenal",
+    "juveniel",
+    "juvenil(s)",
+    "juvinile"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Unknown",
+   "labels": [
+    "Onbekend",
+    "Unknown"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "1K",
+    "1K+",
+    "1st calendar year",
+    "2 adultos, 1 juvenil",
+    "Desconocido",
+    "Indeterminado",
+    "Indeterminante",
+    "Indéterminé",
+    "Life Stage Not Recorded",
+    "No determinado",
+    "No se cuenta con el dato",
+    "Not Determined",
+    "Not recorded",
+    "Undetermined",
+    "não informado",
+    "undefined"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Subadult",
+   "labels": [
+    "Subadult",
+    "Subadulto"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "Sub-Adult",
+    "Sub-adult",
+    "Subadult",
+    "Subadulto",
+    "sub-adult",
+    "subad",
+    "subadult(s)",
+    "subimago"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Fledgling",
+   "labels": [
+    "Fledgling"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Nestling",
+   "labels": [
+    "Nestling"
+   ],
+   "alternativeLabels": [
+    "Pullus"
+   ],
+   "hiddenLabels": [
+    "Pulli"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Larva",
+   "labels": [
+    "Larva"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "1st instar",
+    "Larvae",
+    "Larval",
+    "Larvas",
+    "Larve",
+    "metacercaria"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Seedling",
+   "labels": [
+    "Plántula",
+    "Seedling"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "sprouting"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Hatchling",
+   "labels": [
+    "Hatchling",
+    "Pichón"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "hatchlings"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Immature",
+   "labels": [
+    "Immature",
+    "Inmaduro"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "Imm",
+    "imm."
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Tadpole",
+   "labels": [
+    "Renacuajo",
+    "Tadpole"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "Renacuajo",
+    "Renacuajos",
+    "Tadpoles",
+    "Têtard"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Pupa",
+   "labels": [
+    "Pupa"
+   ],
+   "alternativeLabels": [
+    "Chrysalis",
+    "Crisálida"
+   ],
+   "hiddenLabels": [
+    "Cocoon",
+    "Pupae",
+    "pupal case"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Nymph",
+   "labels": [
+    "Ninfa",
+    "Nymph"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "Larva/nymph",
+    "Ninfa",
+    "Nymphe",
+    "larva, nymph",
+    "nymphs"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Neonate",
+   "labels": [
+    "Neonate",
+    "Neonato"
+   ],
+   "alternativeLabels": [
+    "Newborn"
+   ],
+   "hiddenLabels": [
+    "Neonato",
+    "natal",
+    "newborn"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Nauplius",
+   "labels": [
+    "Nauplio",
+    "Nauplius"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "Nauplii"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Medusa",
+   "labels": [
+    "Medusa"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "medusae"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Fruiting",
+   "labels": [
+    "Fruiting"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "Flor y Fruto",
+    "Flowering and Fruiting",
+    "Fruit",
+    "Fruto",
+    "In fruit",
+    "flowers & fruits",
+    "fruit-bearing",
+    "fruiting body",
+    "fruits"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Flowering",
+   "labels": [
+    "Floración",
+    "Flowering"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "Flor",
+    "Flower",
+    "Flowers",
+    "flower bud"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Fetus",
+   "labels": [
+    "Feto",
+    "Fetus"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "Foetus"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Embryo",
+   "labels": [
+    "Embrión",
+    "Embryo"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "Embrión",
+    "Embryos"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Egg",
+   "labels": [
+    "Egg",
+    "Huevo"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "Eggs",
+    "Huevo",
+    "Huevos"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Cyst",
+   "labels": [
+    "Cyst"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "cysts"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Imago",
+   "labels": [
+    "Imago"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "Imago/adult",
+    "fresh imago",
+    "imago/adult",
+    "imago: 1"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Polyp",
+   "labels": [
+    "Polyp"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Caterpillar",
+   "labels": [
+    "Caterpillar",
+    "Oruga"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Veliger",
+   "labels": [],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Cyprid",
+   "labels": [
+    "Cyprid"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Megalopa",
+   "labels": [
+    "Megalopa"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Zoea",
+   "labels": [
+    "Zoea"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Furcilia",
+   "labels": [
+    "Furcilia",
+    "Furcilia "
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Calyptopsis",
+   "labels": [
+    "Caliptopsis",
+    "Calyptopsis"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Metanauplius",
+   "labels": [
+    "Metanauplio",
+    "Metanauplius"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Deutonymph",
+   "labels": [
+    "Deutoninfa",
+    "Deutonymph"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Eft",
+   "labels": [
+    "Eft"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Zygote",
+   "labels": [
+    "Cigoto",
+    "Zygote"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Gametophyte",
+   "labels": [
+    "Gametofito",
+    "Gametophyte"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Mature",
+   "labels": [
+    "Maduro",
+    "Mature"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Vegetative",
+   "labels": [
+    "Vegetative",
+    "Vegetativo"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Chick",
+   "labels": [
+    "Chick",
+    "Polluelo"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  }
+ ]
+}

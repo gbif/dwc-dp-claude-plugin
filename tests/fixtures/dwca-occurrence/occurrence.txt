@@ -1,0 +1,3 @@
+occurrenceID	eventDate	scientificName	individualCount	decimalLatitude	decimalLongitude
+o1	2025-05-01	Turdus merula	3	55.68	12.57
+o2	2025-05-01	Erithacus rubecula	1	55.68	12.57

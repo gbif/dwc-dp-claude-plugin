@@ -8,9 +8,11 @@ tables and the DwC-DP tables they are mapped into. Table names use underscores
   python3 dwcdp.py tables                      # every DwC-DP table, one line each
   python3 dwcdp.py describe occurrence         # fields, keys and relations of one table
   python3 dwcdp.py find-term depth             # where a term lives
+  python3 dwcdp.py vocab occurrence.lifeStage  # the GBIF vocabulary a field is read with
   python3 dwcdp.py order event occurrence agent  # which to fill first
   python3 dwcdp.py init event occurrence       # create DwC-DP tables in the database
   python3 dwcdp.py load samples.csv            # stage a source file as src_samples
+  python3 dwcdp.py load-dwca archive.zip       # stage a Darwin Core Archive
   python3 dwcdp.py run mapping.sql             # fill the DwC-DP tables
   python3 dwcdp.py validate                    # check them, in plain words
   python3 dwcdp.py package out/                # write CSVs and datapackage.json
@@ -107,6 +109,102 @@ def first_sentence(text, limit=160):
     m = re.match(r"(.+?\.)(\s|$)", text)
     s = m.group(1) if m else text
     return s if len(s) <= limit else s[: limit - 1] + "…"
+
+
+# ---------------------------------------------------------------- GBIF vocabularies
+
+VOCAB_DIR = os.path.join(HERE, "..", "vocabularies")
+_vocab = None
+
+
+def vocabularies():
+    """(mapping, {name: vocabulary}) from the pinned copies in ../vocabularies."""
+    global _vocab
+    if _vocab is None:
+        with open(os.path.join(VOCAB_DIR, "mapping.json"), encoding="utf-8") as fh:
+            mapping = json.load(fh)
+        vocabs = {}
+        for name in set(mapping["vocabularies"].values()):
+            with open(os.path.join(VOCAB_DIR, f"{name}.json"), encoding="utf-8") as fh:
+                v = json.load(fh)
+            lookup = {}
+            for c in v["concepts"]:
+                for text in c["hiddenLabels"]:
+                    lookup.setdefault(text.strip().lower(), (c, "hidden"))
+                for text in [c["name"]] + c["labels"] + c["alternativeLabels"]:
+                    lookup[text.strip().lower()] = (c, "accepted")
+            v["lookup"] = lookup
+            vocabs[name] = v
+        _vocab = (mapping, vocabs)
+    return _vocab
+
+
+def field_vocabulary(f):
+    """The GBIF vocabulary GBIF interprets this field with, or None (see ../vocabularies/README.md)."""
+    mapping, _ = vocabularies()
+    term = f.get("dcterms:isVersionOf")
+    if term in mapping["geoTimeTerms"]:
+        return "GeoTime"
+    if term in mapping["vocabularies"]:
+        return mapping["vocabularies"][term]
+    if f.get("name") == "target_gene":
+        return mapping["vocabularies"].get("http://rs.gbif.org/terms/1.0/DNADerivedData")
+    return None
+
+
+def check_vocabularies(con, name, table, cols, report):
+    _, vocabs = vocabularies()
+    for f in schemas()[name]["fields"]:
+        vname = field_vocabulary(f)
+        if not vname or f["name"] not in cols:
+            continue
+        v = vocabs[vname]
+        values = con.execute(f"SELECT trim(CAST({q(f['name'])} AS VARCHAR)) AS v, count(*) FROM {q(table)} WHERE {q(f['name'])} IS NOT NULL AND trim(CAST({q(f['name'])} AS VARCHAR)) <> '' GROUP BY 1 ORDER BY 2 DESC").fetchall()
+        unknown, hidden, deprecated = [], [], []
+        for value, n in values:
+            hit = v["lookup"].get(value.lower())
+            if not hit:
+                unknown.append(value)
+            elif hit[1] == "hidden":
+                hidden.append(f"{value} → {hit[0]['name']}")
+            elif hit[0]["deprecated"]:
+                deprecated.append(f"{value}" + (f" → {hit[0]['replacedBy']}" if hit[0]["replacedBy"] else ""))
+        where = f"GBIF's {vname} vocabulary ({v['source']})"
+        names = [c["name"] for c in v["concepts"] if not c["deprecated"]]
+        options = f" Its concepts: {', '.join(names)}." if len(names) <= 12 else f" See: dwcdp.py vocab {vname}"
+        if unknown:
+            report.warning(name, f"{len(unknown)} {'value' if len(unknown) == 1 else 'values'} of {f['name']} {'is' if len(unknown) == 1 else 'are'} not in {where}, so GBIF won't interpret {'it' if len(unknown) == 1 else 'them'}.{options}", unknown, f["name"])
+        if hidden:
+            report.warning(name, f"{len(hidden)} {'value' if len(hidden) == 1 else 'values'} of {f['name']} {'is' if len(hidden) == 1 else 'are'} read by GBIF as a concept of {where}; writing the concept's name says the same thing plainly.", hidden, f["name"])
+        if deprecated:
+            report.warning(name, f"{len(deprecated)} {'value' if len(deprecated) == 1 else 'values'} of {f['name']} {'is' if len(deprecated) == 1 else 'are'} deprecated in {where}.", deprecated, f["name"])
+
+
+def cmd_vocab(args):
+    mapping, vocabs = vocabularies()
+    if not args.name:
+        rows = []
+        for t, s in schemas().items():
+            for f in s["fields"]:
+                vname = field_vocabulary(f)
+                if vname:
+                    rows.append([f"{t}.{f['name']}", vname, vocabs[vname]["source"]])
+        print(table_text(rows, ["field", "GBIF vocabulary", "copied from"]))
+        return
+    vname = args.name
+    if "." in vname:
+        t, fname = vname.split(".", 1)
+        f = field_map(schema(t)).get(fname)
+        vname = field_vocabulary(f) if f else None
+        if not vname:
+            sys.exit(f"GBIF uses no vocabulary for {args.name}.")
+    v = next((x for k, x in vocabs.items() if k.lower() == vname.lower()), None)
+    if not v:
+        sys.exit(f"No pinned vocabulary {vname}. Run: dwcdp.py vocab")
+    rows = [[c["name"] + (" (deprecated" + (f", use {c['replacedBy']}" if c["replacedBy"] else "") + ")" if c["deprecated"] else ""),
+             ", ".join(x for x in c["labels"] + c["alternativeLabels"] if x != c["name"])] for c in v["concepts"]]
+    print(f"{v['vocabulary']} ({v['source']})\n")
+    print(table_text(rows, ["concept", "labels"]))
 
 
 # ---------------------------------------------------------------- database
@@ -356,6 +454,98 @@ def cmd_load(args):
     print(f"Loaded {n} rows, {len(cols)} columns, as {table}.\nColumns: {', '.join(cols)}")
 
 
+def dwca_text(value, default):
+    """A meta.xml delimiter attribute: '\\t' means a tab, '' means none."""
+    if value is None:
+        return default
+    return value.replace("\\t", "\t").replace("\\n", "\n").replace("\\r", "\r")
+
+
+def cmd_load_dwca(args):
+    import tempfile
+    import xml.etree.ElementTree as ET
+    import zipfile
+
+    src = os.path.abspath(args.archive)
+    tmp = None
+    if os.path.isfile(src) and zipfile.is_zipfile(src):
+        tmp = tempfile.mkdtemp(prefix="dwca-")
+        with zipfile.ZipFile(src) as z:
+            for member in z.namelist():
+                target = os.path.realpath(os.path.join(tmp, member))
+                if not target.startswith(os.path.realpath(tmp) + os.sep):
+                    sys.exit(f"{args.archive} has an entry outside the archive folder: {member}")
+            z.extractall(tmp)
+        root = tmp
+    elif os.path.isdir(src):
+        root = src
+    else:
+        sys.exit(f"{args.archive} is neither a Darwin Core Archive (.zip) nor a folder.")
+    try:
+        meta = os.path.join(root, "meta.xml")
+        if not os.path.exists(meta):
+            nested = [d for d in os.listdir(root) if os.path.exists(os.path.join(root, d, "meta.xml"))]
+            if len(nested) != 1:
+                sys.exit(f"No meta.xml in {args.archive}. A Darwin Core Archive describes its files in meta.xml.")
+            root = os.path.join(root, nested[0])
+            meta = os.path.join(root, "meta.xml")
+        ns = {"d": "http://rs.tdwg.org/dwc/text/"}
+        tree = ET.parse(meta).getroot()
+        parts = [("core", e) for e in tree.findall("d:core", ns)] + [("extension", e) for e in tree.findall("d:extension", ns)]
+        if not parts:
+            sys.exit("meta.xml lists no core file.")
+        con = connect(args.db)
+        for kind, e in parts:
+            location = e.find("d:files/d:location", ns).text.strip()
+            row_type = e.get("rowType", "")
+            base = re.sub(r"[^0-9a-zA-Z]+", "_", row_type.rstrip("/").split("/")[-1]).lower() or os.path.splitext(location)[0]
+            table = f"src_dwca_{base}"
+            delim = dwca_text(e.get("fieldsTerminatedBy"), ",")
+            quote = dwca_text(e.get("fieldsEnclosedBy"), '"')
+            skip = int(e.get("ignoreHeaderLines") or 0)
+            options = ["header = false", "all_varchar = true", f"skip = {skip}", f"delim = {lit(delim)}", "sample_size = -1", "null_padding = true"]
+            options.append(f"quote = {lit(quote)}" if quote else "quote = ''")
+            if (e.get("encoding") or "UTF-8").upper().replace("-", "") not in ("UTF8",):
+                options.append(f"encoding = {lit(e.get('encoding'))}")
+            con.execute(f"CREATE OR REPLACE TEMP TABLE dwca_raw AS SELECT * FROM read_csv({lit(os.path.join(root, location))}, {', '.join(options)})")
+            raw = db_columns_temp(con, "dwca_raw")
+            select, names = [], []
+            key = e.find("d:id", ns) if kind == "core" else e.find("d:coreid", ns)
+            if key is not None and key.get("index") is not None:
+                select.append(f"{q(raw[int(key.get('index'))])} AS {q('id' if kind == 'core' else 'coreid')}")
+                names.append("id" if kind == "core" else "coreid")
+            for fe in e.findall("d:field", ns):
+                term = fe.get("term", "")
+                name = term.rstrip("/").split("/")[-1].split("#")[-1]
+                if name in names:
+                    name = re.sub(r"[^0-9a-zA-Z]+", "_", term.split("//")[-1]).strip("_")
+                if fe.get("index") is not None:
+                    i = int(fe.get("index"))
+                    if i >= len(raw):
+                        sys.exit(f"meta.xml maps {term} to column {i}, and {location} has {len(raw)} columns.")
+                    expr = q(raw[i])
+                    if fe.get("default") is not None:
+                        expr = f"coalesce(nullif({expr}, ''), {lit(fe.get('default'))})"
+                else:
+                    expr = lit(fe.get("default", ""))
+                select.append(f"{expr} AS {q(name)}")
+                names.append(name)
+            con.execute(f"CREATE OR REPLACE TABLE {q(table)} AS SELECT {', '.join(select)} FROM dwca_raw")
+            con.execute("DROP TABLE dwca_raw")
+            n = count(con, f"SELECT count(*) FROM {q(table)}")
+            print(f"{kind:9} {location}: {n} rows as {table} ({row_type})\n          columns: {', '.join(names)}")
+        eml = os.path.join(root, tree.get("metadata") or "eml.xml")
+        if os.path.exists(eml):
+            print(f"\nThe archive has metadata in {os.path.relpath(eml, root)}. Read it for Stage 6; it is not copied anywhere.")
+    finally:
+        if tmp:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+
+def db_columns_temp(con, table):
+    return [r[0] for r in con.execute(f"DESCRIBE {q(table)}").fetchall()]
+
+
 def cmd_run(args):
     with open(args.sql, encoding="utf-8") as fh:
         script = fh.read()
@@ -525,6 +715,8 @@ def check_tables(con, present, report):
                 n = count(con, f"SELECT count(*) FROM {T} WHERE {q(fname)} IS NOT NULL AND {q(fname)} = {q(s['primaryKey'])}")
                 if n:
                     report.error(name, f"{n} {'row points' if n == 1 else 'rows point'} to itself in {fname}.", field=fname)
+
+        check_vocabularies(con, name, table, cols, report)
 
 
 def cmd_validate(args):
@@ -764,6 +956,9 @@ def main():
     s.add_argument("--limit", type=int, default=30)
     s.set_defaults(func=cmd_find_term)
 
+    s = sub.add_parser("vocab", help="GBIF vocabularies: which fields use them, or one vocabulary's concepts")
+    s.add_argument("name", nargs="?", help="a vocabulary, e.g. LifeStage, or a field, e.g. occurrence.lifeStage")
+    s.set_defaults(func=cmd_vocab)
     s = sub.add_parser("init", help="create DwC-DP tables in the database")
     s.add_argument("tables", nargs="+")
     s.set_defaults(func=cmd_init)
@@ -773,6 +968,9 @@ def main():
     s.add_argument("--sep", help="column separator, e.g. ';' or '\\t'")
     s.add_argument("--sheet", help="sheet of an .xlsx file")
     s.set_defaults(func=cmd_load)
+    s = sub.add_parser("load-dwca", help="stage a Darwin Core Archive's core and extensions as src_dwca_ tables")
+    s.add_argument("archive", help="the archive (.zip) or its unzipped folder")
+    s.set_defaults(func=cmd_load_dwca)
     s = sub.add_parser("run", help="run a SQL file in one transaction")
     s.add_argument("sql")
     s.set_defaults(func=cmd_run)

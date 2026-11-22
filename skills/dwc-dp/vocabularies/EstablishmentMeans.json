@@ -1,0 +1,133 @@
+{
+ "vocabulary": "EstablishmentMeans",
+ "source": "release 1.0.3",
+ "concepts": [
+  {
+   "name": "introduced",
+   "labels": [
+    "Introduced (Alien, Exotic, Non-native, Nonindigenous)",
+    "Introducida"
+   ],
+   "alternativeLabels": [
+    "Alien",
+    "Exotic",
+    "Exótica",
+    "Introduced",
+    "No-nativa",
+    "Non-native",
+    "Nonindigenous"
+   ],
+   "hiddenLabels": [
+    "Introduced",
+    "Introduced in Hawaii",
+    "Introduced in Hawaii and the Lower 48 Conterminous United States of America",
+    "Introduced in the Lower 48 Conterminous United States of America",
+    "Introducida",
+    "Introducido",
+    "Invasive",
+    "Invasor",
+    "Invasora",
+    "Naturalised",
+    "Naturalizada",
+    "invasive",
+    "naturalised",
+    "non-native in Hawaii",
+    "non-native in conterminous Lower 48 States"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "uncertain",
+   "labels": [
+    "Incierto (Desconocido)",
+    "Uncertain (Unknown, Cryptogenic)"
+   ],
+   "alternativeLabels": [
+    "Cryptogenic",
+    "Desconocido",
+    "Incierto",
+    "Uncertain",
+    "Unknown"
+   ],
+   "hiddenLabels": [
+    "Wild: native/naturalized",
+    "unknown",
+    "unknown :"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "introducedAssistedColonisation",
+   "labels": [
+    "Introduced (Assisted colonisation)",
+    "Introducida (Colonización asistida)"
+   ],
+   "alternativeLabels": [
+    "Assisted colonisation",
+    "Colonización asistida"
+   ],
+   "hiddenLabels": [
+    "Assisted colonization",
+    "introducedAssistedColonization"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "nativeReintroduced",
+   "labels": [
+    "Nativa (Reintroducida)",
+    "Native (Reintroduced)"
+   ],
+   "alternativeLabels": [
+    "Reintroduced",
+    "Reintroducida"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "native",
+   "labels": [
+    "Nativa",
+    "Native (Indigenous)"
+   ],
+   "alternativeLabels": [
+    "Autóctona",
+    "Indigenous",
+    "Nativa",
+    "Native"
+   ],
+   "hiddenLabels": [
+    "Endemic",
+    "Endémica",
+    "Macaronesian endemism",
+    "Nativa",
+    "Nativo",
+    "Natural",
+    "endemic",
+    "nativa"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "vagrant",
+   "labels": [
+    "Transitoria (Casual)",
+    "Vagrant (Casual)"
+   ],
+   "alternativeLabels": [
+    "Casual",
+    "Transitoria",
+    "Vagrant"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  }
+ ]
+}

@@ -1,0 +1,1241 @@
+{
+ "vocabulary": "target_gene",
+ "source": "release 1.0.0",
+ "concepts": [
+  {
+   "name": "SSU_rRNA_16S_prokaryotic",
+   "labels": [
+    "16S ribosomal small subunit RNA (prokaryotic) (pro16S)"
+   ],
+   "alternativeLabels": [
+    "16S prokariotic",
+    "16Spro",
+    "16SproRNA"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "SSU_rRNA_18S_eukaryotic",
+   "labels": [
+    "18S ribosomal small subunit RNA (eukaryotic) (18S)"
+   ],
+   "alternativeLabels": [
+    "18S",
+    "18Seuk",
+    "18SeukRNA",
+    "18SrRNA",
+    "RNA18S"
+   ],
+   "hiddenLabels": [
+    "18S",
+    "18S rRNA",
+    "18S-3P",
+    "18S-5P",
+    "18S-V4",
+    "18S_rRNA_gene"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "SSU_rRNA_12S_mitochondrial",
+   "labels": [
+    "12S ribosomal small subunit RNA (mitochondrial) (12S)"
+   ],
+   "alternativeLabels": [
+    "12S",
+    "12Smt",
+    "12SmtRNA",
+    "12SrRNA",
+    "MT-RNR1",
+    "RNA12S",
+    "mt12S"
+   ],
+   "hiddenLabels": [
+    "12S",
+    "12S mtDNA",
+    "12S rDNA",
+    "12S rRNA",
+    "12S rRNA (SSU mitochondria)",
+    "ARNr 12S",
+    "mtSSU",
+    "portions of hyper-variable regions of the mitochondrial 12S ribosomal RNA (rRNA) gene"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "SSU_rRNA_16S_plastid",
+   "labels": [
+    "16S ribosomal small subunit RNA (plastid) (cp16S)"
+   ],
+   "alternativeLabels": [
+    "16S chloroplast",
+    "16S plastid",
+    "16Spla",
+    "16SplaRNA",
+    "cp16S"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "SSU_rRNA",
+   "labels": [
+    "Small subunit ribosomal RNA (SSU)"
+   ],
+   "alternativeLabels": [
+    "SSU"
+   ],
+   "hiddenLabels": [
+    "Small Ribosomal Subunit"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "LSU_rRNA_23S_prokaryotic",
+   "labels": [
+    "23S ribosomal large subunit RNA (prokaryotic) (23S)"
+   ],
+   "alternativeLabels": [
+    "23S prokariotic",
+    "23Spro",
+    "23SproRNA"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "LSU_rRNA_28S_eukaryotic",
+   "labels": [
+    "28S ribosomal large subunit RNA (eukaryotic) (28S)"
+   ],
+   "alternativeLabels": [
+    "28S",
+    "28Seuk",
+    "28SeukRNA",
+    "28SrRNA",
+    "RNA28S"
+   ],
+   "hiddenLabels": [
+    "28S",
+    "28S-D1-D2",
+    "28S-D2",
+    "28S-D2-D3",
+    "28S-D3",
+    "28S-D3-D5",
+    "28S-D7",
+    "28S-D9-D10",
+    "nucLSU"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "LSU_rRNA_16S_mitochondrial",
+   "labels": [
+    "16S ribosomal large subunit RNA (mitochondrial) (mt16S)"
+   ],
+   "alternativeLabels": [
+    "16Smt",
+    "16SmtRNA",
+    "MT-RNR2",
+    "mt16S"
+   ],
+   "hiddenLabels": [
+    "16S Fish",
+    "16S mtDNA",
+    "16S rRNA (LSU mitochondria)",
+    "16S-ND2",
+    "16SF/D"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "LSU_rRNA_23S_plastid",
+   "labels": [
+    "23S ribosomal large subunit RNA (plastid) (cp23S)"
+   ],
+   "alternativeLabels": [
+    "23S chloroplast",
+    "23S plastid",
+    "23Spla",
+    "23SplaRNA",
+    "UPS",
+    "cp23S"
+   ],
+   "hiddenLabels": [
+    "UPA"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "LSU_rRNA",
+   "labels": [
+    "Large subunit ribosomal RNA (LSU)"
+   ],
+   "alternativeLabels": [
+    "LSU"
+   ],
+   "hiddenLabels": [
+    "23S",
+    "LSU",
+    "Large Ribosomal Subunit RNA"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "ITS1",
+   "labels": [
+    "Internal Transcribed Spacer 1 (ITS1)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "ITS2",
+   "labels": [
+    "Internal Transcribed Spacer 2 (ITS2)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "ITS_region",
+   "labels": [
+    "Internal Transcribed Spacer region (ITS)"
+   ],
+   "alternativeLabels": [
+    "ITS",
+    "ITS1+5.8S+ITS2",
+    "nrITS"
+   ],
+   "hiddenLabels": [
+    "16S-5.8S-ITS1-ITS2",
+    "28S-18S-5.8S-ITS1-ITS2",
+    "5-8S",
+    "5.8S, ITS1, ITS2",
+    "5.8S, ITS1, LSU rDNA, ITS2",
+    "5.8S, ITS2, ITS1",
+    "5.8S-ITS1-ITS2",
+    "ITS",
+    "ITS1, 5.8S, ITS2",
+    "ITS1;ITS2",
+    "ITS2, 5.8S, ITS1",
+    "ITS2, 5.8S, ITS1, LSU rDNA",
+    "ITS2, ITS1, 5.8S",
+    "ITS|LSU rRNA",
+    "LSU D1, LSU D2, LSU D3, ITS1, 5.8S, ITS2",
+    "SSU rDNA, ITS1, 5.8S, ITS2"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "5S_rRNA",
+   "labels": [
+    "5S ribosomal RNA (5S)"
+   ],
+   "alternativeLabels": [
+    "5S",
+    "5SrRNA",
+    "RNA5S"
+   ],
+   "hiddenLabels": [
+    "5S"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Ribosomal_RNA",
+   "labels": [
+    "Ribosomal RNA (rRNA)"
+   ],
+   "alternativeLabels": [
+    "rRNA"
+   ],
+   "hiddenLabels": [
+    "16S",
+    "16S ADNr",
+    "16S rRNA",
+    "16S_rRNA_gene",
+    "16s rRN",
+    "5S-23S",
+    "rRNA"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "tufA",
+   "labels": [
+    "Elongation factor Tu (tufA)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "rpoB",
+   "labels": [
+    "RNA polymerase subunit B (rpoB)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "rpoC1",
+   "labels": [
+    "RNA polymerase subunit C1 (rpoC1)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "rpoC2",
+   "labels": [
+    "RNA polymerase subunit C2 (rpoC2)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "matK",
+   "labels": [
+    "Maturase K (matK)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "trnH",
+   "labels": [
+    "tRNA-His (trnH)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "trnL",
+   "labels": [
+    "tRNA-Leu (trnL)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "psbA",
+   "labels": [
+    "Photosystem II protein D1 (psbA)"
+   ],
+   "alternativeLabels": [
+    "PSBA",
+    "PsbA",
+    "psbA"
+   ],
+   "hiddenLabels": [
+    "PSBA",
+    "psbA-3P"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "psbK",
+   "labels": [
+    "Photosystem II protein K (psbK)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "trnK",
+   "labels": [
+    "tRNA-Lys (TrnK)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "trnH_psbA_spacer",
+   "labels": [
+    "trnH-psbA intergenic spacer (trnH-psbA)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "trnH-psbA"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "atpB_rbcL_spacer",
+   "labels": [
+    "atpB-rbcL intergenic spacer (atpB-rbcL)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "atpB-rbcL"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "trnL_trnF_spacer",
+   "labels": [
+    "trnL-trnF intergenic spacer (trnL-trnF)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "trnL-F"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "rbcL",
+   "labels": [
+    "Ribulose-bisphosphate carboxylase large chain (rbcL)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "RBCL-5P",
+    "rbcL-like",
+    "rbcLa"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "ycf1",
+   "labels": [
+    "Hypothetical chloroplast reading frame 1 (ycf1)"
+   ],
+   "alternativeLabels": [
+    "YCF1",
+    "hypothetical chloroplast ORF1",
+    "ycf1"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "ndhF",
+   "labels": [
+    "NADH dehydrogenase subunit F (ndhF)"
+   ],
+   "alternativeLabels": [
+    "NDHF",
+    "ndhF"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "psaB",
+   "labels": [
+    "Photosystem I P700 chlorophyll a apoprotein A2 (psaB)"
+   ],
+   "alternativeLabels": [
+    "PSAB",
+    "psaB"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "psbB",
+   "labels": [
+    "Photosystem II CP47 protein (psbB)"
+   ],
+   "alternativeLabels": [
+    "CP47",
+    "PSBB",
+    "psbB"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "psbC",
+   "labels": [
+    "Photosystem II CP43 protein (psbC)"
+   ],
+   "alternativeLabels": [
+    "CP43",
+    "PSBC",
+    "psbC"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "atpF_atpH_spacer",
+   "labels": [
+    "atpF-atpH intergenic spacer (atpF-atpH)"
+   ],
+   "alternativeLabels": [
+    "atpF-atpH",
+    "atpF-atpH spacer",
+    "atpF/atpH"
+   ],
+   "hiddenLabels": [
+    "atpF-atpH"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "psbK_psbI_spacer",
+   "labels": [
+    "psbK-psbI intergenic spacer (psbK-psbI)"
+   ],
+   "alternativeLabels": [
+    "psbK-psbI",
+    "psbK-psbI spacer",
+    "psbK/psbI"
+   ],
+   "hiddenLabels": [
+    "psbK-psbI"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "petD",
+   "labels": [
+    "Cytochrome b6/f complex subunit 4 (petD)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Chloroplast_protein_coding_gene",
+   "labels": [
+    "Chloroplast protein-coding gene"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "psbE-petL"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "CytB",
+   "labels": [
+    "Cytochrome b (CytB)"
+   ],
+   "alternativeLabels": [
+    "CYB",
+    "CYTB",
+    "cyt-B",
+    "cytochromeb"
+   ],
+   "hiddenLabels": [
+    "CYTB",
+    "CYTB-NUMT",
+    "cyt-B"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "COI",
+   "labels": [
+    "Cytochrome c oxidase subunit I (COI)"
+   ],
+   "alternativeLabels": [
+    "CO1",
+    "COX1",
+    "MT-CO1",
+    "cox1"
+   ],
+   "hiddenLabels": [
+    "COI-3P",
+    "COI-5P",
+    "COI-5P3P",
+    "COI-LIKE",
+    "COI-NUMT",
+    "COI-PSEUDO",
+    "Co1",
+    "Cytochrome Oxidase Subunit I (COI)",
+    "FL-COI",
+    "mitochondrial cytochrome c oxidase subunit I gene (COI)"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "COII",
+   "labels": [
+    "Cytochrome c oxidase subunit II (COII)"
+   ],
+   "alternativeLabels": [
+    "CO2",
+    "COX2",
+    "MT-CO2",
+    "cox2"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "COIII",
+   "labels": [
+    "Cytochrome c oxidase subunit III (COIII)"
+   ],
+   "alternativeLabels": [
+    "CO3",
+    "COX3",
+    "MT-CO3",
+    "cox3"
+   ],
+   "hiddenLabels": [
+    "COXIII"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "ND1",
+   "labels": [
+    "NADH dehydrogenase subunit 1 (ND1)"
+   ],
+   "alternativeLabels": [
+    "MT-ND1",
+    "NAD1"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "ND2",
+   "labels": [
+    "NADH dehydrogenase subunit 2 (ND2)"
+   ],
+   "alternativeLabels": [
+    "MT-ND2",
+    "NAD2"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "ND3",
+   "labels": [
+    "NADH dehydrogenase subunit 3 (ND3)"
+   ],
+   "alternativeLabels": [
+    "MT-ND3",
+    "NAD3"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "ND4",
+   "labels": [
+    "NADH dehydrogenase subunit 4 (ND4)"
+   ],
+   "alternativeLabels": [
+    "MT-ND4",
+    "NAD4"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "ND5",
+   "labels": [
+    "NADH dehydrogenase subunit 5 (ND5)"
+   ],
+   "alternativeLabels": [
+    "MT-ND5",
+    "NAD5"
+   ],
+   "hiddenLabels": [
+    "ND5-0"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "ND6",
+   "labels": [
+    "NADH dehydrogenase subunit 6 (ND6)"
+   ],
+   "alternativeLabels": [
+    "MT-ND6",
+    "NAD6"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "ND4L",
+   "labels": [
+    "NADH dehydrogenase subunit 4L (ND4L)"
+   ],
+   "alternativeLabels": [
+    "MT-ND4L",
+    "NAD4L"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Dloop",
+   "labels": [
+    "Mitochondrial control region (Dloop)"
+   ],
+   "alternativeLabels": [
+    "ControlRegion",
+    "D-loop"
+   ],
+   "hiddenLabels": [
+    "D-loop"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "atp6",
+   "labels": [
+    "ATP synthase F0 subunit 6 (atp6)"
+   ],
+   "alternativeLabels": [
+    "ATP6",
+    "MT-AP6"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "atp8",
+   "labels": [
+    "ATP synthase F0 subunit 8 (atp8)"
+   ],
+   "alternativeLabels": [
+    "ATP8",
+    "MT-ATP8"
+   ],
+   "hiddenLabels": [
+    "ATP8"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "matR",
+   "labels": [
+    "Maturase R (matR)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "MutS_like",
+   "labels": [
+    "MutS-like protein (MutS-like)"
+   ],
+   "alternativeLabels": [
+    "mtMutS"
+   ],
+   "hiddenLabels": [
+    "MutS-like"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Mitochondrial_protein_coding_gene",
+   "labels": [
+    "Mitochondrial protein-coding gene"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "COII-COI",
+    "COII-COIII",
+    "ND6-ND3",
+    "atp6-atp8"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "nifH",
+   "labels": [
+    "Nitrogenase reductase (nifH)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "amoA",
+   "labels": [
+    "Ammonia monooxygenase subunit A (amoA)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "fbpA",
+   "labels": [
+    "Fructose-bisphosphate aldolase class II (fbpA)"
+   ],
+   "alternativeLabels": [
+    "FBPA",
+    "fbpA"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "hcpA",
+   "labels": [
+    "Hcp family protein A (hcpA)"
+   ],
+   "alternativeLabels": [
+    "HCPA",
+    "hcpA"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "ftsZ",
+   "labels": [
+    "Cell division protein FtsZ (ftsZ)"
+   ],
+   "alternativeLabels": [
+    "FTSZ",
+    "ftsZ"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "coxA",
+   "labels": [
+    "Cytochrome c oxidase subunit A (coxA)"
+   ],
+   "alternativeLabels": [
+    "COXA",
+    "coxA"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "gatB",
+   "labels": [
+    "Glutamyl-tRNA amidotransferase subunit B (gatB)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Msp4",
+   "labels": [
+    "Major surface protein 4 (Msp4)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "ntcA",
+   "labels": [
+    "Global nitrogen regulator NtcA (ntcA)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "sca4",
+   "labels": [
+    "Surface cell antigen 4 (sca4)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "WSP",
+   "labels": [
+    "Wolbachia surface protein (WSP)"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Prokaryotic_protein_coding_gene",
+   "labels": [
+    "Prokaryotic protein-coding gene"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "TEF1",
+   "labels": [
+    "Translation elongation factor 1-alpha (TEF1)"
+   ],
+   "alternativeLabels": [
+    "EF-1α",
+    "EF1-alpha",
+    "EF1a",
+    "tef1",
+    "tef1-α"
+   ],
+   "hiddenLabels": [
+    "EF-1alpha",
+    "EF1-alpha",
+    "EF1-alpha-5P",
+    "TEF"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "RPB1",
+   "labels": [
+    "RNA polymerase II subunit 1 (RPB1)"
+   ],
+   "alternativeLabels": [
+    "POLR2A"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "RPB2",
+   "labels": [
+    "RNA polymerase II subunit 2 (RPB2)"
+   ],
+   "alternativeLabels": [
+    "POLR2B"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "beta_tubulin",
+   "labels": [
+    "Beta-tubulin (beta_tubilin)"
+   ],
+   "alternativeLabels": [
+    "benA",
+    "tub2",
+    "β-tubulin"
+   ],
+   "hiddenLabels": [
+    "BenA",
+    "Beta-tubulin"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "ACT",
+   "labels": [
+    "Actin (ACT)"
+   ],
+   "alternativeLabels": [
+    "act"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "HSP90",
+   "labels": [
+    "Heat shock protein 90 (HSP90)"
+   ],
+   "alternativeLabels": [
+    "hsp90"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "H3",
+   "labels": [
+    "Histone H3 (H3)"
+   ],
+   "alternativeLabels": [
+    "Histone H3",
+    "histone3"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "H4",
+   "labels": [
+    "Histone H4 (H4)"
+   ],
+   "alternativeLabels": [
+    "H4",
+    "Histone H4",
+    "histone4"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "GAPDH",
+   "labels": [
+    "Glyceraldehyde-3-phosphate dehydrogenase (GAPDH)"
+   ],
+   "alternativeLabels": [
+    "GAPDH",
+    "gapdh"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "RAG1",
+   "labels": [
+    "Recombination activating gene 1 (RAG1)"
+   ],
+   "alternativeLabels": [
+    "RAG1",
+    "rag1"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "RAG2",
+   "labels": [
+    "Recombination activating gene 2 (RAG2)"
+   ],
+   "alternativeLabels": [
+    "RAG2",
+    "rag2"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Wnt1",
+   "labels": [
+    "Wingless-type MMTV integration site family member 1 (Wnt1)"
+   ],
+   "alternativeLabels": [
+    "WNT1",
+    "Wnt1"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "S7",
+   "labels": [
+    "Ribosomal protein S7 (S7)"
+   ],
+   "alternativeLabels": [
+    "RPS7",
+    "S7"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "RHO",
+   "labels": [
+    "Rhodopsin (RHO)"
+   ],
+   "alternativeLabels": [
+    "RHO",
+    "Rho",
+    "rhodopsin"
+   ],
+   "hiddenLabels": [
+    "Rho"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "c_mos",
+   "labels": [
+    "Proto-oncogene c-mos (c-mos)"
+   ],
+   "alternativeLabels": [
+    "c-mos",
+    "cmos"
+   ],
+   "hiddenLabels": [
+    "c-mos"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "IRBP",
+   "labels": [
+    "Interphotoreceptor retinoid-binding protein (IRBP)"
+   ],
+   "alternativeLabels": [
+    "IRBP",
+    "RBP3"
+   ],
+   "hiddenLabels": [],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Nuclear_protein_coding_gene",
+   "labels": [
+    "Nuclear protein-coding gene"
+   ],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "ACE2",
+    "ATP1A",
+    "CAD",
+    "CAD-5P",
+    "CHD-Z",
+    "CK1",
+    "Ca-ATPase",
+    "CaM",
+    "Cct8",
+    "DBY-EX7-8",
+    "DDC",
+    "DDX23",
+    "DYN",
+    "EF2",
+    "ENC1",
+    "EPRS",
+    "MC1R",
+    "MCM7",
+    "MYH6",
+    "NGFB",
+    "PER",
+    "PLAGL2",
+    "PaxC",
+    "RBM15",
+    "RNF213",
+    "RPL37",
+    "TOP1",
+    "TULP",
+    "TYR",
+    "Tsr1",
+    "VDAC"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "E_gene",
+   "labels": [
+    "Envelope protein gene (E gene)"
+   ],
+   "alternativeLabels": [
+    "E gene",
+    "Envelope gene",
+    "e-gene"
+   ],
+   "hiddenLabels": [
+    "e-gene"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  },
+  {
+   "name": "Protein_coding_gene",
+   "labels": [],
+   "alternativeLabels": [],
+   "hiddenLabels": [
+    "AOX-fmt",
+    "ENO",
+    "IDH",
+    "MDH",
+    "PGD",
+    "TPI"
+   ],
+   "deprecated": false,
+   "replacedBy": null
+  }
+ ]
+}

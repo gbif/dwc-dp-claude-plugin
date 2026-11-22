@@ -33,8 +33,25 @@ they are worked on locally from this file.
     observations with the DwC-DP tables, and list where they don't match as questions.
 - **Recipe: eDNA** `ready` `recipe` `edna`
   - Source: `edna/obis-edna-expeditions` (0.1).
-  - Wait for the answer to "MDT overlap" below before writing the data-holder guidance; the table
-    mapping can be done now.
+  - Covers OTU/ASV tables and sample sheets, with nucleotide-analysis, nucleotide-sequence,
+    molecular-protocol and material.
+- **Recipe: Darwin Core Archives** `ready` `recipe`
+  - `load-dwca` stages an archive. The recipe covers the usual cores (Occurrence, Event) and
+    extensions (MeasurementOrFact, Multimedia, DNA derived data, ResourceRelationship), and which
+    DwC-DP tables their terms go to.
+  - DwC-DP 1.0 has no table for a checklist of taxa (`identification-taxon` holds the taxon of an
+    identification), so whether a Taxon core archive can be translated is a question for the
+    maintainer.
+  - It also covers where a flat core row splits into several tables.
+  - Uses a synthetic archive fixture; cite the Darwin Core text guide (https://dwc.tdwg.org/text/)
+    for meta.xml.
+- **Compare `check` with GBIF's DwC-DP validator** `ready` `tooling`
+  - gbif/dwc-dp-analyser (Apache-2.0, CLI releases as a jar for Java 17) is what GBIF runs on
+    DwC-DP it crawls.
+  - Run it on the fixtures' packages and list where its verdict differs from `check`, with
+    sources, and make `check` agree with it where the guide supports it.
+  - Document how a data holder can run it themselves as a last step.
+  - kueda/dwc-dp-validate (Apache-2.0) is a second CLI to compare against.
 - **`validate`: event and material hierarchies** `ready` `tooling`
   - Detect cycles in `parentEvent_fk`, `derivedFromMaterialEntity_fk`, `isPartOfMaterialEntity_fk`
     and other self-references, and report them in plain words.
@@ -45,31 +62,25 @@ they are worked on locally from this file.
   - Find out whether it can be bundled or installed once, and otherwise document saving sheets as
     CSV.
 
+## Decided
+
+- **The goal is a valid package.** The plugin stops when `check` passes; publishing is not part
+  of it.
+- **Upstream examples:** don't raise their pre-1.0 state in gbif/dwc-dp-examples or tdwg/dwc.
+- **eDNA:** no referral to the MDT; the plugin builds DwC-DP for eDNA as for any other data.
+- **Darwin Core Archives:** yes, help translate them to DwC-DP (`load-dwca`, and the recipe above).
+- **Vocabularies:** check against GBIF's vocabularies (https://api.gbif.org/v1/vocabularies).
+  - The copies are pinned in `skills/dwc-dp/vocabularies/` by `tools/pin_vocabularies.py`.
+  - Which field uses which vocabulary is GBIF's own configuration, gbif/pipelines `pipelines.yaml`
+    `vocabularyConfig`.
+  - Values outside them are warnings, not errors.
+  - `eventCategory` has no GBIF vocabulary, so it isn't checked.
+
 ## Needs a human decision
 
-1. **Publishing route** `needs-human`
-   - Should the plugin end at a validated package, or also take it to an IPT with DwC-DP support
-     (https://dwcdp-ipt.gbif-test.org, the IPT `dwc-dp` branch)?
-   - Does GBIF ingest DwC-DP 1.0 yet?
-2. **Metadata** `needs-human`
-   - Should the plugin write `eml.xml` (as the MDT and the IPT do), the package-level properties
-     of the Data Package specification, or both?
-3. **Examples before 1.0** `needs-human`
-   - gbif/dwc-dp-examples still uses keys from before 1.0, and the guide's own example in section 2
-     too. Should this project raise that upstream (issues or PRs in gbif/dwc-dp-examples and
-     tdwg/dwc), or only work around it here?
-4. **MDT overlap** `needs-human`
-   - Should eDNA and metabarcoding data holders be sent to the MDT, which already writes DwC-DP
-     1.0, with this plugin covering only what the MDT can't?
-5. **Darwin Core Archive input** `needs-human`
-   - Should the plugin also convert existing Darwin Core Archives to DwC-DP?
-6. **Controlled vocabularies** `needs-human`
-   - The JSON schemas have no enumerations, only usage notes such as "Recommended best practice is
-     to use a controlled vocabulary".
-   - TDWG's PostgreSQL build (`build/dwc-dp/generate_sql.yaml` in tdwg/dwc) adds ENUMs, and they
-     differ from the schema examples:
-     - `eventCategory`: the SQL ENUM has `Event`, `MaterialGathering`, `Occurrence`,
-       `OrganismInteraction` and `Survey`, while the schema examples have `material collection`,
-       `occurrence`, `survey` and `context`;
-     - `occurrenceStatus`: the ENUM has `detected`, `present`, `notDetected` and `absent`.
-   - Which values should `validate` require, warn about, or leave alone?
+1. **Metadata** `needs-human`
+   - Found so far: `eml.xml` is optional in the guide.
+   - GBIF's crawler forwards `eml.xml` when the package has one, and the `datapackage.json`
+     metadata otherwise (gbif/crawler `DwcDpMetasyncCallback`).
+   - GBIF's validator checks EML when present (title, creator, EML 2.2.0).
+   - Should the plugin write `eml.xml`, descriptor metadata, or both?

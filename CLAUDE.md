@@ -21,7 +21,17 @@ decide.
    1.0, mostly natural keys) and https://github.com/gbif/model-material (no licence: read it, never
    copy from it). Never take a field name or rule from an example.
 
-The IPT's DwC-DP work is on the `dwc-dp` branch of https://github.com/gbif/ipt.
+Also:
+
+- **GBIF vocabularies:** https://api.gbif.org/v1/vocabularies, pinned in
+  `skills/dwc-dp/vocabularies/`. Which field uses which vocabulary is GBIF's configuration
+  (gbif/pipelines `pipelines.yaml`, `vocabularyConfig`), never a guess.
+- **GBIF's DwC-DP validator:** https://github.com/gbif/dwc-dp-analyser, what GBIF runs on crawled
+  packages. `check` should agree with it.
+- **GBIF's DwC-DP crawling:** https://github.com/gbif/crawler (`dwcdp` packages).
+- **The IPT's DwC-DP work:** the `dwc-dp` branch of https://github.com/gbif/ipt.
+
+The plugin's goal is a valid package. Publishing is out of scope.
 
 ## Never guess
 
@@ -58,7 +68,8 @@ field, or a URL and section.
 
 ## Never
 
-- Edit the vendored schemas. Move to a new pin only with `tools/pin_schemas.py`, in its own PR.
+- Edit the vendored schemas or vocabularies. Move to a new pin only with `tools/pin_schemas.py` or
+  `tools/pin_vocabularies.py`, in its own PR.
 - Commit data without a clear open licence, or any data from `gbif/model-material`. Fixtures are
   small, synthetic or cut from Apache-2.0 sources, with the source named in the fixture's README.
 - Contact anyone outside this repository, or open issues or PRs in other repositories.
@@ -84,10 +95,12 @@ field, or a URL and section.
   - `package.md`;
   - `recipes/`, one file per kind of dataset (see `recipes/README.md`).
 - `skills/dwc-dp/scripts/dwcdp.py`: the CLI, with these commands:
-  - `tables`, `describe`, `find-term` and `order` read the schemas;
-  - `init`, `load`, `run`, `sql`, `status`, `validate`, `diagram` and `package` work on the
-    working DuckDB;
+  - `tables`, `describe`, `find-term`, `order` and `vocab` read the schemas and vocabularies;
+  - `init`, `load`, `load-dwca`, `run`, `sql`, `status`, `validate`, `diagram` and `package` work
+    on the working DuckDB;
   - `check` tests a package on disk.
 - `tests/`: `unittest`, with fixtures in `tests/fixtures/`.
-- `tools/pin_schemas.py`: copies the schemas from a tdwg/dwc commit.
+- `skills/dwc-dp/vocabularies/`: the pinned GBIF vocabularies and `mapping.json`.
+- `tools/pin_schemas.py` and `tools/pin_vocabularies.py`: copy the schemas from a tdwg/dwc commit,
+  and the GBIF vocabularies.
 - `BACKLOG.md`: planned work, until it becomes GitHub issues.

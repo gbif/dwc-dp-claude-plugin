@@ -29,14 +29,22 @@ that has files in it, unless `--overwrite` is given.
 - **Dataset identifier** (`id`): SHOULD be there, preferably a DOI. Use one they have; don't make
   one up.
 - **Version** (`version`): SHOULD be there. Ask them.
-- **Metadata:** title, description, people, licence. The guide allows an EML file (`eml.xml`,
-  which "MUST follow the Ecological Metadata Language specification") and package-level
-  properties. Which one this skill writes is not settled yet. Until it is, collect the metadata
-  with the data holder, use `--title`, and keep the rest in their notes for the publishing step.
+- **Metadata:** title, description, people, licence.
+  - **What the guide says:** `eml.xml` is optional (section 3, "MAY have an EML metadata file"),
+    and when present it "MUST follow the Ecological Metadata Language specification". The
+    descriptor MAY also carry dataset metadata (section 3.1.6).
+  - **What GBIF does,** as of 2026-11-22:
+    - its crawler forwards `eml.xml` to the registry when the package has one, and the
+      `datapackage.json` metadata otherwise (`DwcDpMetasyncCallback` in gbif/crawler);
+    - GBIF's DwC-DP validator (gbif/dwc-dp-analyser) checks an `eml.xml` when present: well-formed,
+      with `<title>` and `<creator>`, and valid against EML 2.2.0.
+  - **Not settled yet:** which of the two this skill writes. Until then, collect the metadata with
+    the data holder, use `--title`, and pass an `eml.xml` they already have (for example the one
+    in their Darwin Core Archive) with `--eml`.
 
 ## Not covered yet
 
 - Compressed packages (`.gz`).
 - Tables in other dialects (TSV and so on). `check` reads them when the `dialect` says so;
   `package` always writes standard CSV.
-- Publishing. Tell them this is not covered yet.
+- Writing `eml.xml` from the data holder's answers.
