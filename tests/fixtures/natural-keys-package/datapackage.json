@@ -1,0 +1,19 @@
+{
+  "profile": "https://raw.githubusercontent.com/gbif/dwc-dp/0.1/dwc-dp/dwc-dp-profile.json",
+  "resources": [
+    {
+      "name": "event",
+      "path": "event.csv",
+      "profile": "tabular-data-resource",
+      "format": "csv",
+      "mediatype": "text/csv",
+      "schema": {
+        "fields": [
+          {"name": "eventID", "title": "Event ID", "description": "An identifier for a dwc:Event.", "type": "string", "format": "default", "dcterms:isVersionOf": "http://rs.tdwg.org/dwc/terms/eventID"},
+          {"name": "eventDate", "title": "Event Date", "description": "A date or time interval during which a dwc:Event occurred.", "type": "string", "format": "default", "dcterms:isVersionOf": "http://rs.tdwg.org/dwc/terms/eventDate"}
+        ],
+        "primaryKey": "eventID"
+      }
+    }
+  ]
+}

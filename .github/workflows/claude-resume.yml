@@ -1,0 +1,20 @@
+# A reply from the maintainer on a needs-human issue makes it ready again.
+name: claude-resume
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  resume:
+    if: |
+      !github.event.issue.pull_request &&
+      github.event.comment.user.login == github.repository_owner &&
+      contains(github.event.issue.labels.*.name, 'needs-human')
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - run: gh issue edit "${{ github.event.issue.number }}" --repo "$GITHUB_REPOSITORY" --remove-label needs-human --add-label ready

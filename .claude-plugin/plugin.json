@@ -1,0 +1,12 @@
+{
+  "name": "dwc-dp",
+  "version": "0.1.0",
+  "description": "Guide a data holder from their own files to a valid Darwin Core Data Package (DwC-DP) 1.0, explaining the relational model in plain words.",
+  "author": {
+    "name": "Thomas Stjernegaard Jeppesen"
+  },
+  "homepage": "https://github.com/thomasstjerne/dwc-dp-claude-plugin",
+  "repository": "https://github.com/thomasstjerne/dwc-dp-claude-plugin",
+  "license": "Apache-2.0",
+  "keywords": ["gbif", "darwin-core", "dwc-dp", "data-package", "biodiversity"]
+}

@@ -1,0 +1,74 @@
+# Takes the oldest issue labelled ready (and not in-progress or needs-human), and works on it:
+# a pull request, or a question with needs-human.
+name: claude-worker
+
+on:
+  schedule:
+    - cron: "17 2,14 * * *"
+  workflow_dispatch:
+    inputs:
+      issue:
+        description: "Issue number (default: the oldest ready one)"
+        required: false
+
+concurrency:
+  group: claude-worker
+  cancel-in-progress: false
+
+jobs:
+  work:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      id-token: write
+      actions: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: pick an issue
+        id: pick
+        run: |
+          n="${{ github.event.inputs.issue }}"
+          if [ -z "$n" ]; then
+            n=$(gh issue list --repo "$GITHUB_REPOSITORY" --state open --label ready --limit 100 \
+                  --json number,labels,createdAt \
+                  --jq '[.[] | select([.labels[].name] | (index("in-progress") or index("needs-human")) | not)] | sort_by(.createdAt) | .[0].number // empty')
+          fi
+          if [ -z "$n" ]; then echo "nothing ready"; exit 0; fi
+          gh issue edit "$n" --repo "$GITHUB_REPOSITORY" --add-label in-progress
+          echo "issue=$n" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v6
+        if: steps.pick.outputs.issue
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        if: steps.pick.outputs.issue
+        with:
+          python-version: "3.12"
+      - run: python -m pip install duckdb
+        if: steps.pick.outputs.issue
+      - uses: anthropics/claude-code-action@v1
+        if: steps.pick.outputs.issue
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          prompt: |
+            Work on issue #${{ steps.pick.outputs.issue }} in ${{ github.repository }}, following CLAUDE.md.
+            Read the issue and all its comments with `gh issue view ${{ steps.pick.outputs.issue }} --comments`.
+            Either:
+            - finish it on a branch issue-${{ steps.pick.outputs.issue }}-<short-name>, run the tests,
+              open a pull request that says "closes #${{ steps.pick.outputs.issue }}" and what you ran,
+              and remove the in-progress label; or
+            - if the sources don't settle something, post your question on the issue (what you found,
+              where, and the options), replace in-progress with needs-human, and stop.
+            Work only on this issue. Never merge or approve a pull request.
+          claude_args: |
+            --max-turns 80
+      - name: release the issue if the run failed
+        if: (failure() || cancelled()) && steps.pick.outputs.issue
+        run: |
+          gh issue edit "${{ steps.pick.outputs.issue }}" --repo "$GITHUB_REPOSITORY" --remove-label in-progress
+          gh issue comment "${{ steps.pick.outputs.issue }}" --repo "$GITHUB_REPOSITORY" \
+            --body "The agent run stopped before finishing: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"

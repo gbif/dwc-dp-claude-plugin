@@ -1,0 +1,14 @@
+{
+  "name": "dwc-dp-claude-plugin",
+  "description": "Claude Code plugin for building Darwin Core Data Packages (DwC-DP).",
+  "owner": {
+    "name": "Thomas Stjernegaard Jeppesen"
+  },
+  "plugins": [
+    {
+      "name": "dwc-dp",
+      "source": "./",
+      "description": "Guide a data holder from their own files to a valid Darwin Core Data Package (DwC-DP) 1.0."
+    }
+  ]
+}

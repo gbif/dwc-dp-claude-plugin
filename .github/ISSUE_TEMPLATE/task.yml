@@ -1,0 +1,21 @@
+name: Task
+description: Work an agent or a person can pick up
+labels: [proposed]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What
+      description: What should change, and why.
+    validations:
+      required: true
+  - type: textarea
+    id: sources
+    attributes:
+      label: Sources
+      description: Schema files and fields, guide sections, examples (repository, path, commit).
+  - type: textarea
+    id: done
+    attributes:
+      label: Done when
+      description: How to tell it's finished, e.g. a fixture that validates, a test that passes.

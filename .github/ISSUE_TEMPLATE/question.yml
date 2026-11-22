@@ -1,0 +1,19 @@
+name: Question
+description: A decision for the maintainer
+labels: [needs-human]
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+    validations:
+      required: true
+  - type: textarea
+    id: found
+    attributes:
+      label: What the sources say
+      description: With file and field, or URL and section.
+  - type: textarea
+    id: options
+    attributes:
+      label: Options and what each would mean
