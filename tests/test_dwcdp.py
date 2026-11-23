@@ -297,6 +297,96 @@ class AlignedWithAnalyser(Base):
         self.assertNotIn(("FIELD_DEFINITION_MISMATCH", "warning"), found)
 
 
+def analyser_reports():
+    """{package: (valid, {(code, level)})} from the recorded reports of GBIF's analyser."""
+    out, name = {}, None
+    with open(os.path.join(FIXTURES, "analyser-0.0.16", "reports.txt")) as fh:
+        for line in fh:
+            line = line.rstrip("\n")
+            if line.startswith("== "):
+                name = line[3:]
+                out[name] = [None, set()]
+            elif line.startswith("[") and "] " in line:
+                level, rest = line[1:].split("] ", 1)
+                out[name][1].add((rest.split(" ", 1)[0], level.lower()))
+            elif line.startswith("Type violation:"):
+                out[name][1].add(("DATA_TYPE_VIOLATION", "error"))
+            elif line.startswith("FK violation:"):
+                out[name][1].add(("FOREIGN_KEY_VIOLATION", "error"))
+            elif line.startswith("PK violation:"):
+                out[name][1].add(("PRIMARY_KEY_VIOLATION", "error"))
+            elif line.startswith("Result: "):
+                out[name][0] = line == "Result: VALID"
+    return {k: (v[0], v[1]) for k, v in out.items()}
+
+
+def change_duplicate_field(dp, res):
+    res["occurrence"]["schema"]["fields"].append(dict(res["occurrence"]["schema"]["fields"][0]))
+
+
+def change_title(dp, res):
+    res["occurrence"]["schema"]["fields"][0]["title"] = "Record"
+
+
+def change_type(dp, res):
+    next(f for f in res["event"]["schema"]["fields"] if f["name"] == "eventDate")["type"] = "integer"
+
+
+def remove_name(dp, res):
+    dp.pop("name")
+
+
+def break_link(folder):
+    path = os.path.join(folder, "occurrence.csv")
+    with open(path) as fh:
+        text = fh.read()
+    with open(path, "w") as fh:
+        fh.write(text.replace("A2:2025-05-01,", "nowhere,", 1))
+
+
+ANALYSED = {
+    "good": (None, None),
+    "duplicate-field": (change_duplicate_field, None),
+    "changed-title": (change_title, None),
+    "wrong-type": (change_type, None),
+    "no-name": (remove_name, None),
+    "broken-link": (None, break_link),
+}
+
+
+class AnalyserReports(Base):
+    """check reaches the verdict GBIF's analyser reached on the same packages, with the same
+    findings at the same levels (tests/fixtures/analyser-0.0.16)."""
+
+    def test_check_agrees_with_the_recorded_analyser_reports(self):
+        reports = analyser_reports()
+        self.assertEqual(set(reports), set(ANALYSED))
+        self.toy()
+        with open(os.path.join(self.dir, "id.sql"), "w") as fh:
+            fh.write("UPDATE event SET recordedByID = 'https://orcid.org/0000-0002-1825-0097';")
+        self.ok("run", "id.sql")
+        self.ok("package", "good", "--name", "toy")
+        for name, (change, change_files) in ANALYSED.items():
+            folder = os.path.join(self.dir, name)
+            if name != "good":
+                shutil.copytree(os.path.join(self.dir, "good"), folder)
+            if change:
+                path = os.path.join(folder, "datapackage.json")
+                with open(path) as fh:
+                    dp = json.load(fh)
+                change(dp, {r["name"]: r for r in dp["resources"]})
+                with open(path, "w") as fh:
+                    json.dump(dp, fh)
+            if change_files:
+                change_files(folder)
+            r = run("check", name, "--json", cwd=self.dir)
+            found = {(i["analyser"], i["level"]) for i in json.loads(r.stdout)["items"] if i["analyser"]}
+            valid, expected = reports[name]
+            with self.subTest(package=name):
+                self.assertEqual(r.returncode == 0, valid)
+                self.assertEqual(found, expected)
+
+
 class Check(Base):
     def test_package_from_before_1_0_is_refused_clearly(self):
         out = self.fails("check", os.path.join(FIXTURES, "natural-keys-package"))

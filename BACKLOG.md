@@ -45,7 +45,7 @@ they are worked on locally from this file.
   - It also covers where a flat core row splits into several tables.
   - Uses a synthetic archive fixture; cite the Darwin Core text guide (https://dwc.tdwg.org/text/)
     for meta.xml.
-- **Make `check` agree with GBIF's DwC-DP analyser** `in-progress` `tooling`
+- **Make `check` agree with GBIF's DwC-DP analyser** `tooling` (mostly done)
   - Done, from the 0.0.16 source:
     - `check` makes the analyser's descriptor checks at its default severities: profile, `name`,
       paths, field types, duplicates, required fields, field descriptors and relationships
@@ -56,9 +56,12 @@ they are worked on locally from this file.
     - `package --name`;
     - tests for each rule (`AlignedWithAnalyser`);
     - the differences are documented in `references/package.md`.
+  - Confirmed on 2026-11-23: the maintainer ran 0.0.16 on six test packages, and the verdicts,
+    findings and levels matched `check` on all six. The reports are in
+    `tests/fixtures/analyser-0.0.16/`, and `AnalyserReports` compares against them.
   - Left:
-    - confirm with a real run of the analyser on the test packages (see CI below), and fix what
-      differs;
+    - more packages in the recorded set as rules are added: a missing required field, a custom
+      field, an undeclared relationship, an EML problem, a duplicate primary key;
     - EML 2.2.0 XSD validation, which needs the XSD and a validator outside the standard library,
       so it stays the analyser's.
 - **Keep `check` aligned in CI** `ready` `tooling`

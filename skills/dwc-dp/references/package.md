@@ -31,8 +31,9 @@ GBIF checks every DwC-DP it crawls with its DwC-DP analyser (https://github.com/
 `check` makes the same checks, at the same levels, so data holders don't need to install it. The
 `--json` report names the analyser's violation type for each finding (`analyser`), and the text
 report ends with how many of the errors the analyser would report. The alignment is with release
-0.0.16, read from its source. It has not yet been confirmed by running the analyser on the
-fixtures.
+0.0.16. It was read from its source, and confirmed by running that release on six test packages
+(a good one and five broken in different ways): the verdicts, findings and levels matched. The
+reports are kept in `tests/fixtures/analyser-0.0.16/`.
 
 `check` has more errors than the analyser, all from rules of the DwC-DP guide or the schemas:
 
