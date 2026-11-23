@@ -1,0 +1,2 @@
+occurrenceID	identifier	type	format	creator	license
+OBS-77	https://example.org/photos/OBS-77.jpg	StillImage	image/jpeg	Bo Holm	http://creativecommons.org/licenses/by/4.0/

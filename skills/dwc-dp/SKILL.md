@@ -73,8 +73,8 @@ A Darwin Core Archive (a `.zip` with `meta.xml`) goes in with `load-dwca`, which
 and each extension as `src_dwca_<row type>` tables, with columns named after their Darwin Core
 terms. Its `eml.xml` is the first source for Stage 6. The archive's columns already have Darwin
 Core names, but a DwC-DP table is not one archive file: the core usually splits into several
-tables (for example the event of each occurrence). Model it as any other data, with the recipe
-for archives when there is one.
+tables (for example the event of each occurrence). `suggest` matches the archive's columns by
+term, and `references/recipes/dwca.md` covers the rest.
 
 For each source table, `suggest <table>` lists its columns with the DwC-DP fields they could be.
 Columns with no field are candidates for assertions: measurements and facts such as pH, water

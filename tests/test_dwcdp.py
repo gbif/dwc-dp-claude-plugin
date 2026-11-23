@@ -331,7 +331,7 @@ class DarwinCoreArchive(Base):
                 z.write(os.path.join(src, f), f)
         out = self.ok("load-dwca", "archive.zip")
         self.assertIn("2 rows as src_dwca_occurrence", out)
-        self.assertIn("1 rows as src_dwca_measurementorfact", out)
+        self.assertIn("1 row as src_dwca_measurementorfact", out)
         self.assertIn("eml.xml", out)
         rows = self.ok("sql", "SELECT occurrenceID, individualCount, basisOfRecord FROM src_dwca_occurrence ORDER BY 1")
         self.assertIn("o1            3                HumanObservation", rows)
@@ -342,6 +342,50 @@ class DarwinCoreArchive(Base):
     def test_unzipped_folder_works_too(self):
         out = self.ok("load-dwca", os.path.join(FIXTURES, "dwca-occurrence"))
         self.assertIn("coreid, measurementType, measurementValue, measurementUnit", out)
+
+
+class DwcaRecipe(Base):
+    """The worked examples of references/recipes/dwca.md validate, package and check."""
+
+    def translate(self, fixture, tables, name):
+        src = os.path.join(FIXTURES, fixture)
+        shutil.copy(os.path.join(src, "mapping.sql"), self.dir)
+        self.ok("load-dwca", src)
+        self.ok("init", *tables)
+        self.ok("run", "mapping.sql")
+        self.assertIn("No problems found", self.ok("validate"))
+        self.ok("package", "out", "--name", name, "--eml", os.path.join(src, "eml.xml")) if os.path.exists(os.path.join(src, "eml.xml")) else self.ok("package", "out", "--name", name)
+        self.assertIn("valid", self.ok("check", "out"))
+        return lambda sql: self.ok("sql", sql).split("\n")[2].strip()
+
+    def test_occurrence_core(self):
+        q = self.translate("dwca-occurrence-core", ["event", "occurrence", "material", "identification", "media",
+                                                    "occurrence-media", "material-assertion"], "beetles-djursland")
+        self.assertEqual(q("SELECT count(*) FROM event"), "2")
+        self.assertEqual(q("SELECT count(*) FROM material"), "2")
+        self.assertEqual(q("SELECT family FROM identification WHERE occurrence_fk = 'OBS-77'"), "Carabidae")
+        self.assertEqual(q("SELECT organismQuantity || ' ' || organismQuantityType FROM occurrence WHERE occurrence_pk = 'OBS-77'"), "2 individuals")
+        self.assertEqual(q("SELECT format FROM media"), "image/jpeg")
+        self.assertEqual(q("SELECT count(*) FROM material_assertion"), "2")
+
+    def test_event_core(self):
+        q = self.translate("dwca-event-core", ["event", "survey", "occurrence", "identification", "event-assertion",
+                                               "occurrence-assertion"], "benthos-kalo-2025")
+        self.assertEqual(q("SELECT parentEvent_fk FROM event WHERE event_pk = 'KALO-2025-G1'"), "KALO-2025")
+        self.assertEqual(q("SELECT minimumDepthInMeters FROM event WHERE event_pk = 'KALO-2025-G1'"), "3.2")
+        self.assertEqual(q("SELECT occurrenceStatus FROM occurrence WHERE occurrence_pk = 'G1-2'"), "notDetected")
+        self.assertEqual(q("SELECT samplingProtocol FROM survey WHERE event_fk = 'KALO-2025-G2'"), "benthic grab")
+        self.assertEqual(q("SELECT occurrence_fk FROM occurrence_assertion"), "G2-1")
+        self.assertEqual(q("SELECT count(*) FROM event_assertion WHERE assertionType = 'water depth'"), "0")
+
+    def test_suggest_matches_archive_columns_by_term(self):
+        self.ok("load-dwca", os.path.join(FIXTURES, "dwca-event-core"))
+        out = self.ok("suggest", "src_dwca_event")
+        rows = {line.split()[0]: line for line in out.splitlines()[2:] if line.strip()}
+        self.assertIn("by term: survey.samplingProtocol", rows["samplingProtocol"])
+        self.assertIn("record key", rows["id"])
+        out = self.ok("suggest", "src_dwca_extendedmeasurementorfact")
+        self.assertIn("no DwC-DP field is a version of measurementType", out)
 
 
 class Vocabularies(Base):

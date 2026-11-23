@@ -22,3 +22,7 @@
   skeleton on loan, a frozen tissue); the second worked example of `specimens.md`.
 - `survey-malaise-bulk/`: made up, Malaise trap catches kept as bulk samples, with sorted vouchers and
   a COI run on extracts from the catches' ethanol; the second worked example of `survey.md`.
+- `dwca-occurrence-core/`: made up, an Occurrence-core archive (specimens and an observation) with
+  Simple Multimedia and MeasurementOrFact; a worked example of `skills/dwc-dp/references/recipes/dwca.md`.
+- `dwca-event-core/`: made up, an Event-core archive (a survey and its samples) with occurrences
+  and OBIS extended MeasurementOrFact; the other worked example of `dwca.md`.

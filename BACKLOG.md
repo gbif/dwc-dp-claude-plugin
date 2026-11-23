@@ -16,19 +16,10 @@ they are worked on locally from this file.
 
 ## Ready
 
-- **Recipe: Darwin Core Archives** `ready` `recipe`
-  - `load-dwca` stages an archive. The recipe covers the usual cores (Occurrence, Event) and
-    extensions (MeasurementOrFact, Multimedia, DNA derived data, ResourceRelationship), and which
-    DwC-DP tables their terms go to.
-  - MeasurementOrFact rows become assertions: the assertion tables are versions of
-    `dwc:MeasurementOrFact`. Each row goes to the table of the thing it is about (event,
-    occurrence or material), which the archive's core alone doesn't always say.
-  - DwC-DP 1.0 has no table for a checklist of taxa (`identification-taxon` holds the taxon of an
-    identification), so whether a Taxon core archive can be translated is a question for the
-    maintainer.
-  - It also covers where a flat core row splits into several tables.
-  - Uses a synthetic archive fixture; cite the Darwin Core text guide (https://dwc.tdwg.org/text/)
-    for meta.xml.
+- **Worked example: DNA derived data archive** `ready` `recipe` `edna`
+  - `dwca.md` describes how a DNA derived data extension translates (protocols, sequences,
+    analyses from `organismQuantity`/`sampleSizeValue`), without an example. Add one, for example
+    from the MDT's own archive output.
 - **Make `check` agree with GBIF's DwC-DP analyser** `tooling` (mostly done)
   - Done, from the 0.0.16 source:
     - `check` makes the analyser's descriptor checks at its default severities: profile, `name`,
@@ -117,6 +108,12 @@ they are worked on locally from this file.
     assertion candidate;
   - SKILL.md stages 1 and 2 use them, and the eDNA, specimen and point-count examples each map a
     measurement as an assertion.
+- **Recipe: Darwin Core Archives** (2026-11-23):
+  - `references/recipes/dwca.md`;
+  - `load-dwca` records each column's term, and `suggest` matches archive columns to fields by
+    `dcterms:isVersionOf`;
+  - worked examples `tests/fixtures/dwca-occurrence-core/` and `tests/fixtures/dwca-event-core/`,
+    and the test `DwcaRecipe`.
 
 ## Decided
 

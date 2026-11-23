@@ -1,0 +1,5 @@
+eventID	occurrenceID	measurementType	measurementTypeID	measurementValue	measurementUnit	measurementUnitID
+KALO-2025-G1		water depth	http://vocab.nerc.ac.uk/collection/P01/current/ADEPZZ01/	3.2	m	http://vocab.nerc.ac.uk/collection/P06/current/ULAA/
+KALO-2025-G1		sediment type		sand		
+KALO-2025-G2		sediment type		mud		
+KALO-2025-G2	G2-1	wet mass		2.31	g	

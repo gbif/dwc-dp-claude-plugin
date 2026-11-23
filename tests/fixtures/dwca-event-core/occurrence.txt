@@ -1,0 +1,4 @@
+eventID	occurrenceID	basisOfRecord	scientificName	kingdom	taxonRank	occurrenceStatus	organismQuantity	organismQuantityType
+KALO-2025-G1	G1-1	HumanObservation	Arenicola marina	Animalia	species	present	4	individuals
+KALO-2025-G1	G1-2	HumanObservation	Macoma balthica	Animalia	species	absent	0	individuals
+KALO-2025-G2	G2-1	HumanObservation	Macoma balthica	Animalia	species	present	11	individuals

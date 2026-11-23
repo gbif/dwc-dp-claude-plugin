@@ -1,0 +1,4 @@
+eventID	parentEventID	eventType	eventDate	samplingProtocol	sampleSizeValue	sampleSizeUnit	locality	decimalLatitude	decimalLongitude	geodeticDatum
+KALO-2025		Survey	2025-05-10/2025-05-11	benthic grab			Kalø Vig			
+KALO-2025-G1	KALO-2025	Sample	2025-05-10	benthic grab	0.1	square metre	Kalø Vig	56.2701	10.4812	EPSG:4326
+KALO-2025-G2	KALO-2025	Sample	2025-05-11	benthic grab	0.1	square metre	Kalø Vig	56.2711	10.4830	EPSG:4326

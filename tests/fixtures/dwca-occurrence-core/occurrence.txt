@@ -1,0 +1,4 @@
+occurrenceID	basisOfRecord	eventDate	fieldNumber	locality	countryCode	decimalLatitude	decimalLongitude	geodeticDatum	recordedBy	institutionCode	catalogNumber	preparations	scientificName	kingdom	family	taxonRank	individualCount	sex
+NHMD-COL-2001	PreservedSpecimen	2024-06-03	F-12	Mols Bjerge	DK	56.22	10.58	EPSG:4326	Ann Berg	NHMD	COL-2001	pinned	Carabus nemoralis	Animalia	Carabidae	species	1	female
+NHMD-COL-2002	PreservedSpecimen	2024-06-03	F-12	Mols Bjerge	DK	56.22	10.58	EPSG:4326	Ann Berg	NHMD	COL-2002	pinned	Carabus problematicus	Animalia	Carabidae	species	1	male
+OBS-77	HumanObservation	2024-06-05		Kalø	DK	56.29	10.47	EPSG:4326	Bo Holm				Cicindela campestris	Animalia	Carabidae	species	2	

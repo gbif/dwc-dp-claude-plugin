@@ -258,9 +258,9 @@ def create_table_sql(s):
 
 # ---------------------------------------------------------------- output
 
-def table_text(rows, header):
+def table_text(rows, header, last=60):
     rows = [["" if v is None else str(v) for v in r] for r in rows]
-    widths = [min(max([len(h)] + [len(r[i]) for r in rows]), 60) for i, h in enumerate(header)]
+    widths = [min(max([len(h)] + [len(r[i]) for r in rows]), last if i == len(header) - 1 else 60) for i, h in enumerate(header)]
     clip = lambda v, w: v if len(v) <= w else v[: w - 1] + "…"
     line = lambda r: "  ".join(clip(v, w).ljust(w) for v, w in zip(r, widths)).rstrip()
     return "\n".join([line(header), line(["-" * w for w in widths])] + [line(r) for r in rows])
@@ -496,6 +496,9 @@ def cmd_load_dwca(args):
         if not parts:
             sys.exit("meta.xml lists no core file.")
         con = connect(args.db)
+        # Which Darwin Core term each staged column holds, so that suggest can match columns to
+        # DwC-DP fields by term (dcterms:isVersionOf) instead of by name.
+        con.execute("CREATE TABLE IF NOT EXISTS src_dwca_terms (source_table VARCHAR, column_name VARCHAR, term VARCHAR, row_type VARCHAR)")
         for kind, e in parts:
             location = e.find("d:files/d:location", ns).text.strip()
             row_type = e.get("rowType", "")
@@ -532,9 +535,14 @@ def cmd_load_dwca(args):
                 select.append(f"{expr} AS {q(name)}")
                 names.append(name)
             con.execute(f"CREATE OR REPLACE TABLE {q(table)} AS SELECT {', '.join(select)} FROM dwca_raw")
+            con.execute("DELETE FROM src_dwca_terms WHERE source_table = ?", [table])
+            terms = [("id" if kind == "core" else "coreid", None)] if key is not None and key.get("index") is not None else []
+            terms += [(n, fe.get("term")) for n, fe in zip(names[len(terms):], e.findall("d:field", ns))]
+            for column_name, term in terms:
+                con.execute("INSERT INTO src_dwca_terms VALUES (?, ?, ?, ?)", [table, column_name, term, row_type])
             con.execute("DROP TABLE dwca_raw")
             n = count(con, f"SELECT count(*) FROM {q(table)}")
-            print(f"{kind:9} {location}: {n} rows as {table} ({row_type})\n          columns: {', '.join(names)}")
+            print(f"{kind:9} {location}: {n} {'row' if n == 1 else 'rows'} as {table} ({row_type})\n          columns: {', '.join(names)}")
         eml = os.path.join(root, tree.get("metadata") or "eml.xml")
         if os.path.exists(eml):
             print(f"\nThe archive has metadata in {os.path.relpath(eml, root)}. Read it for Stage 6; it is not copied anywhere.")
@@ -602,6 +610,15 @@ def cmd_suggest(args):
             by_name.setdefault(normalise(f["name"]), []).append(f"{t}.{f['name']}")
             by_title.setdefault(normalise(f.get("title") or ""), []).append(f"{t}.{f['name']}")
             all_fields.append((normalise(f["name"]), f"{t}.{f['name']}"))
+    by_term = {}
+    for t, sch in schemas().items():
+        if target and t != target:
+            continue
+        for f in sch["fields"]:
+            by_term.setdefault(f.get("dcterms:isVersionOf"), []).append(f"{t}.{f['name']}")
+    known_terms = {}
+    if "src_dwca_terms" in db_tables(con):
+        known_terms = dict(con.execute("SELECT column_name, term FROM src_dwca_terms WHERE source_table = ? AND term IS NOT NULL", [src]).fetchall())
     rows = []
     for col in db_columns(con, src):
         C = q(col)
@@ -614,7 +631,19 @@ def cmd_suggest(args):
         words = [w for w in re.split(r"[^0-9a-z]+", re.sub(r"([a-z])([A-Z])", r"\1 \2", col).lower()) if len(w) >= 3]
         maybe = sorted({ref for n, ref in all_fields for w in words if w in n},
                        key=lambda ref: (not ref.split(".")[0] == (target or ref.split(".")[0]), len(ref)))
-        if hits:
+        term = known_terms.get(col)
+        if col in ("id", "coreid") and known_terms and term is None:
+            note = "the archive's record key, linking extension rows to their core row; not a field"
+        elif term:
+            # A Darwin Core Archive column: its term says where it can go.
+            by = by_term.get(term, [])
+            if by:
+                note = "by term: " + ", ".join(by[:5]) + (f" and {len(by) - 5} more" if len(by) > 5 else "")
+            elif not filled:
+                note = "(empty)"
+            else:
+                note = f"no DwC-DP field is a version of {term.rsplit('/', 1)[-1]}; see references/recipes/dwca.md"
+        elif hits:
             note = ", ".join(hits[:4]) + (f" and {len(hits) - 4} more" if len(hits) > 4 else "")
         elif maybe and filled:
             note = "maybe " + ", ".join(maybe[:3]) + (f" ({len(maybe) - 3} more: find-term)" if len(maybe) > 3 else "") + "; else an assertion"
@@ -625,7 +654,7 @@ def cmd_suggest(args):
             note = (f"no field; looks like a measurement for {assertion}" if numeric
                     else f"no field; a fact for {assertion}, or try find-term")
         rows.append([col, ", ".join(str(v[0]) for v in values), note])
-    print(table_text(rows, ["column", "values", "DwC-DP field"]))
+    print(table_text(rows, ["column", "values", "DwC-DP field"], last=130))
     if target and f"{target}-assertion" not in schemas():
         print(f"\n{target} has no assertion table. A measurement about it needs another home; ask the data holder.")
     print("\nA match by name is a suggestion, not a decision: check it with describe --field. For the others, "

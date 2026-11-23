@@ -1,0 +1,3 @@
+occurrenceID	measurementType	measurementValue	measurementUnit	measurementMethod
+NHMD-COL-2001	body length	24.5	mm	calipers
+NHMD-COL-2002	body length	26.1	mm	calipers
