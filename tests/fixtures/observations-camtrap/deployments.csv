@@ -1,0 +1,3 @@
+deploymentID,locationID,locationName,latitude,longitude,coordinateUncertainty,deploymentStart,deploymentEnd,setupBy,cameraModel,cameraHeight,baitUse,habitat
+D1,L1,Mols forest edge,56.2231,10.5712,10,2025-04-01T09:00:00+02:00,2025-04-15T10:30:00+02:00,Ann Berg,Reconyx-HyperFire 2,0.5,false,beech forest edge
+D2,L2,Kalø hedge,56.2881,10.4690,10,2025-04-02T11:00:00+02:00,2025-04-16T09:00:00+02:00,Bo Holm,Reconyx-HyperFire 2,0.5,false,hedgerow

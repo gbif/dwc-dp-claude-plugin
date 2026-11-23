@@ -1,0 +1,6 @@
+obs,date,time,place,lat,lon,observer,species,count,sex,behaviour,visits_obs,photo
+O1,2025-07-02,10:15,Mols meadow,56.2210,10.5790,Ann Berg,Knautia arvensis,1,,,,https://example.org/photos/O1.jpg
+O2,2025-07-02,10:15,Mols meadow,56.2210,10.5790,Ann Berg,Bombus lapidarius,1,female,feeding on nectar,O1,https://example.org/photos/O2.jpg
+O3,2025-07-02,10:40,Mols meadow,56.2214,10.5801,Ann Berg,Bombus pascuorum,2,,flying,,
+O4,2025-07-03,14:05,Kalø shore,56.2902,10.4711,Bo Holm,Centaurea scabiosa,1,,,,https://example.org/photos/O4.jpg
+O5,2025-07-03,14:05,Kalø shore,56.2902,10.4711,Bo Holm,Zygaena filipendulae,1,,feeding on nectar,O4,

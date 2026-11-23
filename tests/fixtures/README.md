@@ -12,3 +12,7 @@
   `tests/analyser_packages.py`.
 - `specimens-beetles/`: made up, a beetle collection export (specimens, a lot, determination history
   with a "cf.", a tissue sample); the worked example of `skills/dwc-dp/references/recipes/specimens.md`.
+- `observations-pollinators/`: made up, a field notebook of flowers and their visitors with photos; a
+  worked example of `skills/dwc-dp/references/recipes/observations.md`.
+- `observations-camtrap/`: made up, the three tables of a Camtrap DP package (deployments, media,
+  observations, including a blank and a person); the other worked example of `observations.md`.

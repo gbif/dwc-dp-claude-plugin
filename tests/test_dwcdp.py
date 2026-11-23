@@ -191,6 +191,44 @@ class SpecimensRecipe(Base):
         self.assertIn("No problems found", self.ok("check", "out"))
 
 
+class ObservationsRecipe(Base):
+    """The worked examples of references/recipes/observations.md validate, package and check."""
+
+    def build(self, fixture, files, tables, name):
+        src = os.path.join(FIXTURES, fixture)
+        for f in files + ["mapping.sql"]:
+            shutil.copy(os.path.join(src, f), self.dir)
+        self.ok("init", *tables)
+        for f in files:
+            self.ok("load", f)
+        self.ok("run", "mapping.sql")
+        self.assertIn("No problems found", self.ok("validate"))
+        self.ok("package", "out", "--name", name)
+        self.assertIn("No problems found", self.ok("check", "out"))
+        return lambda sql: self.ok("sql", sql).split("\n")[2].strip()
+
+    def test_pollinator_notebook(self):
+        q = self.build("observations-pollinators", ["observations.csv", "photos.csv"],
+                       ["event", "occurrence", "organism-interaction", "agent", "media", "media-agent-role", "occurrence-media"],
+                       "pollinators-2025")
+        self.assertEqual(q("SELECT count(*) FROM event"), "3")
+        self.assertEqual(q("SELECT s.scientificName || ' > ' || r.scientificName FROM organism_interaction i "
+                           "JOIN occurrence s ON s.occurrence_pk = i.subjectOccurrence_fk "
+                           "JOIN occurrence r ON r.occurrence_pk = i.relatedOccurrence_fk WHERE i.subjectOccurrence_fk = 'O2'"),
+                         "Bombus lapidarius > Knautia arvensis")
+        self.assertEqual(q("SELECT count(*) FROM organism_interaction i JOIN occurrence s ON s.occurrence_pk = i.subjectOccurrence_fk "
+                           "JOIN occurrence r ON r.occurrence_pk = i.relatedOccurrence_fk WHERE s.event_fk <> r.event_fk OR i.event_fk <> s.event_fk"), "0")
+
+    def test_camera_traps_from_camtrap_dp(self):
+        q = self.build("observations-camtrap", ["deployments.csv", "media.csv", "observations.csv"],
+                       ["event", "event-assertion", "agent", "event-agent-role", "occurrence", "occurrence-assertion", "media", "event-media"],
+                       "camtrap-2025")
+        self.assertEqual(q("SELECT string_agg(scientificName, '|' ORDER BY scientificName) FROM occurrence"), "Capreolus capreolus|Vulpes vulpes")
+        self.assertEqual(q("SELECT count(*) FROM media WHERE mediaID IN ('M4', 'M5')"), "0")
+        self.assertEqual(q("SELECT string_agg(media_fk, '|' ORDER BY media_fk) FROM event_media WHERE event_fk = 'E1'"), "M1|M2")
+        self.assertEqual(q("SELECT assertionValue FROM occurrence_assertion WHERE assertionID = 'OB2:classificationProbability'"), "0.93")
+
+
 class DarwinCoreArchive(Base):
     def test_zipped_archive_is_staged_with_term_names(self):
         import zipfile

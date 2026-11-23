@@ -16,11 +16,6 @@ they are worked on locally from this file.
 
 ## Ready
 
-- **Recipe: observations, interactions and camera traps** `ready` `recipe` `observations`
-  - Sources: `observation/bird-tracking`, `organism_interaction/inaturalist` and
-    `organism_interaction/conabio-bees`.
-  - For camera traps, compare Camtrap DP (https://camtrap-dp.tdwg.org) deployments, media and
-    observations with the DwC-DP tables, and list where they don't match as questions.
 - **Recipe: eDNA** `ready` `recipe` `edna`
   - Source: `edna/obis-edna-expeditions` (0.1).
   - Covers OTU/ASV tables and sample sheets, with nucleotide-analysis, nucleotide-sequence,
@@ -99,6 +94,11 @@ they are worked on locally from this file.
   numbers without `.0`.
 - **Recipe: specimens and collections** (2026-11-23): `references/recipes/specimens.md`, with the
   worked example `tests/fixtures/specimens-beetles/` and the test `SpecimensRecipe`.
+- **Recipe: observations, interactions and camera traps** (2026-11-23):
+  - `references/recipes/observations.md`;
+  - worked examples `tests/fixtures/observations-pollinators/` and
+    `tests/fixtures/observations-camtrap/` (from Camtrap DP 1.0.2 tables);
+  - the test `ObservationsRecipe`.
 
 ## Decided
 
@@ -136,10 +136,10 @@ they are worked on locally from this file.
      - `primaryKey`, `mediatype`, a schema given as a reference, and column order are not checked
        at all; `check` keeps them as its own errors.
 
-1. **The identification fields on `material`** `needs-human`
-   - `material` has `scientificName`, `identifiedBy`, `typeStatus` and other identification
-     fields, as well as the `identification` table with `isAcceptedIdentification`. The schema
-     doesn't say how they relate.
+1. **The identification fields on `material` and `occurrence`** `needs-human`
+   - `material` and `occurrence` both have `scientificName`, `identifiedBy` and other
+     identification fields (`material` also `typeStatus`), as well as the `identification` table
+     with `isAcceptedIdentification`. The schema doesn't say how they relate.
    - Should the material repeat the accepted determination, hold something else, or stay empty
      when `identification` is used? bgbm's mapping has the copy commented out.
    - The specimens recipe leaves them empty until this is settled.
