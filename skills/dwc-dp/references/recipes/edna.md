@@ -19,7 +19,7 @@ for invertebrates. DwC-DP holds them all in one package.
 | Table | What it holds (from the schema) |
 |---|---|
 | `event` | the sampling: where and when the sample was taken |
-| `material` | the sample (and, if they record it, the extract, `derivedFromMaterialEntity_fk`) |
+| `material` | the sample, and what was made from it and kept: subsamples, filters, extracts, each derived from the one before (`derivedFromMaterialEntity_fk`) |
 | `molecular-protocol` | "A protocol used to perform a dwc:NucleotideAnalysis and potentially derive a dwc:NucleotideSequence from a dwc:MaterialEntity": one row per marker, with target gene, primers and the reference database |
 | `nucleotide-sequence` | "A digital representation of a nucleotide sequence": one row per ASV/OTU |
 | `nucleotide-analysis` | "A link between a dwc:NucleotideSequence and a dwc:Event and a dwc:MaterialEntity from which it was derived, using a specified dwc:Protocol", with the reads. `molecularProtocol_fk` is required |
@@ -38,7 +38,8 @@ The protocol is what tells markers apart:
   - `pcr_cond`, `seq_meth`, and the reference database.
 - **One `nucleotide-analysis` row per sample, marker and sequence that has reads.** Its required
   `molecularProtocol_fk` names the marker. The same sample has a set of analyses per marker.
-- **The sample is shared.** All markers' analyses point to the same `material` and `event`.
+- **The sample is shared.** All markers' analyses point to the same `material` (the extract that
+  was amplified) and `event`.
 - **Sequences belong to one marker,** because they come from that marker's amplicon.
 
 Read counts compare only within one protocol. Each marker is its own library with its own
@@ -59,13 +60,20 @@ sequencing depth, so a sample's totals are per marker (see `processedTotalReadCo
 ## Mapping, step by step
 
 The worked example is `tests/fixtures/edna-two-markers/`: made up, two water samples and a field
-blank, run with 12S (MiFish primers) and COI (Leray primers). Each marker has its own OTU table and
+blank, each passed through a filter that is kept, and extracted. Each extract was run with 12S
+(MiFish primers) and COI (Leray primers). Each marker has its own OTU table and
 taxonomy table. Load those with `--as` so their table names start with a letter (`otu_12s`).
 
 1. **Events:** one per site and date. The blank shares S1's.
-2. **Material:** one row per sample and per blank, with `collectionEvent_fk`.
-   - `materialEntityType` `Environmental sample` (a schema example).
-   - The blank is marked as a negative control in `materialEntityRemarks`.
+2. **Material,** from water to extract:
+   - **The water sample:** one row per sample and per blank, with `collectionEvent_fk`. Its
+     `materialEntityType` is `Environmental sample` (a schema example), and the blank is marked as
+     a negative control in `materialEntityRemarks`.
+   - **The filter,** derived from the water, with what it is (`materialDescription`), how it is
+     kept (`preparations`: Longmire buffer) and its `disposition` (`in collection`, or `used up`
+     for the blank's).
+   - **The extract,** derived from the filter, with `materialEntityCategory` `DNA extract` (a
+     schema example), its storage and disposition. The extraction date goes in its remarks.
 3. **Protocols:** one per marker, with:
    - `assayType` `metabarcoding` (a schema example), and `target_gene` as GBIF's concept name;
    - the primers with their names and reference;
@@ -73,6 +81,7 @@ taxonomy table. Load those with `--as` so their table names start with a letter 
 4. **Sequences:** every ASV of both markers.
 5. **Analyses:**
    - turn each OTU table into one row per ASV and sample (`UNPIVOT`), with the marker as a column;
+   - point each to the sample's extract (`materialEntity_fk`); both markers used the same one;
    - keep the rows with reads;
    - set `processedTotalReadCount` to the sum over the sample and marker
      (`sum(...) OVER (PARTITION BY sample, marker)`).
@@ -85,9 +94,9 @@ taxonomy table. Load those with `--as` so their table names start with a letter 
 
 | material | protocol | sequence | readCount | processedTotalReadCount |
 |---|---|---|---|---|
-| S1 | 12S | 12S_a1 | 5120 | 6000 |
-| S1 | 12S | 12S_a2 | 880 | 6000 |
-| S1 | COI | COI_a1 | 15012 | 15012 |
+| S1-X | 12S | 12S_a1 | 5120 | 6000 |
+| S1-X | 12S | 12S_a2 | 880 | 6000 |
+| S1-X | COI | COI_a1 | 15012 | 15012 |
 
 ## Choices the data holder makes
 
@@ -110,8 +119,19 @@ taxonomy table. Load those with `--as` so their table names start with a letter 
     describe them per protocol.
   - The example publishes the blank with its reads and marks it in the remarks, because a blank
     with reads says something about contamination.
-- **The extract as its own material.** When they record extracts, an extract is material derived
-  from the sample, and the analyses point to the extract. One extract can feed several markers.
+- **What to record as material.** The sample always. Then everything they kept, or want to be
+  traceable: subsamples, filters, extracts, each derived from the one before. Then:
+  - the analyses point to the material that was amplified, usually the extract, and one extract
+    can feed several markers;
+  - kept material carries its preservation (`preparations`), where it is (`disposition`, and
+    `institutionCode`, `collectionCode` and `catalogNumber` when it is in a collection);
+  - material that no longer exists is `used up`.
+
+  A kept sample is what lets someone re-analyse it later, so it is worth recording even when the
+  reads are the main result.
+- **When derived material was made** (filtering, extraction): see the open question in
+  `specimens.md` about derivation events. The example keeps the extraction date in the extract's
+  remarks.
 - **Where the reference database goes.**
   - The schema has `otu_db`, described as the "Reference database (i.e. sequences not generated as
     part of the current study) used to cluster new genomes in "species-level" OTUs", and `ref_db`,

@@ -100,6 +100,13 @@ they are worked on locally from this file.
     `molecular-protocol` per marker;
   - the worked example `tests/fixtures/edna-two-markers/`;
   - the test `EdnaRecipe`.
+- **Material in the recipes** (2026-11-23):
+  - `specimens.md`: specimens kept as several pieces (parts and derived material), with
+    `tests/fixtures/specimens-mammal-parts/`;
+  - `edna.md`: kept samples, filters and extracts, each derived from the one before, with the
+    analyses pointing to the extract;
+  - `survey.md`: trap catches kept as bulk samples, with vouchers and metabarcoding, in
+    `tests/fixtures/survey-malaise-bulk/`.
 
 ## Decided
 

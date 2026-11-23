@@ -44,7 +44,7 @@ for them.
 
 ## Mapping, step by step
 
-The worked example is `tests/fixtures/survey-point-counts/`: made-up point counts with two sites,
+There are two worked examples. The first is `tests/fixtures/survey-point-counts/`: made-up point counts with two sites,
 three visits, a count table with zeros, a gull and a hare, and a methods text (`protocol.txt`).
 Its `mapping.sql` is the full mapping.
 
@@ -73,6 +73,28 @@ Its `mapping.sql` is the full mapping.
    - the note as `occurrenceRemarks`.
 
 `dwcdp.py diagram` shows the result, and `validate` and `check` pass on it.
+
+### Trap catches kept as material: `tests/fixtures/survey-malaise-bulk/`
+
+Made up:
+- two two-week catches of a Malaise trap, kept in ethanol;
+- two pinned vouchers sorted out of them;
+- a COI metabarcoding run on DNA extracted from each catch's ethanol.
+
+This joins the survey to the specimens and eDNA recipes (`specimens.md`, `edna.md`), whose details
+apply.
+
+1. **Events and surveys:** each catch is an event, from setting to emptying the trap. Each event
+   has a survey, with:
+   - `samplingProtocol` `Malaise trap`;
+   - the effort in trap-days, computed from the dates with the data holder's agreement;
+   - `hasMaterialSamples` and `materialSampleTypes`, which say material was kept;
+   - `hasVouchers`.
+2. **The catch** is material collected during its event (`collectionEvent_fk`), with its
+   preservation and disposition.
+3. **Vouchers:** each is material that is part of its catch (`isPartOfMaterialEntity_fk`). Each
+   is also the evidence for an occurrence in the catch's event, with its own identification.
+4. **The extract** is derived from the catch. The COI analyses point to it, as in `edna.md`.
 
 ## Choices the data holder makes
 
@@ -127,6 +149,13 @@ Its `mapping.sql` is the full mapping.
   - `organismQuantity` needs `organismQuantityType`.
   - Whether a 0 stays in `organismQuantity` next to `notDetected` is their choice; the example
     keeps it.
+- **Material from a survey.** When something physical was kept (trap catches, plankton samples,
+  soil cores), it is material collected during the survey's event:
+  - `hasMaterialSamples` and `materialSampleTypes` on the survey say so, and `hasVouchers` and
+    `voucherInstitutions` say whether specimens were kept and where;
+  - specimens sorted out of a bulk sample are part of it, or derived from it. That is their
+    choice, as in `specimens.md`;
+  - DNA from it follows `edna.md`.
 - **Fields the methods text doesn't settle,** such as `taxonCompletenessReported`: leave them
   empty, and tell them which.
 

@@ -5,10 +5,10 @@ One file per kind of dataset. Each is written from an issue, with a worked examp
 
 | Recipe | For | Worked example |
 |---|---|---|
-| `survey.md` | surveys and sampling events: visits, counts, targets, absences | `survey-point-counts/` |
-| `specimens.md` | specimens and collections: material, derived material, determinations | `specimens-beetles/` |
+| `survey.md` | surveys and sampling events: visits, counts, targets, absences, material kept | `survey-point-counts/`, `survey-malaise-bulk/` |
+| `specimens.md` | specimens and collections: material, parts and derived material, determinations | `specimens-beetles/`, `specimens-mammal-parts/` |
 | `observations.md` | observations, interactions and camera traps (Camtrap DP) | `observations-pollinators/`, `observations-camtrap/` |
-| `edna.md` | eDNA and metabarcoding, including several markers on the same samples | `edna-two-markers/` |
+| `edna.md` | eDNA and metabarcoding: several markers, kept samples, filters and extracts | `edna-two-markers/` |
 | `dwca.md` | Darwin Core Archives (planned) | |
 
 A recipe holds:

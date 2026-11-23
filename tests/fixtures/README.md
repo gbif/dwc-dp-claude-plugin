@@ -18,3 +18,7 @@
   observations, including a blank and a person); the other worked example of `observations.md`.
 - `edna-two-markers/`: made up, two water samples and a field blank run with 12S and COI, an OTU
   table and taxonomy per marker; the worked example of `skills/dwc-dp/references/recipes/edna.md`.
+- `specimens-mammal-parts/`: made up, mammal specimens kept as several pieces (skin, skull,
+  skeleton on loan, a frozen tissue); the second worked example of `specimens.md`.
+- `survey-malaise-bulk/`: made up, Malaise trap catches kept as bulk samples, with sorted vouchers and
+  a COI run on extracts from the catches' ethanol; the second worked example of `survey.md`.

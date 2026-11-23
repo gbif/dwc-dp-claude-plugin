@@ -1,0 +1,6 @@
+partNumber,catalogNumber,kind,part,preparation,disposition,taken
+NHMD-MAM-501-A,NHMD-MAM-501,part,skin,dried study skin,in collection,
+NHMD-MAM-501-B,NHMD-MAM-501,part,skull,cleaned,in collection,
+NHMD-MAM-501-C,NHMD-MAM-501,part,postcranial skeleton,cleaned,on loan,
+NHMD-TIS-901,NHMD-MAM-501,subsample,liver,frozen -80 C,in collection,2024-10-07
+NHMD-MAM-502-A,NHMD-MAM-502,part,skull,cleaned,in collection,

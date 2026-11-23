@@ -1,0 +1,2 @@
+marker,target_gene,fwd_name,fwd,rev_name,rev,primer_reference,reference_db
+COI,COI,mlCOIintF,GGWACWGGWTGAACWGTWTAYCCYCC,jgHCO2198,TAIACYTCIGGRTGICCRAARAAYCA,https://doi.org/10.1186/1742-9994-10-34,BOLD 2025-05

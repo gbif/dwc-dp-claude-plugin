@@ -1,0 +1,4 @@
+asv	sequence	kingdom	phylum	class	order	family	genus	species
+a1	AACTTTATATTTTATTTTTGGAATTTGAGC	Animalia	Arthropoda	Insecta	Hymenoptera	Apidae	Bombus	Bombus terrestris
+a2	AACATTATATTTTATTTTTGGTGCTTGATC	Animalia	Arthropoda	Insecta	Diptera	Syrphidae	Episyrphus	Episyrphus balteatus
+a3	AACTTTATACTTTATTTTCGGAGCATGAGC	Animalia	Arthropoda	Insecta	Lepidoptera	Noctuidae		

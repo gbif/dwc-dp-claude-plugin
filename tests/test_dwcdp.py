@@ -167,6 +167,28 @@ class SurveyRecipe(Base):
             self.assertIn(",10,minutes", fh.read())
 
 
+class SurveyMaterialRecipe(Base):
+    """The second worked example of references/recipes/survey.md: trap catches kept as material."""
+
+    def test_malaise_catches(self):
+        src = os.path.join(FIXTURES, "survey-malaise-bulk")
+        files = ["catches.csv", "vouchers.csv", "extracts.csv", "marker.csv", "otu_table.tsv", "taxonomy.tsv"]
+        for f in files + ["mapping.sql"]:
+            shutil.copy(os.path.join(src, f), self.dir)
+        self.ok("init", "event", "survey", "occurrence", "material", "identification",
+                "molecular-protocol", "nucleotide-sequence", "nucleotide-analysis")
+        for f in files:
+            self.ok("load", f)
+        self.ok("run", "mapping.sql")
+        self.assertIn("No problems found", self.ok("validate"))
+        q = lambda sql: self.ok("sql", sql).split("\n")[2].strip()
+        self.assertEqual(q("SELECT isPartOfMaterialEntity_fk FROM material WHERE materialEntity_pk = 'NHMD-INS-7001'"), "C1")
+        self.assertEqual(q("SELECT count(*) FROM nucleotide_analysis WHERE materialEntity_fk NOT IN ('C1-X', 'C2-X')"), "0")
+        self.assertEqual(q("SELECT samplingEffortValue FROM survey WHERE event_fk = 'C1'"), "14.0")
+        self.ok("package", "out", "--name", "malaise-2025")
+        self.assertIn("No problems found", self.ok("check", "out"))
+
+
 class SpecimensRecipe(Base):
     """The worked example of references/recipes/specimens.md validates, packages and checks."""
 
@@ -188,6 +210,27 @@ class SpecimensRecipe(Base):
         self.assertEqual(q("SELECT count(*) FROM identification WHERE scientificName IN ('Pterostichus niger', 'Amara aenea')"), "0")
         self.assertEqual(q("SELECT count(*) FROM (SELECT materialEntity_fk FROM identification WHERE isAcceptedIdentification GROUP BY 1 HAVING count(*) > 1)"), "0")
         self.ok("package", "out", "--name", "beetles-2024")
+        self.assertIn("No problems found", self.ok("check", "out"))
+
+
+class SpecimenPartsRecipe(Base):
+    """The second worked example of references/recipes/specimens.md: a specimen kept as pieces."""
+
+    def test_mammal_parts(self):
+        src = os.path.join(FIXTURES, "specimens-mammal-parts")
+        for f in ("specimens.csv", "parts.csv", "mapping.sql"):
+            shutil.copy(os.path.join(src, f), self.dir)
+        self.ok("init", "event", "occurrence", "material", "identification")
+        self.ok("load", "specimens.csv")
+        self.ok("load", "parts.csv")
+        self.ok("run", "mapping.sql")
+        self.assertIn("No problems found", self.ok("validate"))
+        q = lambda sql: self.ok("sql", sql).split("\n")[2].strip()
+        self.assertEqual(q("SELECT count(*) FROM material WHERE isPartOfMaterialEntity_fk = 'NHMD-MAM-501'"), "3")
+        self.assertEqual(q("SELECT derivedFromMaterialEntity_fk FROM material WHERE materialEntity_pk = 'NHMD-TIS-901'"), "NHMD-MAM-501")
+        self.assertEqual(q("SELECT disposition FROM material WHERE materialEntity_pk = 'NHMD-MAM-501-C'"), "on loan")
+        self.assertEqual(q("SELECT count(*) FROM identification"), "2")
+        self.ok("package", "out", "--name", "mammals-2024")
         self.assertIn("No problems found", self.ok("check", "out"))
 
 
@@ -237,8 +280,8 @@ class EdnaRecipe(Base):
         for f in os.listdir(src):
             shutil.copy(os.path.join(src, f), self.dir)
         self.ok("init", "event", "material", "molecular-protocol", "nucleotide-sequence", "nucleotide-analysis", "identification")
-        self.ok("load", "samples.csv")
-        self.ok("load", "markers.csv")
+        for f in ("samples.csv", "filters.csv", "extracts.csv", "markers.csv"):
+            self.ok("load", f)
         for f, name in (("12S_otu_table.tsv", "otu_12s"), ("12S_taxonomy.tsv", "taxonomy_12s"),
                         ("COI_otu_table.tsv", "otu_coi"), ("COI_taxonomy.tsv", "taxonomy_coi")):
             self.ok("load", f, "--as", name)
@@ -246,9 +289,13 @@ class EdnaRecipe(Base):
         self.assertIn("No problems found", self.ok("validate"))
         q = lambda sql: self.ok("sql", sql).split("\n")[2].strip()
         self.assertEqual(q("SELECT string_agg(molecularProtocol_fk || '=' || processedTotalReadCount, '|' ORDER BY molecularProtocol_fk) "
-                           "FROM (SELECT DISTINCT molecularProtocol_fk, processedTotalReadCount FROM nucleotide_analysis WHERE materialEntity_fk = 'S1')"),
+                           "FROM (SELECT DISTINCT molecularProtocol_fk, processedTotalReadCount FROM nucleotide_analysis WHERE materialEntity_fk = 'S1-X')"),
                          "12S=6000|COI=15012")
         self.assertEqual(q("SELECT count(*) FROM nucleotide_analysis WHERE readCount = 0"), "0")
+        self.assertEqual(q("SELECT x.derivedFromMaterialEntity_fk || '<' || f.derivedFromMaterialEntity_fk FROM material x "
+                           "JOIN material f ON f.materialEntity_pk = x.derivedFromMaterialEntity_fk WHERE x.materialEntity_pk = 'S1-X'"), "S1-F<S1")
+        self.assertEqual(q("SELECT count(*) FROM nucleotide_analysis a JOIN material m ON m.materialEntity_pk = a.materialEntity_fk "
+                           "WHERE m.materialEntityCategory IS DISTINCT FROM 'DNA extract'"), "0")
         self.assertEqual(q("SELECT target_gene FROM molecular_protocol WHERE molecularProtocol_pk = '12S'"), "SSU_rRNA_12S_mitochondrial")
         self.assertEqual(q("SELECT scientificName || '/' || taxonRank FROM identification WHERE nucleotideSequence_fk = '12S_a3'"), "Clupeidae/family")
         self.ok("package", "out", "--name", "edna-two-markers-2025")

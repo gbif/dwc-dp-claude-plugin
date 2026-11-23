@@ -48,7 +48,7 @@ Add these only when the data have something for them:
 
 ## Mapping, step by step
 
-The worked example is `tests/fixtures/specimens-beetles/`: a made-up beetle collection export with
+There are two worked examples. The first is `tests/fixtures/specimens-beetles/`: a made-up beetle collection export with
 four specimens (one a lot of five), five determinations (one superseded, one with "cf.", one with
 "aff.") and a tissue sample. Its `mapping.sql` is the full mapping.
 
@@ -74,6 +74,25 @@ four specimens (one a lot of five), five determinations (one superseded, one wit
 
 `validate` and `check` pass on it.
 
+### A specimen kept as several pieces: `tests/fixtures/specimens-mammal-parts/`
+
+Made-up mammal specimens:
+- a pine marten kept as skin, skull and postcranial skeleton (the skeleton on loan), plus a frozen
+  liver sample;
+- a badger of which only the skull is kept.
+
+Each piece has its own number in `parts.csv`.
+
+1. **The specimen as a whole:** a material row for the catalogue number, the thing the collecting
+   event, the occurrence and the determination refer to. Its `preparations` lists the pieces
+   (`skin | skull | postcranial skeleton`), so the record is complete on its own too.
+2. **Each part:** a material row with its own number, `isPartOfMaterialEntity_fk` pointing to the
+   specimen, and its own `preparations` and `disposition` (`on loan` for the skeleton). What the
+   piece is goes in `materialDescription`.
+3. **The tissue:** derived from the specimen (`derivedFromMaterialEntity_fk`), not a part of it,
+   with `materialEntityCategory` `tissue`.
+4. **The determination:** one, of the specimen as a whole, not of each piece.
+
 ## Choices the data holder makes
 
 - **Whether specimens get occurrences.**
@@ -89,6 +108,22 @@ four specimens (one a lot of five), five determinations (one superseded, one wit
   - A specimen, a lot (a vial of five beetles), a sheet with several plants, a part of a specimen
     (`isPartOfMaterialEntity_fk`) or something derived from one (`derivedFromMaterialEntity_fk`).
   - Use the units their catalogue numbers.
+- **Pieces of one specimen.** There are three ways, and they can be mixed:
+  - **Listed:** a list in the specimen's `preparations`, the schema's own example being
+    `skin | skull | skeleton`. Enough when the pieces have no numbers, storage or loans of their
+    own.
+  - **Parts:** a material row per piece, "part of" the specimen. Needed when a piece has its own
+    number, preparation, place or disposition, for example a skull on loan.
+  - **Derived:** "derived from" the specimen, for material made from it, such as a tissue sample,
+    a DNA extract or a cast.
+
+  Whether a given piece is a part or derived is theirs to say. The schema defines the two links
+  ("of which this dwc:MaterialEntity is a part"; "from which this dwc:MaterialEntity was derived")
+  and leaves the line to them. The example treats skin, skull and skeleton as parts, and the
+  frozen liver as derived.
+- **Determinations of pieces.** Usually the determination is of the specimen as a whole. A piece
+  gets its own identification only when it was identified on its own, for example a tissue
+  barcoded later.
 - **`materialEntityCategory` and `materialEntityType`.**
   - The schema recommends "a limited, tightly controlled vocabulary" for the category, and gives
     examples (`preserved`, `living`, `fossilized`, `tissue`, `DNA extract`, `non-biological`,
