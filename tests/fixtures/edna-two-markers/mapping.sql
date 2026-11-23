@@ -45,8 +45,7 @@ FROM src_extracts;
 
 -- One molecular protocol per marker: the assay, its primers and the reference database.
 -- Agreed: target_gene written as GBIF's concept name (GBIF reads "12S rRNA" as
--- SSU_rRNA_12S_mitochondrial only by a hidden label). The reference database goes in otu_db, as
--- the MDT does; see the recipe about this term.
+-- SSU_rRNA_12S_mitochondrial only by a hidden label). The reference database goes in otu_db.
 INSERT INTO molecular_protocol (molecularProtocol_pk, molecularProtocolID, assayType, target_gene,
                                 pcr_primer_name_forward, pcr_primer_forward,
                                 pcr_primer_name_reverse, pcr_primer_reverse,

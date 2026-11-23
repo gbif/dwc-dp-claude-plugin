@@ -143,13 +143,11 @@ taxonomy table. Load those with `--as` so their table names start with a letter 
 - **When derived material was made** (filtering, extraction): see the open question in
   `specimens.md` about derivation events. The example keeps the extraction date in the extract's
   remarks.
-- **Where the reference database goes.**
-  - The schema has `otu_db`, described as the "Reference database (i.e. sequences not generated as
-    part of the current study) used to cluster new genomes in "species-level" OTUs", and `ref_db`,
-    described as for ORF annotation. Both are MIxS terms written for genomes, not for amplicon
-    taxonomy.
-  - The MDT puts the taxonomy reference database in `otu_db`, and the example follows it. This is
-    an open question for the maintainers.
+- **The reference database** goes in `otu_db`, with its name and version (for example
+  `BOLD 2025-05`). This is the maintainers' decision (2026-11-23), and the MDT does the same.
+  - The schema's description of `otu_db` is the MIxS one, for clustering genomes into
+    "species-level" OTUs.
+  - `ref_db` (for ORF annotation) is not used for it.
 - **`target_gene`.**
   - GBIF reads it with its `target_gene` vocabulary (`dwcdp.py vocab target_gene`), for example
     `SSU_rRNA_12S_mitochondrial` and `COI`.

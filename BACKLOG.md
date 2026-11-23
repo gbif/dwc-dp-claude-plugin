@@ -123,6 +123,8 @@ they are worked on locally from this file.
 - **`processedTotalReadCount`** (2026-11-23): the total read count of the sample, in
   `nucleotide-analysis` so that `readCount / processedTotalReadCount` gives the relative read count
   without a join. With several markers, it is the total per sample and marker (confirmed).
+- **Reference database** (2026-11-23): an amplicon study's taxonomy reference database goes in
+  `molecular-protocol.otu_db`, as in the MDT.
 - **Metadata** (2026-11-23): both `eml.xml` (EML 2.2.0) and the Data Package's descriptor
   properties, from one `metadata.json` the data holder confirms (`package --metadata`).
 - **Darwin Core Archives:** yes, help translate them to DwC-DP (`load-dwca`, and the recipe above).
@@ -162,12 +164,6 @@ they are worked on locally from this file.
    - Should the material repeat the accepted determination, hold something else, or stay empty
      when `identification` is used? bgbm's mapping has the copy commented out.
    - The specimens recipe leaves them empty until this is settled.
-2. **Where an amplicon study's reference database goes** `needs-human`
-   - `otu_db` is described as the reference database "used to cluster new genomes in
-     "species-level" OTUs" and `ref_db` as for ORF annotation. Both are MIxS terms written for
-     genomes, and GBIF's DNA derived data extension has the same descriptions.
-   - The MDT puts the taxonomy reference database in `otu_db`, and the eDNA recipe follows it. Is
-     that the intended term?
-3. **`eventCategory` for a derivation event** (a tissue taken from a specimen) `needs-human`
+2. **`eventCategory` for a derivation event** (a tissue taken from a specimen) `needs-human`
    - The schema's examples have none. Is there a value to use, or should the date stay in
      `materialEntityRemarks`?
