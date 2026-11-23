@@ -868,6 +868,9 @@ CAST_TYPES = {"integer": "BIGINT", "number": "DOUBLE", "boolean": "BOOLEAN", "da
 DESCRIPTOR_REQUIRED = ("type", "title", "description", "dcterms:isVersionOf")
 DESCRIPTOR_OPTIONAL = ("format", "namespace", "dcterms:references")
 NAME_PATTERN = re.compile(r"^([-a-z0-9._/])+$")
+# A resource path in the Data Package specification's schema: relative, not starting with . / or ~,
+# and without "..".
+PATH_PATTERN = re.compile(r"^(?=^[^./~])(^((?!\.{2}).)*$).*$")
 
 
 def key_refs(schema_node, name):
@@ -926,6 +929,8 @@ def check_descriptor(dp, root, report):
         if not name:
             report.warning(label, "has no name.", code="RESOURCE_MISSING_NAME")
         rel = r.get("path") or ""
+        if isinstance(rel, str) and rel and not PATH_PATTERN.match(rel):
+            report.warning(label, f"path {rel!r} is not a path the Data Package specification allows (relative, not starting with . / or ~, without ..).", code=layer2("JSON_SCHEMA_VIOLATION"))
         path = os.path.realpath(os.path.join(root, rel)) if isinstance(rel, str) and rel else None
         if not path:
             report.error(label, "has no path to its file.", code="PATH_NOT_FOUND")

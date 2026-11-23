@@ -308,7 +308,7 @@ def analyser_reports():
                 out[name] = [None, set()]
             elif line.startswith("[") and "] " in line:
                 level, rest = line[1:].split("] ", 1)
-                out[name][1].add((rest.split(" ", 1)[0], level.lower()))
+                out[name][1].add((rest.split(" ", 1)[0].rstrip(":"), level.lower()))
             elif line.startswith("Type violation:"):
                 out[name][1].add(("DATA_TYPE_VIOLATION", "error"))
             elif line.startswith("FK violation:"):
@@ -320,68 +320,27 @@ def analyser_reports():
     return {k: (v[0], v[1]) for k, v in out.items()}
 
 
-def change_duplicate_field(dp, res):
-    res["occurrence"]["schema"]["fields"].append(dict(res["occurrence"]["schema"]["fields"][0]))
-
-
-def change_title(dp, res):
-    res["occurrence"]["schema"]["fields"][0]["title"] = "Record"
-
-
-def change_type(dp, res):
-    next(f for f in res["event"]["schema"]["fields"] if f["name"] == "eventDate")["type"] = "integer"
-
-
-def remove_name(dp, res):
-    dp.pop("name")
-
-
-def break_link(folder):
-    path = os.path.join(folder, "occurrence.csv")
-    with open(path) as fh:
-        text = fh.read()
-    with open(path, "w") as fh:
-        fh.write(text.replace("A2:2025-05-01,", "nowhere,", 1))
-
-
-ANALYSED = {
-    "good": (None, None),
-    "duplicate-field": (change_duplicate_field, None),
-    "changed-title": (change_title, None),
-    "wrong-type": (change_type, None),
-    "no-name": (remove_name, None),
-    "broken-link": (None, break_link),
-}
+# Where check differs from the analyser on purpose (see references/package.md): it doesn't
+# validate EML against the XSD, and it reports malformed EML as a warning, because the analyser's
+# error doesn't change its verdict.
+NOT_COMPARED = {"EML_XSD_VIOLATION", "EML_XSD_UNAVAILABLE"}
+LEVEL_DIFFERS = {"INVALID_XML": ("error", "warning")}
 
 
 class AnalyserReports(Base):
     """check reaches the verdict GBIF's analyser reached on the same packages, with the same
-    findings at the same levels (tests/fixtures/analyser-0.0.16)."""
+    findings at the same levels (tests/fixtures/analyser-0.0.16, packages from analyser_packages.py)."""
 
     def test_check_agrees_with_the_recorded_analyser_reports(self):
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import analyser_packages
         reports = analyser_reports()
-        self.assertEqual(set(reports), set(ANALYSED))
-        self.toy()
-        with open(os.path.join(self.dir, "id.sql"), "w") as fh:
-            fh.write("UPDATE event SET recordedByID = 'https://orcid.org/0000-0002-1825-0097';")
-        self.ok("run", "id.sql")
-        self.ok("package", "good", "--name", "toy")
-        for name, (change, change_files) in ANALYSED.items():
-            folder = os.path.join(self.dir, name)
-            if name != "good":
-                shutil.copytree(os.path.join(self.dir, "good"), folder)
-            if change:
-                path = os.path.join(folder, "datapackage.json")
-                with open(path) as fh:
-                    dp = json.load(fh)
-                change(dp, {r["name"]: r for r in dp["resources"]})
-                with open(path, "w") as fh:
-                    json.dump(dp, fh)
-            if change_files:
-                change_files(folder)
+        self.assertTrue(set(reports) <= set(analyser_packages.PACKAGES), set(reports) - set(analyser_packages.PACKAGES))
+        analyser_packages.build(self.dir)
+        for name, (valid, expected) in reports.items():
+            expected = {(c, LEVEL_DIFFERS.get(c, (None, lvl))[1] if c in LEVEL_DIFFERS else lvl) for c, lvl in expected if c not in NOT_COMPARED}
             r = run("check", name, "--json", cwd=self.dir)
             found = {(i["analyser"], i["level"]) for i in json.loads(r.stdout)["items"] if i["analyser"]}
-            valid, expected = reports[name]
             with self.subTest(package=name):
                 self.assertEqual(r.returncode == 0, valid)
                 self.assertEqual(found, expected)

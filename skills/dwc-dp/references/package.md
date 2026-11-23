@@ -31,8 +31,9 @@ GBIF checks every DwC-DP it crawls with its DwC-DP analyser (https://github.com/
 `check` makes the same checks, at the same levels, so data holders don't need to install it. The
 `--json` report names the analyser's violation type for each finding (`analyser`), and the text
 report ends with how many of the errors the analyser would report. The alignment is with release
-0.0.16. It was read from its source, and confirmed by running that release on six test packages
-(a good one and five broken in different ways): the verdicts, findings and levels matched. The
+0.0.16. It was read from its source, and confirmed by running that release on 18 test packages
+(a good one and 17 broken in different ways): the verdicts, findings and levels matched, except
+for the two differences below. The
 reports are kept in `tests/fixtures/analyser-0.0.16/`.
 
 `check` has more errors than the analyser, all from rules of the DwC-DP guide or the schemas:
@@ -66,7 +67,12 @@ Two of the analyser's warnings need explaining:
   identifiers MAY point outside the package. Packages from `package` have it whenever they use such
   identifiers. It is expected, and doesn't make the package invalid.
 
-Not checked by `check`: EML against the EML 2.2.0 schema.
+Differences from the analyser on purpose:
+
+- **EML schema:** `check` doesn't check EML against the EML 2.2.0 schema
+  (`EML_XSD_VIOLATION`).
+- **Malformed `eml.xml`:** `check` reports it as a warning. The analyser reports it as an error,
+  but its verdict ignores it.
 
 ## What the guide requires that the data holder decides
 

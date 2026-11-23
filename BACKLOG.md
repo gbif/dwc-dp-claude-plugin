@@ -56,14 +56,15 @@ they are worked on locally from this file.
     - `package --name`;
     - tests for each rule (`AlignedWithAnalyser`);
     - the differences are documented in `references/package.md`.
-  - Confirmed on 2026-11-23: the maintainer ran 0.0.16 on six test packages, and the verdicts,
-    findings and levels matched `check` on all six. The reports are in
-    `tests/fixtures/analyser-0.0.16/`, and `AnalyserReports` compares against them.
-  - Left:
-    - more packages in the recorded set as rules are added: a missing required field, a custom
-      field, an undeclared relationship, an EML problem, a duplicate primary key;
-    - EML 2.2.0 XSD validation, which needs the XSD and a validator outside the standard library,
-      so it stays the analyser's.
+  - Confirmed on 2026-11-23: the maintainer ran 0.0.16 on the 18 packages of
+    `tests/analyser_packages.py`, which exercise every analyser rule except the
+    profile-unavailable ones. `check` matches on all 18, apart from two deliberate differences in
+    `references/package.md`.
+    - The reports are in `tests/fixtures/analyser-0.0.16/`, and `AnalyserReports` compares against
+      them.
+    - The comparison found one gap, the Data Package path pattern, which is now checked.
+  - Left: EML 2.2.0 XSD validation, which needs the XSD and a validator outside the standard
+    library, so it stays the analyser's.
 - **Keep `check` aligned in CI** `ready` `tooling`
   - In `test.yml`:
     - download the pinned analyser release jar (0.0.16), and verify it against the release's

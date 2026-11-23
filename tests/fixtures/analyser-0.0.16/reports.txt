@@ -1,6 +1,38 @@
-== good
+== broken-link
 Printing VERIFY report.
 === Descriptor validation ===
+[WARNING] FK_UNKNOWN_REFERENCE_RESOURCE [resources[event].schema.foreignKeys]: Foreign key 'recordedByID --(recorded by)-> agent[agentID]' in resource 'event' references resource 'agent' which is not declared in this package.
+--- occurrence ---
+FK violation: occurrence(event_fk) -> event(event_pk), count=1
+  sample={event_fk=nowhere}
+=== Violation summary ===
++------------+------+----------+-------+
+| Resource   | Type | Field    | Count |
++------------+------+----------+-------+
+| occurrence | FK   | event_fk |     1 |
++------------+------+----------+-------+
+
+Result: INVALID
+exit 2
+== changed-predicate
+Printing VERIFY report.
+=== Descriptor validation ===
+[WARNING] FK_UNKNOWN_REFERENCE_RESOURCE [resources[event].schema.foreignKeys]: Foreign key 'recordedByID --(recorded by)-> agent[agentID]' in resource 'event' references resource 'agent' which is not declared in this package.
+[WARNING] FOREIGN_KEY_MISSING [resources[occurrence].schema.foreignKeys]: Missing reference 'event_fk --(has context)-> event[event_pk]' declared in the canonical schema for 'occurrence' but not found in the descriptor.
+[WARNING] FOREIGN_KEY_NOT_IN_CANONICAL_SCHEMA [resources[occurrence].schema.foreignKeys]: Foreign key 'event_fk --(during)-> event[event_pk]' declared in resource 'occurrence' does not match any relationship in the canonical DwC-DP table schema.
+Result: VALID
+exit 0
+== changed-title
+Printing VERIFY report.
+=== Descriptor validation ===
+[WARNING] FK_UNKNOWN_REFERENCE_RESOURCE [resources[event].schema.foreignKeys]: Foreign key 'recordedByID --(recorded by)-> agent[agentID]' in resource 'event' references resource 'agent' which is not declared in this package.
+[WARNING] FIELD_DEFINITION_MISMATCH [resources[occurrence].schema.fields[occurrence_pk].title]: Field 'occurrence_pk' in resource 'occurrence' declares 'title': 'Record' but canonical schema expects 'Occurrence (Primary Key)'.
+Result: VALID
+exit 0
+== custom-field
+Printing VERIFY report.
+=== Descriptor validation ===
+[INFO] UNKNOWN_FIELD [resources[event].schema.fields[weather]]: Field 'weather' in resource 'event' is not in the canonical DwC-DP table schema.
 [WARNING] FK_UNKNOWN_REFERENCE_RESOURCE [resources[event].schema.foreignKeys]: Foreign key 'recordedByID --(recorded by)-> agent[agentID]' in resource 'event' references resource 'agent' which is not declared in this package.
 Result: VALID
 exit 0
@@ -11,11 +43,118 @@ Printing VERIFY report.
 [ERROR] FIELD_DUPLICATE [resources[occurrence].schema.fields[occurrence_pk]]: Field 'occurrence_pk' is duplicated in resource 'occurrence'.
 Result: INVALID
 exit 2
-== changed-title
+== duplicate-key
 Printing VERIFY report.
 === Descriptor validation ===
 [WARNING] FK_UNKNOWN_REFERENCE_RESOURCE [resources[event].schema.foreignKeys]: Foreign key 'recordedByID --(recorded by)-> agent[agentID]' in resource 'event' references resource 'agent' which is not declared in this package.
-[WARNING] FIELD_DEFINITION_MISMATCH [resources[occurrence].schema.fields[occurrence_pk].title]: Field 'occurrence_pk' in resource 'occurrence' declares 'title': 'Record' but canonical schema expects 'Occurrence (Primary Key)'.
+--- occurrence ---
+PK violation: occurrence(occurrence_pk), count=1
+  sample={count_star()=2, occurrence_pk=A1:2025-05-01:Turdus merula}
+=== Violation summary ===
++------------+------+---------------+-------+
+| Resource   | Type | Field         | Count |
++------------+------+---------------+-------+
+| occurrence | PK   | occurrence_pk |     1 |
++------------+------+---------------+-------+
+
+Result: INVALID
+exit 2
+== eml-not-xml
+Printing VERIFY report.
+=== Descriptor validation ===
+[WARNING] FK_UNKNOWN_REFERENCE_RESOURCE [resources[event].schema.foreignKeys]: Foreign key 'recordedByID --(recorded by)-> agent[agentID]' in resource 'event' references resource 'agent' which is not declared in this package.
+=== EML validation ===
+[ERROR] INVALID_XML: eml.xml is not well-formed XML: The prefix "eml" for element "eml:eml" is not bound.
+Result: VALID
+exit 0
+== eml-without-creator
+Printing VERIFY report.
+=== Descriptor validation ===
+[WARNING] FK_UNKNOWN_REFERENCE_RESOURCE [resources[event].schema.foreignKeys]: Foreign key 'recordedByID --(recorded by)-> agent[agentID]' in resource 'event' references resource 'agent' which is not declared in this package.
+=== EML validation ===
+[WARNING] EML_MISSING_CREATOR [/dataset/creator]: EML file is missing a required <creator> element or it is empty.
+[WARNING] EML_XSD_VIOLATION: XSD error at line 5: cvc-complex-type.2.4.a: Invalid content was found starting with element 'contact'. One of '{title, creator}' is expected.
+Result: VALID
+exit 0
+== empty-key
+Printing VERIFY report.
+=== Descriptor validation ===
+[WARNING] FK_UNKNOWN_REFERENCE_RESOURCE [resources[event].schema.foreignKeys]: Foreign key 'recordedByID --(recorded by)-> agent[agentID]' in resource 'event' references resource 'agent' which is not declared in this package.
+--- occurrence ---
+PK violation: occurrence(occurrence_pk), count=1
+  sample={organismQuantity=1, occurrenceStatus=detected, organismQuantityType=individuals, scientificName=Turdus merula, occurrence_pk=null, event_fk=A2:2025-05-01, occurrenceID=A2:2025-05-01:Turdus merula}
+=== Violation summary ===
++------------+------+---------------+-------+
+| Resource   | Type | Field         | Count |
++------------+------+---------------+-------+
+| occurrence | PK   | occurrence_pk |     1 |
++------------+------+---------------+-------+
+
+Result: INVALID
+exit 2
+== good
+Printing VERIFY report.
+=== Descriptor validation ===
+[WARNING] FK_UNKNOWN_REFERENCE_RESOURCE [resources[event].schema.foreignKeys]: Foreign key 'recordedByID --(recorded by)-> agent[agentID]' in resource 'event' references resource 'agent' which is not declared in this package.
+Result: VALID
+exit 0
+== missing-required-field
+Printing VERIFY report.
+=== Descriptor validation ===
+[ERROR] REQUIRED_FIELD_MISSING [resources[event].schema.fields]: Required field 'eventCategory' is missing from resource 'event'.
+[WARNING] FK_UNKNOWN_REFERENCE_RESOURCE [resources[event].schema.foreignKeys]: Foreign key 'recordedByID --(recorded by)-> agent[agentID]' in resource 'event' references resource 'agent' which is not declared in this package.
+Result: INVALID
+exit 2
+== missing-title
+Printing VERIFY report.
+=== Descriptor validation ===
+[WARNING] JSON_SCHEMA_VIOLATION [/resources/0]: must be valid to one and only one schema, but 0 are valid
+[WARNING] JSON_SCHEMA_VIOLATION [/resources/0/name]: must not be valid to the schema {"$ref":"#/$defs/dwc-dp-resource-names"}
+[WARNING] JSON_SCHEMA_VIOLATION [/resources/0/schema/fields/3]: required property 'title' not found
+[ERROR] FIELD_DEFINITION_MISSING [resources[event].schema.fields[recordedBy].title]: Field 'recordedBy' in resource 'event' is missing required definition 'title'.
+[WARNING] FK_UNKNOWN_REFERENCE_RESOURCE [resources[event].schema.foreignKeys]: Foreign key 'recordedByID --(recorded by)-> agent[agentID]' in resource 'event' references resource 'agent' which is not declared in this package.
+Result: INVALID
+exit 2
+== no-name
+Printing VERIFY report.
+=== Descriptor validation ===
+[WARNING] MISSING_NAME [/name]: The 'name' property is missing or blank.
+[WARNING] FK_UNKNOWN_REFERENCE_RESOURCE [resources[event].schema.foreignKeys]: Foreign key 'recordedByID --(recorded by)-> agent[agentID]' in resource 'event' references resource 'agent' which is not declared in this package.
+Result: VALID
+exit 0
+== no-resource-profile
+Printing VERIFY report.
+=== Descriptor validation ===
+[WARNING] JSON_SCHEMA_VIOLATION [/resources/0]: must be valid to one and only one schema, but 0 are valid
+[WARNING] JSON_SCHEMA_VIOLATION [/resources/0/name]: must not be valid to the schema {"$ref":"#/$defs/dwc-dp-resource-names"}
+[WARNING] JSON_SCHEMA_VIOLATION [/resources/0]: required property 'profile' not found
+[WARNING] FK_UNKNOWN_REFERENCE_RESOURCE [resources[event].schema.foreignKeys]: Foreign key 'recordedByID --(recorded by)-> agent[agentID]' in resource 'event' references resource 'agent' which is not declared in this package.
+Result: VALID
+exit 0
+== path-outside
+Printing VERIFY report.
+Data analysis skipped due to blocking descriptor errors.
+=== Descriptor validation ===
+[ERROR] PATH_NOT_FOUND [/resources/0/path]: Resource path contains directory traversal and is not permitted: ../event.csv
+[WARNING] JSON_SCHEMA_VIOLATION [/resources/0/path]: must be valid to one and only one schema, but 0 are valid
+[WARNING] JSON_SCHEMA_VIOLATION [/resources/0/path]: does not match the regex pattern ^(?=^[^./~])(^((?!\.{2}).)*$).*$
+[WARNING] JSON_SCHEMA_VIOLATION [/resources/0/path]: string found, array expected
+[WARNING] FK_UNKNOWN_REFERENCE_RESOURCE [resources[event].schema.foreignKeys]: Foreign key 'recordedByID --(recorded by)-> agent[agentID]' in resource 'event' references resource 'agent' which is not declared in this package.
+Result: INVALID
+exit 2
+== undeclared-relationship
+Printing VERIFY report.
+=== Descriptor validation ===
+[WARNING] FK_UNKNOWN_REFERENCE_RESOURCE [resources[event].schema.foreignKeys]: Foreign key 'recordedByID --(recorded by)-> agent[agentID]' in resource 'event' references resource 'agent' which is not declared in this package.
+[WARNING] FOREIGN_KEY_MISSING [resources[occurrence].schema.foreignKeys]: Missing reference 'event_fk --(has context)-> event[event_pk]' declared in the canonical schema for 'occurrence' but not found in the descriptor.
+Result: VALID
+exit 0
+== unknown-type
+Printing VERIFY report.
+=== Descriptor validation ===
+[WARNING] UNKNOWN_FIELD_TYPE [/resources/0/schema/fields/3/type]: Field 'recordedBy' has unknown type: 'text'.
+[WARNING] FIELD_TYPE_MISMATCH [resources[event].schema.fields[recordedBy].type]: Field 'recordedBy' in resource 'event' declares 'type': 'text' but canonical schema expects 'string'.
+[WARNING] FK_UNKNOWN_REFERENCE_RESOURCE [resources[event].schema.foreignKeys]: Foreign key 'recordedByID --(recorded by)-> agent[agentID]' in resource 'event' references resource 'agent' which is not declared in this package.
 Result: VALID
 exit 0
 == wrong-type
@@ -27,21 +166,12 @@ Printing VERIFY report.
 Type violation: event.eventDate declared as 'integer', count=2
   bad value: 2025-05-01
   bad value: 2025-05-01
-Result: INVALID
-exit 2
-== no-name
-Printing VERIFY report.
-=== Descriptor validation ===
-[WARNING] MISSING_NAME [/name]: The 'name' property is missing or blank.
-[WARNING] FK_UNKNOWN_REFERENCE_RESOURCE [resources[event].schema.foreignKeys]: Foreign key 'recordedByID --(recorded by)-> agent[agentID]' in resource 'event' references resource 'agent' which is not declared in this package.
-Result: VALID
-exit 0
-== broken-link
-Printing VERIFY report.
-=== Descriptor validation ===
-[WARNING] FK_UNKNOWN_REFERENCE_RESOURCE [resources[event].schema.foreignKeys]: Foreign key 'recordedByID --(recorded by)-> agent[agentID]' in resource 'event' references resource 'agent' which is not declared in this package.
---- occurrence ---
-FK violation: occurrence(event_fk) -> event(event_pk), count=1
-  sample={event_fk=nowhere}
+=== Violation summary ===
++----------+------+-----------+-------+
+| Resource | Type | Field     | Count |
++----------+------+-----------+-------+
+| event    | Type | eventDate |     2 |
++----------+------+-----------+-------+
+
 Result: INVALID
 exit 2
