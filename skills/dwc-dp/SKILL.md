@@ -54,6 +54,9 @@ someone new, give each idea once in plain words, using their own data.
 - **Keep their identifiers.** An identifier they already use (catalogue number, sample code, field
   number) goes in the table's public identifier field (`xID`) unchanged. You may generate the
   package keys (`x_pk`), and you say how.
+- **Names go in `identification`.** One identification per name, of the material or based on the
+  occurrence, media or sequence it was made from. When a record has an identification, its own
+  name fields (`scientificName`, `identifiedBy`, ...) stay empty.
 - **Use only DwC-DP fields.** A column of theirs that has no field goes in an assertion table if
   one fits, or stays out, with their agreement. Never add custom columns to a DwC-DP table. See
   `references/assertions.md`.

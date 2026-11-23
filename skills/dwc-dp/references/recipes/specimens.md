@@ -138,12 +138,11 @@ Each piece has its own number in `parts.csv`.
   - The schema's `eventCategory` examples have no category for it, so ask what to call it. Until
     then, keep the date in `materialEntityRemarks`, as the example does.
 - **The current name on the material.**
-  - `material` has its own identification fields (`scientificName`, `identifiedBy`,
-    `typeStatus` and others), as well as the `identification` table.
-  - The schema doesn't say how they relate, for example whether the material's fields should
-    repeat the accepted determination. bgbm's mapping has that copy written but commented out.
-  - Until this is settled, the example leaves them empty and puts every determination in
-    `identification`. Tell the data holder it is an open question.
+  - Names go in `identification`, with `isAcceptedIdentification` on the current one. The
+    material's own identification fields (`scientificName`, `identifiedBy`, `typeStatus` and
+    others) stay empty when it has an identification, which is the maintainers' rule
+    (2026-11-23). bgbm's mapping has the copy onto the material commented out too.
+  - `validate` warns when a material repeats a name it has an identification for.
 - **Qualifiers such as "cf." and "aff.", and hybrids.** These are open nomenclature
   (https://en.wikipedia.org/wiki/Open_nomenclature):
   - **cf.** ("compare with") marks an identification as uncertain;

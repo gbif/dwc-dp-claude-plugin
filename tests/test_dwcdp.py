@@ -87,7 +87,11 @@ class Database(Base):
 
     def test_toy_survey_validates_packages_and_checks(self):
         self.toy()
-        self.assertIn("No problems found", self.ok("validate"))
+        # The toy keeps its names on the occurrence, so the only finding is the advice to use
+        # identification instead.
+        out = self.ok("validate")
+        self.assertIn("The identification table is preferred", out)
+        self.assertNotIn("Must be fixed", out)
         self.ok("package", "out", "--title", "Toy survey", "--name", "toy-survey")
         with open(os.path.join(self.dir, "out", "datapackage.json")) as fh:
             dp = json.load(fh)
@@ -103,7 +107,7 @@ class Database(Base):
         with open(os.path.join(self.dir, "out", "occurrence.csv")) as fh:
             header = fh.readline().strip().split(",")
         self.assertEqual(header, [f["name"] for f in occ["schema"]["fields"]])
-        self.assertIn("No problems found", self.ok("check", "out"))
+        self.assertNotIn("Must be fixed", self.ok("check", "out"))
 
     def test_package_refuses_a_folder_with_files(self):
         self.toy()
@@ -157,7 +161,8 @@ class Suggest(Base):
 class SurveyRecipe(Base):
     """The worked example of references/recipes/survey.md validates, packages and checks."""
 
-    TABLES = ["event", "survey", "survey-target", "survey-target-descriptor", "survey-survey-target", "occurrence", "event-assertion"]
+    TABLES = ["event", "survey", "survey-target", "survey-target-descriptor", "survey-survey-target", "occurrence", "event-assertion",
+              "identification"]
 
     def test_point_counts(self):
         src = os.path.join(FIXTURES, "survey-point-counts")
@@ -173,7 +178,8 @@ class SurveyRecipe(Base):
         self.assertEqual(q("SELECT count(*) FROM survey"), ["3"])
         self.assertEqual(q("SELECT count(*) FROM event WHERE parentEvent_fk = 'PC2025'"), ["3"])
         self.assertEqual(q("SELECT count(*) FROM occurrence WHERE occurrenceStatus = 'notDetected'"), ["2"])
-        self.assertEqual(q("SELECT string_agg(scientificName, '|' ORDER BY scientificName) FROM occurrence WHERE surveyTarget_fk IS NULL"),
+        self.assertEqual(q("SELECT string_agg(i.scientificName, '|' ORDER BY i.scientificName) FROM occurrence o "
+                           "JOIN identification i ON i.occurrence_fk = o.occurrence_pk WHERE o.surveyTarget_fk IS NULL"),
                          ["Larus", "canus|Lepus", "europaeus"])
         self.ok("package", "out", "--name", "point-counts-2025")
         self.assertIn("No problems found", self.ok("check", "out"))
@@ -268,21 +274,24 @@ class ObservationsRecipe(Base):
 
     def test_pollinator_notebook(self):
         q = self.build("observations-pollinators", ["observations.csv", "photos.csv"],
-                       ["event", "occurrence", "organism-interaction", "agent", "media", "media-agent-role", "occurrence-media"],
+                       ["event", "occurrence", "organism-interaction", "agent", "media", "media-agent-role", "occurrence-media",
+                        "identification"],
                        "pollinators-2025")
         self.assertEqual(q("SELECT count(*) FROM event"), "3")
         self.assertEqual(q("SELECT s.scientificName || ' > ' || r.scientificName FROM organism_interaction i "
-                           "JOIN occurrence s ON s.occurrence_pk = i.subjectOccurrence_fk "
-                           "JOIN occurrence r ON r.occurrence_pk = i.relatedOccurrence_fk WHERE i.subjectOccurrence_fk = 'O2'"),
+                           "JOIN identification s ON s.occurrence_fk = i.subjectOccurrence_fk "
+                           "JOIN identification r ON r.occurrence_fk = i.relatedOccurrence_fk WHERE i.subjectOccurrence_fk = 'O2'"),
                          "Bombus lapidarius > Knautia arvensis")
         self.assertEqual(q("SELECT count(*) FROM organism_interaction i JOIN occurrence s ON s.occurrence_pk = i.subjectOccurrence_fk "
                            "JOIN occurrence r ON r.occurrence_pk = i.relatedOccurrence_fk WHERE s.event_fk <> r.event_fk OR i.event_fk <> s.event_fk"), "0")
 
     def test_camera_traps_from_camtrap_dp(self):
         q = self.build("observations-camtrap", ["deployments.csv", "media.csv", "observations.csv"],
-                       ["event", "event-assertion", "agent", "event-agent-role", "occurrence", "occurrence-assertion", "media", "event-media"],
+                       ["event", "event-assertion", "agent", "event-agent-role", "occurrence", "occurrence-assertion", "media", "event-media",
+                        "identification"],
                        "camtrap-2025")
-        self.assertEqual(q("SELECT string_agg(scientificName, '|' ORDER BY scientificName) FROM occurrence"), "Capreolus capreolus|Vulpes vulpes")
+        self.assertEqual(q("SELECT string_agg(scientificName, '|' ORDER BY scientificName) FROM identification"), "Capreolus capreolus|Vulpes vulpes")
+        self.assertEqual(q("SELECT identifiedBy FROM identification WHERE occurrence_fk = 'OB2'"), "Model X v1")
         self.assertEqual(q("SELECT count(*) FROM media WHERE mediaID IN ('M4', 'M5')"), "0")
         self.assertEqual(q("SELECT string_agg(media_fk, '|' ORDER BY media_fk) FROM event_media WHERE event_fk = 'E1'"), "M1|M2")
         self.assertEqual(q("SELECT assertionValue FROM occurrence_assertion WHERE assertionID = 'OB2:classificationProbability'"), "0.93")
@@ -460,6 +469,22 @@ class Metadata(Base):
         self.assertIn("exists", self.fails("metadata-template"))
 
 
+class IdentificationPlacement(Base):
+    def test_a_name_repeated_on_an_identified_occurrence_is_reported(self):
+        self.toy()
+        self.ok("init", "identification")
+        with open(os.path.join(self.dir, "ids.sql"), "w") as fh:
+            fh.write("INSERT INTO identification (identification_pk, occurrence_fk, scientificName) "
+                     "SELECT occurrence_pk || ':id', occurrence_pk, scientificName FROM occurrence;")
+        self.ok("run", "ids.sql")
+        out = self.ok("validate")
+        self.assertIn("3 rows have identification fields (scientificName) and also an identification", out)
+        with open(os.path.join(self.dir, "clear.sql"), "w") as fh:
+            fh.write("UPDATE occurrence SET scientificName = NULL;")
+        self.ok("run", "clear.sql")
+        self.assertIn("No problems found", self.ok("validate"))
+
+
 class Vocabularies(Base):
     def test_values_outside_gbif_vocabularies_are_warned_about(self):
         self.toy()
@@ -508,7 +533,7 @@ class AlignedWithAnalyser(Base):
     def test_a_fresh_package_has_only_the_expected_weak_reference_warning(self):
         code, found, _ = self.package()
         self.assertEqual(code, 0)
-        self.assertEqual(found, {("FK_UNKNOWN_REFERENCE_RESOURCE", "warning")})
+        self.assertEqual({f for f in found if f[0]}, {("FK_UNKNOWN_REFERENCE_RESOURCE", "warning")})
 
     def test_duplicate_field_is_an_error(self):
         def change(dp, res):

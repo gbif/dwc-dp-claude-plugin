@@ -3,6 +3,7 @@
 -- The choices marked "agreed" are the data holder's; see references/recipes/survey.md.
 
 DELETE FROM event_assertion;
+DELETE FROM identification;
 DELETE FROM occurrence;
 DELETE FROM survey_survey_target;
 DELETE FROM survey_target_descriptor;
@@ -52,13 +53,18 @@ SELECT 'survey:' || visit, 'birds-except-gulls' FROM src_visits;
 
 -- One occurrence per species counted on a visit. A count of 0 is a species looked for and not
 -- found. Agreed: the gull and the hare are outside the target, so they point to no target.
-INSERT INTO occurrence (occurrence_pk, occurrenceID, event_fk, surveyTarget_fk, scientificName,
+INSERT INTO occurrence (occurrence_pk, occurrenceID, event_fk, surveyTarget_fk,
                         occurrenceStatus, organismQuantity, organismQuantityType, occurrenceRemarks)
 SELECT c.visit || ':' || c.species, c.visit || ':' || c.species, c.visit,
        CASE WHEN c.species IN ('Larus canus', 'Lepus europaeus') THEN NULL ELSE 'birds-except-gulls' END,
-       c.species,
        CASE WHEN c.count = '0' THEN 'notDetected' ELSE 'detected' END,
        c.count, 'individuals', c.note
+FROM src_counts c;
+
+-- The species of each occurrence, as an identification based on it (names go in identification,
+-- not on the occurrence).
+INSERT INTO identification (identification_pk, identificationID, occurrence_fk, isAcceptedIdentification, scientificName)
+SELECT c.visit || ':' || c.species || ':id', c.visit || ':' || c.species || ':id', c.visit || ':' || c.species, true, c.species
 FROM src_counts c;
 
 -- The weather during each visit, as assertions about the visit (see references/assertions.md).

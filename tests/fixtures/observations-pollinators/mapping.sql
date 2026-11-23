@@ -7,6 +7,7 @@ DELETE FROM occurrence_media;
 DELETE FROM media;
 DELETE FROM agent;
 DELETE FROM organism_interaction;
+DELETE FROM identification;
 DELETE FROM occurrence;
 DELETE FROM event;
 
@@ -21,11 +22,15 @@ SELECT DISTINCT place || ' ' || date || 'T' || time, place || ' ' || date || 'T'
 FROM src_observations;
 
 -- One occurrence per row of the notebook.
-INSERT INTO occurrence (occurrence_pk, occurrenceID, event_fk, occurrenceStatus, scientificName,
+INSERT INTO occurrence (occurrence_pk, occurrenceID, event_fk, occurrenceStatus,
                         organismQuantity, organismQuantityType, sex, behavior)
-SELECT obs, obs, place || ' ' || date || 'T' || time, 'detected', species,
+SELECT obs, obs, place || ' ' || date || 'T' || time, 'detected',
        count, 'individuals', nullif(sex, ''), nullif(behaviour, '')
 FROM src_observations;
+
+-- The name of each occurrence, as an identification based on it.
+INSERT INTO identification (identification_pk, identificationID, occurrence_fk, isAcceptedIdentification, scientificName)
+SELECT obs || ':id', obs || ':id', obs, true, species FROM src_observations;
 
 -- A visitor on a flower. The visitor acts, so it is the subject; the flower is the related
 -- occurrence (schema notes of organism-interaction). Agreed: type 'visited flower of', one of the

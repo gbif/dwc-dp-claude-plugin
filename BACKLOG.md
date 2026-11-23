@@ -125,6 +125,9 @@ they are worked on locally from this file.
   without a join. With several markers, it is the total per sample and marker (confirmed).
 - **Reference database** (2026-11-23): an amplicon study's taxonomy reference database goes in
   `molecular-protocol.otu_db`, as in the MDT.
+- **Names** (2026-11-23): the identification table is preferred for names. When a material or
+  occurrence has an identification, its own identification fields are not filled. `validate` and
+  `check` warn about both cases.
 - **Metadata** (2026-11-23): both `eml.xml` (EML 2.2.0) and the Data Package's descriptor
   properties, from one `metadata.json` the data holder confirms (`package --metadata`).
 - **Darwin Core Archives:** yes, help translate them to DwC-DP (`load-dwca`, and the recipe above).
@@ -157,13 +160,6 @@ they are worked on locally from this file.
      - `primaryKey`, `mediatype`, a schema given as a reference, and column order are not checked
        at all; `check` keeps them as its own errors.
 
-1. **The identification fields on `material` and `occurrence`** `needs-human`
-   - `material` and `occurrence` both have `scientificName`, `identifiedBy` and other
-     identification fields (`material` also `typeStatus`), as well as the `identification` table
-     with `isAcceptedIdentification`. The schema doesn't say how they relate.
-   - Should the material repeat the accepted determination, hold something else, or stay empty
-     when `identification` is used? bgbm's mapping has the copy commented out.
-   - The specimens recipe leaves them empty until this is settled.
-2. **`eventCategory` for a derivation event** (a tissue taken from a specimen) `needs-human`
+1. **`eventCategory` for a derivation event** (a tissue taken from a specimen) `needs-human`
    - The schema's examples have none. Is there a value to use, or should the date stay in
      `materialEntityRemarks`?

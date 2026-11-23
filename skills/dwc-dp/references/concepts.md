@@ -79,7 +79,8 @@ From the conceptual model:
 - **Identification** (`identification`, `identification-taxon`): naming something. In the schema
   an identification is *of a* material entity or *of an* organism, and *based on* evidence: an
   occurrence, a media item, a nucleotide analysis or a sequence. The conceptual model has it based
-  on one kind of evidence. Each new determination is a new row.
+  on one kind of evidence. Each new determination is a new row. `material` and `occurrence` have
+  name fields of their own too. Names go in `identification` instead, and those fields stay empty.
 - **Nucleotide analysis and sequence** (`nucleotide-analysis`, `nucleotide-sequence`,
   `molecular-protocol`): eDNA and barcoding. An analysis links a sequence to the material and event
   it came from, by a protocol.

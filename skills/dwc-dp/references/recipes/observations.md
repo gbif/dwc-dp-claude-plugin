@@ -57,7 +57,7 @@ flying), three photos, and who took them.
    - `geodeticDatum` `not recorded`, because the notebook doesn't say. That is the value the
      schema's notes give for this case.
 2. **Occurrences:** one per row, with `occurrenceStatus` `detected` (required), the count, sex and
-   behaviour.
+   behaviour. The name of each is an `identification` based on it.
 3. **Interactions:** one per visitor that names the flower it was on.
    - The visitor is the subject. The schema's notes: "with the actor as the subject dwc:Occurrence
      and the acted-upon as the related dwc:Occurrence".
@@ -91,8 +91,9 @@ The three Camtrap DP tables, made up:
 4. **Sequences:** an event each, within its deployment (`parentEvent_fk`), from the first to the
    last image (`eventStart`/`eventEnd`), with `eventCategory` `occurrence`.
 5. **Observations:** an occurrence each, with:
-   - scientific name, count, life stage, sex and behaviour;
-   - `classifiedBy` as `identifiedBy`, and `classificationTimestamp` as `dateIdentified`;
+   - count, life stage, sex and behaviour;
+   - an `identification` based on it, with the scientific name, `classifiedBy` as `identifiedBy`
+     and `classificationTimestamp` as `dateIdentified`;
    - classification method and probability as `occurrence-assertion` rows.
 6. **Images:** the public images of the published sequences go in `media`, linked to their
    sequence with `event-media`.
@@ -126,15 +127,15 @@ The three Camtrap DP tables, made up:
 - **Which records to publish.** Blank camera sequences, people, vehicles and machine
   classifications below a threshold are theirs to keep out or put in. Images of people are
   usually kept out (Camtrap DP marks them `filePublic` false).
-- **Names.**
-  - `occurrence` has its own identification fields (`scientificName`, `identifiedBy`,
-    `dateIdentified`), used here.
-  - Use the `identification` table when they keep determination history, or when a name is based
-    on a particular image (`identification.media_fk`, "based on").
-  - How the two relate is the open question also raised in `specimens.md`.
-- **Machine classifications.** Who classified is `identifiedBy`, whether a person or a model with
-  its version. The method and probability have no occurrence field, so the example keeps them as
-  assertions.
+- **Names** go in `identification`, one per name, based on the occurrence (`occurrence_fk`), or
+  on a particular image (`media_fk`) when that is what was identified.
+  - The occurrence's own name fields (`scientificName`, `identifiedBy`, `dateIdentified`, ...) stay
+    empty, which is the maintainers' rule. `validate` warns about a name on an occurrence.
+  - Several determinations of one observation are several identifications, with
+    `isAcceptedIdentification` on the current one.
+- **Machine classifications.** Who classified is the identification's `identifiedBy`, whether a
+  person or a model with its version. The method and probability have no field, so the example
+  keeps them as occurrence assertions.
 - **Media rights.** `license` on the media, or `usage-policy` and `media-usage-policy` when rights
   are shared by many items. Use what they state; don't assume a licence.
 - **Who took the photo.** The media table has no creator field. `media-agent-role` with a role

@@ -63,8 +63,7 @@ also holds the specimen and its name. Split it:
    - the name and its higher ranks go here, the only table with them;
    - an Identification History extension gives one identification per row, with
      `isAcceptedIdentification` marking the core's current one;
-   - the open question about the name fields on `occurrence` and `material` applies (see
-     `specimens.md`).
+   - the name fields on `occurrence` and `material` stay empty: names go in `identification` only.
 
 The worked example is `tests/fixtures/dwca-occurrence-core/`:
 - **The archive:** made up, two pinned specimens from one field trip and a photographed

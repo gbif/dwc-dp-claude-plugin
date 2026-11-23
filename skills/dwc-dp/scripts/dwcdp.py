@@ -832,6 +832,49 @@ def check_tables(con, present, report, descriptor_checked=False):
 
         check_vocabularies(con, name, table, cols, report)
 
+    check_identification_placement(con, present, report)
+
+
+GENERIC_FIELDS = {"feedbackURL", "informationWithheld", "dataGeneralizations"}
+
+
+def identification_fields(name):
+    """The fields a material or occurrence shares with identification: its own copy of a name."""
+    own = {f["name"] for f in schemas()[name]["fields"]}
+    ident = {f["name"] for f in schemas()["identification"]["fields"]}
+    return sorted(n for n in own & ident if n not in GENERIC_FIELDS and (not n.endswith(("_pk", "_fk")) or n == "identifiedBy_fk"))
+
+
+def check_identification_placement(con, present, report):
+    """Names belong in identification (the maintainers' rule, 2026-11-23): a material or occurrence
+    that has an identification doesn't repeat it, and one with its own name fields is pointed to
+    the identification table."""
+    ident = present.get("identification")
+    for name, link in (("material", "materialEntity_fk"), ("occurrence", "occurrence_fk")):
+        if name not in present or not present[name][2]:
+            continue
+        table, cols, rows = present[name]
+        fields = [f for f in identification_fields(name) if f in cols]
+        if not fields:
+            continue
+        pk = schemas()[name]["primaryKey"]
+        has_name = " OR ".join(f"{q(f)} IS NOT NULL" for f in fields)
+        used = [f for f in fields if count(con, f"SELECT count(*) FROM {q(table)} WHERE {q(f)} IS NOT NULL")]
+        if not used:
+            continue
+        if ident and ident[2] and link in ident[1]:
+            n = count(con, f"SELECT count(*) FROM {q(table)} t WHERE ({has_name}) AND t.{q(pk)} IN (SELECT {q(link)} FROM {q(ident[0])} WHERE {q(link)} IS NOT NULL)")
+            if n:
+                report.warning(name, f"{have(n)} identification fields ({', '.join(used)}) and also an identification. "
+                                     "Names belong in identification only; leave these fields empty.", field=used[0])
+            rest = count(con, f"SELECT count(*) FROM {q(table)} t WHERE ({has_name}) AND t.{q(pk)} NOT IN (SELECT {q(link)} FROM {q(ident[0])} WHERE {q(link)} IS NOT NULL)")
+            if rest:
+                report.warning(name, f"{have(rest)} a name in its own fields ({', '.join(used)}) and no identification. "
+                                     "The identification table is preferred for names.", field=used[0])
+        else:
+            report.warning(name, f"has names in its own fields ({', '.join(used)}). The identification table is preferred for "
+                                 "names: an identification per name, and these fields left empty.", field=used[0])
+
 
 def cmd_validate(args):
     con = connect(args.db, read_only=True)

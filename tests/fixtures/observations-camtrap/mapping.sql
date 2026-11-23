@@ -6,6 +6,7 @@
 DELETE FROM event_media;
 DELETE FROM media;
 DELETE FROM occurrence_assertion;
+DELETE FROM identification;
 DELETE FROM occurrence;
 DELETE FROM event_assertion;
 DELETE FROM event_agent_role;
@@ -48,12 +49,18 @@ SELECT DISTINCT eventID, eventID, deploymentID, 'occurrence',
        CASE WHEN eventStart = eventEnd THEN eventStart ELSE eventStart || '/' || eventEnd END
 FROM published;
 
--- One occurrence per observation, with who or what classified it.
-INSERT INTO occurrence (occurrence_pk, occurrenceID, event_fk, occurrenceStatus, scientificName,
-                        organismQuantity, organismQuantityType, lifeStage, sex, behavior,
-                        identifiedBy, dateIdentified)
-SELECT observationID, observationID, eventID, 'detected', scientificName,
-       count, 'individuals', nullif(lifeStage, ''), nullif(sex, ''), nullif(behavior, ''),
+-- One occurrence per observation.
+INSERT INTO occurrence (occurrence_pk, occurrenceID, event_fk, occurrenceStatus,
+                        organismQuantity, organismQuantityType, lifeStage, sex, behavior)
+SELECT observationID, observationID, eventID, 'detected',
+       count, 'individuals', nullif(lifeStage, ''), nullif(sex, ''), nullif(behavior, '')
+FROM published;
+
+-- Its classification, as an identification based on the occurrence: the name, who or what
+-- classified it, and when.
+INSERT INTO identification (identification_pk, identificationID, occurrence_fk, isAcceptedIdentification,
+                            scientificName, identifiedBy, dateIdentified)
+SELECT observationID || ':id', observationID || ':id', observationID, true, scientificName,
        classifiedBy, classificationTimestamp
 FROM published;
 
