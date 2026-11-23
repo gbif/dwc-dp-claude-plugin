@@ -402,6 +402,64 @@ class DwcaRecipe(Base):
         self.assertIn("no DwC-DP field is a version of measurementType", out)
 
 
+class Metadata(Base):
+    METADATA = {
+        "title": "Toy survey",
+        "description": "Made up.\n\nSecond paragraph.",
+        "license": "CC-BY-4.0",
+        "creators": [{"givenName": "Ann", "surName": "Berg", "orcid": "0000-0002-1825-0097"}],
+        "contacts": [{"organization": "Natural History Museum of Denmark", "email": "info@example.org"}],
+        "keywords": ["birds"],
+        "coverage": {"geographicDescription": "Two sites"},
+    }
+
+    def write(self, md):
+        with open(os.path.join(self.dir, "metadata.json"), "w") as fh:
+            json.dump(md, fh)
+
+    def test_eml_and_descriptor_are_written_from_metadata_json(self):
+        import xml.etree.ElementTree as ET
+        self.toy()
+        self.write(self.METADATA)
+        out = self.ok("package", "out", "--name", "toy", "--metadata", "metadata.json")
+        self.assertIn("Coverage from the events: south 55.68, north 55.7", out)
+        with open(os.path.join(self.dir, "out", "datapackage.json")) as fh:
+            dp = json.load(fh)
+        self.assertEqual(dp["title"], "Toy survey")
+        self.assertEqual(dp["licenses"][0]["name"], "CC-BY-4.0")
+        self.assertEqual([(c["title"], c["role"]) for c in dp["contributors"]],
+                         [("Ann Berg", "author"), ("Natural History Museum of Denmark", "maintainer")])
+        self.assertEqual(dp["contributors"][0]["path"], "https://orcid.org/0000-0002-1825-0097")
+        ds = ET.parse(os.path.join(self.dir, "out", "eml.xml")).getroot().find("dataset")
+        self.assertEqual([e.tag for e in ds],
+                         ["title", "creator", "pubDate", "abstract", "keywordSet", "intellectualRights",
+                          "licensed", "coverage", "contact"])
+        self.assertEqual(len(ds.find("abstract")), 2)
+        self.assertEqual(ds.find("coverage/temporalCoverage/rangeOfDates/beginDate/calendarDate").text, "2025-05-01")
+        self.assertEqual(ds.find("contact/organizationName").text, "Natural History Museum of Denmark")
+        report = self.ok("check", "out", "--json")
+        self.assertNotIn("EML_MISSING", report)
+
+    def test_metadata_without_title_or_contact_is_refused(self):
+        self.toy()
+        md = dict(self.METADATA, title="", contacts=[])
+        self.write(md)
+        out = self.fails("package", "out", "--metadata", "metadata.json")
+        self.assertIn("title is missing", out)
+        self.assertIn("contacts needs at least one", out)
+        self.assertFalse(os.path.exists(os.path.join(self.dir, "out")))
+
+    def test_geographic_coverage_needs_a_description(self):
+        self.toy()
+        self.write(dict(self.METADATA, coverage={}))
+        out = self.ok("package", "out", "--name", "toy", "--metadata", "metadata.json")
+        self.assertIn("EML needs a geographicDescription", out)
+
+    def test_template_is_not_overwritten(self):
+        self.ok("metadata-template")
+        self.assertIn("exists", self.fails("metadata-template"))
+
+
 class Vocabularies(Base):
     def test_values_outside_gbif_vocabularies_are_warned_about(self):
         self.toy()

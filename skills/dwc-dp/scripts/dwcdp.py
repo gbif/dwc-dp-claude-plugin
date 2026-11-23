@@ -893,6 +893,209 @@ def resource_schema(s, cols):
     return out
 
 
+# ---------------------------------------------------------------- metadata
+
+LICENSES = {
+    "CC0-1.0": ("https://creativecommons.org/publicdomain/zero/1.0/legalcode", "Creative Commons Zero v1.0 Universal"),
+    "CC-BY-4.0": ("https://creativecommons.org/licenses/by/4.0/legalcode", "Creative Commons Attribution 4.0 International"),
+    "CC-BY-NC-4.0": ("https://creativecommons.org/licenses/by-nc/4.0/legalcode", "Creative Commons Attribution Non Commercial 4.0 International"),
+}
+
+METADATA_TEMPLATE = {
+    "title": "",
+    "description": "",
+    "license": "one of CC0-1.0, CC-BY-4.0, CC-BY-NC-4.0, or {\"name\": \"...\", \"path\": \"https://...\", \"title\": \"...\"}",
+    "creators": [{"givenName": "", "surName": "", "organization": "", "email": "", "orcid": ""}],
+    "contacts": [{"givenName": "", "surName": "", "organization": "", "email": "", "orcid": ""}],
+    "metadataProviders": [],
+    "keywords": [],
+    "language": "",
+    "homepage": "",
+    "methods": [],
+    "coverage": {"geographicDescription": ""},
+}
+
+
+def read_metadata(path):
+    with open(path, encoding="utf-8") as fh:
+        try:
+            md = json.load(fh)
+        except ValueError as e:
+            sys.exit(f"{path} is not valid JSON: {e}")
+    problems = []
+    if not (md.get("title") or "").strip():
+        problems.append("title is missing")
+    for role in ("creators", "contacts"):
+        people = [p for p in md.get(role) or [] if any((p.get(k) or "").strip() for k in ("surName", "organization"))]
+        if not people:
+            problems.append(f"{role} needs at least one person (with surName) or organization")
+        md[role] = people
+    md["metadataProviders"] = [p for p in md.get("metadataProviders") or [] if any((p.get(k) or "").strip() for k in ("surName", "organization"))]
+    lic = md.get("license")
+    if isinstance(lic, str) and lic not in LICENSES:
+        problems.append(f"license {lic!r} is not one of {', '.join(LICENSES)}; give another as {{\"name\", \"path\", \"title\"}}")
+    if problems:
+        sys.exit(f"{path}: " + "; ".join(problems) + ". Fill it in with the data holder (references/package.md).")
+    return md
+
+
+def license_of(md):
+    lic = md.get("license")
+    if not lic:
+        return None
+    if isinstance(lic, str):
+        url, title = LICENSES[lic]
+        return {"name": lic, "path": url, "title": title}
+    return {k: lic[k] for k in ("name", "path", "title") if lic.get(k)}
+
+
+def person_name(p):
+    return " ".join(x for x in ((p.get("givenName") or "").strip(), (p.get("surName") or "").strip()) if x) or (p.get("organization") or "").strip()
+
+
+def derived_coverage(con, present):
+    """Bounding box and date range of the package's events, from decimalLatitude/Longitude and the
+    ISO dates in eventDate."""
+    if "event" not in present:
+        return {}
+    table, cols, _ = present["event"]
+    cov = {}
+    if "decimalLatitude" in cols and "decimalLongitude" in cols:
+        box = con.execute(f"SELECT min(decimalLatitude), max(decimalLatitude), min(decimalLongitude), max(decimalLongitude) FROM {q(table)}").fetchone()
+        if box[0] is not None:
+            cov.update(south=box[0], north=box[1], west=box[2], east=box[3])
+    if "eventDate" in cols:
+        dates = [d for (v,) in con.execute(f"SELECT eventDate FROM {q(table)} WHERE eventDate IS NOT NULL").fetchall()
+                 for d in re.findall(r"\d{4}-\d{2}-\d{2}", str(v))]
+        if dates:
+            cov.update(begin=min(dates), end=max(dates))
+    return cov
+
+
+def eml_xml(md, cov, package_id):
+    """EML 2.2.0, with dataset elements in the order the schema requires."""
+    import xml.etree.ElementTree as ET
+    ns = "https://eml.ecoinformatics.org/eml-2.2.0"
+    ET.register_namespace("eml", ns)
+    ET.register_namespace("xsi", "http://www.w3.org/2001/XMLSchema-instance")
+    root = ET.Element(f"{{{ns}}}eml", {
+        "packageId": package_id, "system": "dwc-dp-claude-plugin", "scope": "system",
+        "{http://www.w3.org/2001/XMLSchema-instance}schemaLocation": f"{ns} https://eml.ecoinformatics.org/eml-2.2.0/eml.xsd"})
+    ds = ET.SubElement(root, "dataset")
+
+    def sub(parent, tag, text=None, **attrs):
+        e = ET.SubElement(parent, tag, attrs)
+        if text is not None:
+            e.text = text
+        return e
+
+    def party(tag, p):
+        e = sub(ds, tag)
+        if (p.get("surName") or "").strip():
+            n = sub(e, "individualName")
+            if (p.get("givenName") or "").strip():
+                sub(n, "givenName", p["givenName"].strip())
+            sub(n, "surName", p["surName"].strip())
+        if (p.get("organization") or "").strip():
+            sub(e, "organizationName", p["organization"].strip())
+        if (p.get("email") or "").strip():
+            sub(e, "electronicMailAddress", p["email"].strip())
+        if (p.get("orcid") or "").strip():
+            sub(e, "userId", p["orcid"].strip(), directory="https://orcid.org/")
+
+    if md.get("id"):
+        sub(ds, "alternateIdentifier", md["id"])
+    sub(ds, "title", md["title"].strip())
+    for p in md["creators"]:
+        party("creator", p)
+    for p in md["metadataProviders"]:
+        party("metadataProvider", p)
+    sub(ds, "pubDate", datetime.date.today().isoformat())
+    if (md.get("language") or "").strip():
+        sub(ds, "language", md["language"].strip())
+    if (md.get("description") or "").strip():
+        a = sub(ds, "abstract")
+        for para in [x for x in md["description"].split("\n\n") if x.strip()]:
+            sub(a, "para", para.strip())
+    if md.get("keywords"):
+        k = sub(ds, "keywordSet")
+        for w in md["keywords"]:
+            sub(k, "keyword", w)
+        sub(k, "keywordThesaurus", "N/A")
+    lic = license_of(md)
+    if lic:
+        r = sub(ds, "intellectualRights")
+        para = sub(r, "para", "This work is licensed under a ")
+        link = sub(para, "ulink", url=lic.get("path", ""))
+        sub(link, "citetitle", lic.get("title") or lic.get("name"))
+        link.tail = "."
+        ld = sub(ds, "licensed")
+        sub(ld, "licenseName", lic.get("title") or lic.get("name"))
+        if lic.get("path"):
+            sub(ld, "url", lic["path"])
+        if lic.get("name"):
+            sub(ld, "identifier", lic["name"])
+    geo_desc = ((md.get("coverage") or {}).get("geographicDescription") or "").strip()
+    if (geo_desc and "north" in cov) or "begin" in cov:
+        c = sub(ds, "coverage")
+        if geo_desc and "north" in cov:
+            g = sub(c, "geographicCoverage")
+            sub(g, "geographicDescription", geo_desc)
+            b = sub(g, "boundingCoordinates")
+            for side in ("west", "east", "north", "south"):
+                sub(b, f"{side}BoundingCoordinate", str(cov[side]))
+        if "begin" in cov:
+            t = sub(c, "temporalCoverage")
+            rd = sub(t, "rangeOfDates")
+            sub(sub(rd, "beginDate"), "calendarDate", cov["begin"])
+            sub(sub(rd, "endDate"), "calendarDate", cov["end"])
+    for p in md["contacts"]:
+        party("contact", p)
+    if md.get("methods"):
+        m = sub(ds, "methods")
+        for step in md["methods"]:
+            sub(sub(sub(m, "methodStep"), "description"), "para", step)
+    if hasattr(ET, "indent"):
+        ET.indent(root)
+    return '<?xml version="1.0" encoding="UTF-8"?>\n' + ET.tostring(root, encoding="unicode") + "\n"
+
+
+def descriptor_metadata(md):
+    """Package-level properties of the Data Package specification (v1)."""
+    out = {}
+    if (md.get("description") or "").strip():
+        out["description"] = md["description"].strip()
+    lic = license_of(md)
+    if lic:
+        out["licenses"] = [lic]
+    contributors = []
+    for role, people in (("author", md["creators"]), ("maintainer", md["contacts"])):
+        for p in people:
+            c = {"title": person_name(p), "role": role}
+            if (p.get("email") or "").strip():
+                c["email"] = p["email"].strip()
+            if (p.get("orcid") or "").strip():
+                c["path"] = p["orcid"].strip() if p["orcid"].startswith("http") else "https://orcid.org/" + p["orcid"].strip()
+            if (p.get("organization") or "").strip() and (p.get("surName") or "").strip():
+                c["organization"] = p["organization"].strip()
+            contributors.append(c)
+    out["contributors"] = contributors
+    if md.get("keywords"):
+        out["keywords"] = md["keywords"]
+    if (md.get("homepage") or "").strip():
+        out["homepage"] = md["homepage"].strip()
+    return out
+
+
+def cmd_metadata_template(args):
+    if os.path.exists(args.file):
+        sys.exit(f"{args.file} exists; edit it, or choose another name.")
+    with open(args.file, "w", encoding="utf-8") as fh:
+        json.dump(METADATA_TEMPLATE, fh, indent=2, ensure_ascii=False)
+        fh.write("\n")
+    print(f"Wrote {args.file}. Fill it in with the data holder, then: dwcdp.py package <folder> --metadata {args.file}")
+
+
 def cmd_package(args):
     con = connect(args.db, read_only=True)
     present = {n: (db_name(n), db_columns(con, db_name(n)), r) for n, r in dwc_tables_in(con).items() if r}
@@ -905,6 +1108,7 @@ def cmd_package(args):
     if report.errors:
         report.print()
         sys.exit("Not packaged: fix the problems above first (dwcdp.py validate shows them again).")
+    md = read_metadata(args.metadata) if args.metadata else None
     if args.name and not NAME_PATTERN.match(args.name):
         sys.exit(f"--name {args.name!r} may only have lower-case letters, digits and - . _ /, for example 'beetles-mols-2024'.")
     out = os.path.abspath(args.out)
@@ -940,16 +1144,33 @@ def cmd_package(args):
         })
         print(f"{path}: {rows} {'row' if rows == 1 else 'rows'}, {len(used)} fields")
     descriptor = {"profile": PROFILE_URL}
+    if md:
+        for key in ("id", "title", "version"):
+            if md.get(key) and not getattr(args, key):
+                setattr(args, key, md[key])
     for key in ("name", "id", "title", "version"):
         if getattr(args, key):
             descriptor[key] = getattr(args, key)
+    if md:
+        descriptor.update(descriptor_metadata(md))
     descriptor["created"] = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat()
     descriptor["resources"] = resources
     with open(os.path.join(out, "datapackage.json"), "w", encoding="utf-8") as fh:
         json.dump(descriptor, fh, indent=2, ensure_ascii=False)
     if args.eml:
         shutil.copyfile(args.eml, os.path.join(out, "eml.xml"))
-    print(f"\nWrote {args.out}: datapackage.json{', eml.xml' if args.eml else ''} and {len(resources)} tables.")
+    elif md:
+        cov = derived_coverage(con, present)
+        with open(os.path.join(out, "eml.xml"), "w", encoding="utf-8") as fh:
+            fh.write(eml_xml(md, cov, args.id or args.name or os.path.basename(out)))
+        if cov:
+            print("Coverage from the events: " + ", ".join(f"{k} {v}" for k, v in cov.items())
+                  + ". Show it to the data holder.")
+        if "north" in cov and not ((md.get("coverage") or {}).get("geographicDescription") or "").strip():
+            print("No geographic coverage in eml.xml: EML needs a geographicDescription with the bounding box (coverage.geographicDescription).")
+        for missing in [k for k in ("description", "license") if not md.get(k)]:
+            print(f"Note: metadata.json has no {missing}.")
+    print(f"\nWrote {args.out}: datapackage.json{', eml.xml' if args.eml or md else ''} and {len(resources)} tables.")
     for w in report.items:
         print(f"  note, {w['table']}: {w['message']}")
 
@@ -1260,12 +1481,16 @@ def main():
     s = sub.add_parser("package", help="write the tables and datapackage.json to a folder")
     s.add_argument("out")
     s.add_argument("--name", help="a short identifier for the package: lower-case letters, digits, - . _ /")
-    s.add_argument("--eml", help="an eml.xml to include")
+    s.add_argument("--metadata", help="metadata.json: written as eml.xml and as datapackage.json properties")
+    s.add_argument("--eml", help="an existing eml.xml to include as it is (instead of writing one from --metadata)")
     s.add_argument("--id", help="dataset identifier, preferably a DOI")
     s.add_argument("--title")
     s.add_argument("--version", help="dataset version")
     s.add_argument("--overwrite", action="store_true")
     s.set_defaults(func=cmd_package)
+    s = sub.add_parser("metadata-template", help="write an empty metadata.json to fill in")
+    s.add_argument("file", nargs="?", default="metadata.json")
+    s.set_defaults(func=cmd_metadata_template)
     s = sub.add_parser("check", help="check a DwC-DP package on disk")
     s.add_argument("path")
     s.add_argument("--json", action="store_true")

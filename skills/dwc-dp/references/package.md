@@ -82,22 +82,55 @@ Differences from the analyser on purpose:
 - **Name** (`name`): RECOMMENDED by the Data Package specification. GBIF's analyser warns
   without it. Propose one from the title, such as `beetles-mols-2024`, and use it once they
   agree.
-- **Metadata:** title, description, people, licence.
-  - **What the guide says:** `eml.xml` is optional (section 3, "MAY have an EML metadata file"),
-    and when present it "MUST follow the Ecological Metadata Language specification". The
-    descriptor MAY also carry dataset metadata (section 3.1.6).
-  - **What GBIF does,** as of 2026-11-22:
-    - its crawler forwards `eml.xml` to the registry when the package has one, and the
-      `datapackage.json` metadata otherwise (`DwcDpMetasyncCallback` in gbif/crawler);
-    - GBIF's DwC-DP validator (gbif/dwc-dp-analyser) checks an `eml.xml` when present: well-formed,
-      with `<title>` and `<creator>`, and valid against EML 2.2.0.
-  - **Not settled yet:** which of the two this skill writes. Until then, collect the metadata with
-    the data holder, use `--title`, and pass an `eml.xml` they already have (for example the one
-    in their Darwin Core Archive) with `--eml`.
+## Metadata: `metadata.json`, written as `eml.xml` and in `datapackage.json`
+
+The dataset's metadata is written twice, from one file the data holder confirms:
+
+- **`eml.xml`:** EML 2.2.0, which the guide allows (section 3, "MUST follow the Ecological Metadata
+  Language specification"). GBIF's crawler forwards `eml.xml` to the registry when a package has
+  one (gbif/crawler `DwcDpMetasyncCallback`).
+- **`datapackage.json`:** the Data Package specification's own properties (section 3.1.6):
+  `title`, `description`, `licenses`, `contributors`, `keywords` and `homepage`. A reader of the
+  descriptor alone has them too.
+
+`dwcdp.py metadata-template` writes an empty `metadata.json`. Fill it in with the data holder:
+draft from their documents (a paper, a methods text, an archive's `eml.xml`), and show them each
+value. `package --metadata metadata.json` refuses a file without a title, a creator and a contact.
+Those are what an EML dataset requires.
+
+| Key | What | Written to |
+|---|---|---|
+| `title` | the dataset's title | EML `title`; descriptor `title` |
+| `description` | what the dataset is; paragraphs separated by a blank line | EML `abstract`; descriptor `description` |
+| `license` | `CC0-1.0`, `CC-BY-4.0` or `CC-BY-NC-4.0`, or `{"name", "path", "title"}` for another | EML `intellectualRights` and `licensed`; descriptor `licenses` |
+| `creators` | the people or organisations who made the dataset: `givenName`, `surName`, `organization`, `email`, `orcid` | EML `creator`; descriptor `contributors` with role `author` |
+| `contacts` | whom to ask about it, the same keys | EML `contact`; descriptor `contributors` with role `maintainer` |
+| `metadataProviders` | who wrote the metadata, if different | EML `metadataProvider` |
+| `keywords` | a list | EML `keywordSet`; descriptor `keywords` |
+| `language` | the language of the data, as they state it | EML `language` |
+| `homepage` | a web page about the dataset | descriptor `homepage` |
+| `methods` | a list of method steps | EML `methods` |
+| `coverage.geographicDescription` | where, in words | EML `geographicCoverage`, with the bounding box from the events |
+| `id`, `version` | a DOI or other identifier, and the dataset's version | EML `alternateIdentifier`; descriptor `id`, `version` |
+
+The coverage is computed from the data: the bounding box from the events' coordinates and the date
+range from their `eventDate`s. `package` prints it; show it to the data holder. EML requires a
+`geographicDescription` with a bounding box, so without one there is no geographic coverage, and
+`package` says so.
+
+Rules:
+- **Licence:** GBIF publishes under CC0 1.0, CC BY 4.0 and CC BY-NC 4.0. Which one is the data
+  holder's decision, and there is no default.
+- **People:** only people they name, with only the email and ORCID they give.
+- **An archive's `eml.xml`:** to keep it unchanged instead, use `--eml eml.xml`. `--metadata` then
+  still fills the descriptor.
+
+The generated `eml.xml` was checked against the EML 2.2.0 schema (NCEAS/eml `RELEASE_EML_2_2_0`)
+when this was written. `check` itself tests only that `eml.xml` is well-formed and has a title and
+a creator. GBIF's analyser validates it against the schema.
 
 ## Not covered yet
 
 - Compressed packages (`.gz`).
 - Tables in other dialects (TSV and so on). `check` reads them when the `dialect` says so;
   `package` always writes standard CSV.
-- Writing `eml.xml` from the data holder's answers.

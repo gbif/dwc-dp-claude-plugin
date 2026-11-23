@@ -120,6 +120,8 @@ they are worked on locally from this file.
   of it.
 - **Upstream examples:** don't raise their pre-1.0 state in gbif/dwc-dp-examples or tdwg/dwc.
 - **eDNA:** no referral to the MDT; the plugin builds DwC-DP for eDNA as for any other data.
+- **Metadata** (2026-11-23): both `eml.xml` (EML 2.2.0) and the Data Package's descriptor
+  properties, from one `metadata.json` the data holder confirms (`package --metadata`).
 - **Darwin Core Archives:** yes, help translate them to DwC-DP (`load-dwca`, and the recipe above).
 - **Identification qualifiers** (2026-11-23):
   - meanings from https://en.wikipedia.org/wiki/Open_nomenclature, which says placement is not
@@ -170,9 +172,3 @@ they are worked on locally from this file.
 4. **`eventCategory` for a derivation event** (a tissue taken from a specimen) `needs-human`
    - The schema's examples have none. Is there a value to use, or should the date stay in
      `materialEntityRemarks`?
-5. **Metadata** `needs-human`
-   - Found so far: `eml.xml` is optional in the guide.
-   - GBIF's crawler forwards `eml.xml` when the package has one, and the `datapackage.json`
-     metadata otherwise (gbif/crawler `DwcDpMetasyncCallback`).
-   - GBIF's validator checks EML when present (title, creator, EML 2.2.0).
-   - Should the plugin write `eml.xml`, descriptor metadata, or both?

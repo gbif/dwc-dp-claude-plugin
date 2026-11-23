@@ -149,12 +149,17 @@ package.
 
 ## Stage 6: Describe
 
-Read `references/package.md`. The dataset needs a title, a description, its people and a licence.
-Ask for them; draft from their documents for them to confirm.
+Read `references/package.md`. `metadata-template` writes an empty `metadata.json`. Fill it in with
+them:
+- **The essentials:** title, description, creators, contacts and licence.
+- **Optional:** keywords, methods, language, and a description of where.
+
+Draft from their documents and confirm each value; never choose a licence for them. `package` writes
+it both as `eml.xml` and in `datapackage.json`, and computes the coverage from the events.
 
 ## Stage 7: Package
 
-`package <folder> --name <name>` checks again, then writes one CSV per table and a `datapackage.json`
+`package <folder> --name <name> --metadata metadata.json` checks again, then writes one CSV per table and a `datapackage.json`
 whose field descriptions are copied from the DwC-DP schemas. Agree on the name with them first
 (`references/package.md`). `check <folder>` checks a finished package, including the checks GBIF's
 own DwC-DP analyser makes, and also works on packages made elsewhere. The package is done when
