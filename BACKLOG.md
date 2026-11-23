@@ -107,6 +107,12 @@ they are worked on locally from this file.
 - **Upstream examples:** don't raise their pre-1.0 state in gbif/dwc-dp-examples or tdwg/dwc.
 - **eDNA:** no referral to the MDT; the plugin builds DwC-DP for eDNA as for any other data.
 - **Darwin Core Archives:** yes, help translate them to DwC-DP (`load-dwca`, and the recipe above).
+- **Identification qualifiers** (2026-11-23):
+  - meanings from https://en.wikipedia.org/wiki/Open_nomenclature, which says placement is not
+    fixed, so the data holder confirms which part was uncertain;
+  - `taxonFormula` as in Arctos (`A cf.`, `A aff.`), with the named taxon in
+    `identification-taxon`;
+  - `scientificName` only the part that is certain.
 - **Vocabularies:** check against GBIF's vocabularies (https://api.gbif.org/v1/vocabularies).
   - The copies are pinned in `skills/dwc-dp/vocabularies/` by `tools/pin_vocabularies.py`.
   - Which field uses which vocabulary is GBIF's own configuration, gbif/pipelines `pipelines.yaml`
@@ -137,16 +143,10 @@ they are worked on locally from this file.
    - Should the material repeat the accepted determination, hold something else, or stay empty
      when `identification` is used? bgbm's mapping has the copy commented out.
    - The specimens recipe leaves them empty until this is settled.
-2. **Identification qualifiers ("cf.", "aff.")** `needs-human`
-   - `taxonFormula` recommends the Arctos formula vocabulary (`A cf.`, `A aff.`, ...), which
-     couldn't be read when the specimens recipe was written. Is that the vocabulary to use, and
-     what does each formula mean?
-   - Until then, the recipe keeps the name as written in `verbatimIdentification` and leaves
-     `scientificName` empty.
-3. **`eventCategory` for a derivation event** (a tissue taken from a specimen) `needs-human`
+2. **`eventCategory` for a derivation event** (a tissue taken from a specimen) `needs-human`
    - The schema's examples have none. Is there a value to use, or should the date stay in
      `materialEntityRemarks`?
-4. **Metadata** `needs-human`
+3. **Metadata** `needs-human`
    - Found so far: `eml.xml` is optional in the guide.
    - GBIF's crawler forwards `eml.xml` when the package has one, and the `datapackage.json`
      metadata otherwise (gbif/crawler `DwcDpMetasyncCallback`).

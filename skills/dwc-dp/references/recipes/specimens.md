@@ -21,7 +21,8 @@ exported from a collection database or spreadsheet. The files usually are:
 | `identification` | "A classification of a resource according to a classification scheme"; one row per determination, *of a* material (`materialEntity_fk`), with `isAcceptedIdentification` marking the current one |
 | `identification-taxon` | "A construct of components and positions of dwc:Taxa in a dwc:Identification": the taxa in a formula such as a hybrid, in `taxonSortOrder` |
 
-`dwcdp.py order` puts them in this order: event, occurrence, material, identification.
+`dwcdp.py order` puts them in this order: event, occurrence, material, identification,
+identification-taxon.
 
 Add these only when the data have something for them:
 
@@ -48,8 +49,8 @@ Add these only when the data have something for them:
 ## Mapping, step by step
 
 The worked example is `tests/fixtures/specimens-beetles/`: a made-up beetle collection export with
-three specimens (one a lot of five), four determinations (one superseded, one with "cf.") and a
-tissue sample. Its `mapping.sql` is the full mapping.
+four specimens (one a lot of five), five determinations (one superseded, one with "cf.", one with
+"aff.") and a tissue sample. Its `mapping.sql` is the full mapping.
 
 1. **Collecting events:** `SELECT DISTINCT` on the field number. The place, date and collector are
    written once, with `eventCategory` `material collection` (one of the schema's examples).
@@ -67,7 +68,9 @@ tissue sample. Its `mapping.sql` is the full mapping.
    - `isAcceptedIdentification` from their "current" column;
    - the name as written in `verbatimIdentification`, and the name without the author in
      `scientificName`, with `scientificNameAuthorship`;
-   - `identifiedBy` and `dateIdentified`.
+   - `identifiedBy` and `dateIdentified`;
+   - for a qualified name, `taxonFormula` and an `identification-taxon` row (see the choices
+     below).
 
 `validate` and `check` pass on it.
 
@@ -104,15 +107,34 @@ tissue sample. Its `mapping.sql` is the full mapping.
     repeat the accepted determination. bgbm's mapping has that copy written but commented out.
   - Until this is settled, the example leaves them empty and puts every determination in
     `identification`. Tell the data holder it is an open question.
-- **Qualifiers such as "cf." and "aff.", and hybrids.**
-  - `identification.taxonFormula` holds "the pattern to use to construct a dwc:Identification
-    from dwc:Taxon names and identification qualifiers", with examples `A`, `A cf.`, `A aff.`,
-    `A or B` and `A x B`. It recommends the Arctos formula vocabulary, which couldn't be read when
-    this recipe was written.
-  - Until the meaning of each formula is confirmed, keep the name as written in
-    `verbatimIdentification`. Leave `scientificName` empty rather than drop the qualifier, as the
-    example does for "Pterostichus cf. niger".
-  - For a formula with several taxa (`A x B`), each taxon is an `identification-taxon` row.
+- **Qualifiers such as "cf." and "aff.", and hybrids.** These are open nomenclature
+  (https://en.wikipedia.org/wiki/Open_nomenclature):
+  - **cf.** ("compare with") marks an identification as uncertain;
+  - **aff.** marks a probably undescribed species related to the named one, "but is not
+    identical to" it.
+  - There are no strict conventions about where the qualifier stands or exactly what it doubts.
+    So ask the data holder, or their determiners, which part of the name was uncertain.
+
+  How to write them:
+  - **The name as written** stays in `verbatimIdentification`, always.
+  - **`taxonFormula`** says how the name is qualified. The schema recommends the Arctos formula
+    vocabulary, whose examples include `A`, `A cf.`, `A aff.`, `A ?`, `A sp.`, `A or B` and
+    `A x B`. In Arctos, `A cf.` and `A aff.` put the qualifier after taxon A as a whole
+    (ArctosDB/arctos-archive `form/taxonNameBuilder.cfm`).
+  - **The named taxon** goes in `identification-taxon` as taxon A (`taxonSortOrder` 1). A
+    formula with two taxa (`A x B`, `A or B`) has a second row.
+  - **`scientificName`** holds only what the determiner is sure of: usually the genus, when the
+    qualifier stands before the epithet and doubts only the species. Never the named species of an
+    "aff.", because the specimen is not that species. For a "cf." it would state as certain what
+    the determiner doubted.
+
+  The example does this for "Pterostichus cf. niger" and "Amara aff. aenea":
+  - `scientificName` is `Pterostichus` and `Amara`, with `taxonRank` `genus`;
+  - `taxonFormula` is `A cf.` and `A aff.`;
+  - taxon A is `Pterostichus niger` and `Amara aenea`.
+
+  Its mapping reads the qualifier from the second word of the name. That works only because the
+  data holder confirmed their names are always written "Genus qualifier epithet".
 - **Type status.**
   - Both `material` and `identification` have `typeStatus`.
   - The example puts it on the determination that carries the name. Ask which their type
@@ -155,4 +177,7 @@ tissue sample. Its `mapping.sql` is the full mapping.
     `isAcceptedIdentification`, determiners in `identification-agent-role`, and taxa in
     `identification-taxon`. Its `evidenceForOccurrence` column is empty;
   - **`material/cyanolichens`:** input data only.
+- Open nomenclature, https://en.wikipedia.org/wiki/Open_nomenclature, for the meaning of "cf." and
+  "aff."; ArctosDB/arctos-archive `v7.0/form/taxonNameBuilder.cfm` for how Arctos writes its
+  formulas.
 - GBIF's TypeStatus and Sex vocabularies (the pinned copies).

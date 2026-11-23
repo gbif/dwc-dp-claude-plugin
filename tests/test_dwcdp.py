@@ -174,7 +174,7 @@ class SpecimensRecipe(Base):
         src = os.path.join(FIXTURES, "specimens-beetles")
         for f in ("specimens.csv", "determinations.csv", "tissues.csv", "mapping.sql"):
             shutil.copy(os.path.join(src, f), self.dir)
-        self.ok("init", "event", "occurrence", "material", "identification")
+        self.ok("init", "event", "occurrence", "material", "identification", "identification-taxon")
         for f in ("specimens", "determinations", "tissues"):
             self.ok("load", f"{f}.csv")
         self.ok("run", "mapping.sql")
@@ -183,7 +183,9 @@ class SpecimensRecipe(Base):
         self.assertEqual(q("SELECT count(*) FROM event"), "2")
         self.assertEqual(q("SELECT derivedFromMaterialEntity_fk FROM material WHERE materialEntity_pk = 'NHMD-TIS-77'"), "NHMD-COL-1002")
         self.assertEqual(q("SELECT scientificName FROM identification WHERE materialEntity_fk = 'NHMD-COL-1002' AND isAcceptedIdentification"), "Carabus problematicus")
-        self.assertEqual(q("SELECT count(*) FROM identification WHERE scientificName IS NULL"), "1")
+        self.assertEqual(q("SELECT scientificName || '/' || taxonFormula FROM identification WHERE verbatimIdentification = 'Amara aff. aenea'"), "Amara/A aff.")
+        self.assertEqual(q("SELECT t.scientificName FROM identification_taxon t JOIN identification i ON i.identification_pk = t.identification_fk WHERE i.verbatimIdentification = 'Pterostichus cf. niger'"), "Pterostichus niger")
+        self.assertEqual(q("SELECT count(*) FROM identification WHERE scientificName IN ('Pterostichus niger', 'Amara aenea')"), "0")
         self.assertEqual(q("SELECT count(*) FROM (SELECT materialEntity_fk FROM identification WHERE isAcceptedIdentification GROUP BY 1 HAVING count(*) > 1)"), "0")
         self.ok("package", "out", "--name", "beetles-2024")
         self.assertIn("No problems found", self.ok("check", "out"))

@@ -2,6 +2,7 @@
 -- Load first: specimens.csv, determinations.csv, tissues.csv as src_specimens, src_determinations,
 -- src_tissues. The choices marked "agreed" are the data holder's; see references/recipes/specimens.md.
 
+DELETE FROM identification_taxon;
 DELETE FROM identification;
 DELETE FROM material;
 DELETE FROM occurrence;
@@ -42,14 +43,27 @@ SELECT tissueNumber, tissueNumber, tissueNumber, catalogNumber, preparation, 'ti
 FROM src_tissues;
 
 -- Every determination, of the specimen, with the current one marked. The name as written stays in
--- verbatimIdentification, and the author in scientificNameAuthorship. Agreed: the "cf." name keeps
--- no scientificName until the data holder says how to express the qualifier (see the recipe).
+-- verbatimIdentification, and the author in scientificNameAuthorship.
+-- Qualified names ("cf.", "aff."): agreed with the data holder that in their records the qualifier
+-- always stands before the species epithet and doubts only the species. So scientificName is the
+-- genus they are sure of, taxonFormula says how the name is qualified, and the named species is
+-- taxon A in identification_taxon (see the recipe).
 INSERT INTO identification (identification_pk, identificationID, materialEntity_fk,
                             isAcceptedIdentification, verbatimIdentification, scientificName,
-                            scientificNameAuthorship, identifiedBy, dateIdentified, typeStatus)
+                            scientificNameAuthorship, taxonRank, taxonFormula, identifiedBy,
+                            dateIdentified, typeStatus)
 SELECT catalogNumber || ':' || date, catalogNumber || ':' || date, catalogNumber,
        current = 'yes',
        name,
-       CASE WHEN name LIKE '% cf. %' THEN NULL ELSE name END,
-       nullif(author, ''), determiner, date, nullif(typeStatus, '')
-FROM src_determinations;
+       CASE WHEN qualifier IS NULL THEN name ELSE split_part(name, ' ', 1) END,
+       CASE WHEN qualifier IS NULL THEN nullif(author, '') END,
+       CASE WHEN qualifier IS NULL THEN 'species' ELSE 'genus' END,
+       CASE WHEN qualifier IS NOT NULL THEN 'A ' || qualifier END,
+       determiner, date, nullif(typeStatus, '')
+FROM (SELECT *, CASE WHEN split_part(name, ' ', 2) IN ('cf.', 'aff.') THEN split_part(name, ' ', 2) END AS qualifier
+      FROM src_determinations);
+
+INSERT INTO identification_taxon (identification_fk, taxonSortOrder, scientificName, taxonRank)
+SELECT catalogNumber || ':' || date, 1, split_part(name, ' ', 1) || ' ' || split_part(name, ' ', 3), 'species'
+FROM src_determinations
+WHERE split_part(name, ' ', 2) IN ('cf.', 'aff.');
