@@ -77,7 +77,8 @@ taxonomy table. Load those with `--as` so their table names start with a letter 
      kept (`preparations`: Longmire buffer) and its `disposition` (`in collection`, or `used up`
      for the blank's).
    - **The extract,** derived from the filter, with `materialEntityCategory` `DNA extract` (a
-     schema example), its storage and disposition. The extraction date goes in its remarks.
+     schema example), its storage and disposition. Who extracted it and when is a
+     `material-agent-role` row (role `extracted by`, date in `agentRoleDate`).
 3. **Protocols:** one per marker, with:
    - `assayType` `metabarcoding` (a schema example), and `target_gene` as GBIF's concept name;
    - the primers with their names and reference;
@@ -140,9 +141,10 @@ taxonomy table. Load those with `--as` so their table names start with a letter 
 
   A kept sample is what lets someone re-analyse it later, so it is worth recording even when the
   reads are the main result.
-- **When derived material was made** (filtering, extraction): see the open question in
-  `specimens.md` about derivation events. The example keeps the extraction date in the extract's
-  remarks.
+- **When derived material was made** (filtering, extraction): no event is needed. Who and when go
+  in a `material-agent-role` row, as the example does for the extracts; see "Recording a
+  derivation" in `specimens.md`. The filters have no date or person in the example, so they only
+  have the link.
 - **The reference database** goes in `otu_db`, with its name and version (for example
   `BOLD 2025-05`). This is the maintainers' decision (2026-11-23), and the MDT does the same.
   - The schema's description of `otu_db` is the MIxS one, for clustering genomes into

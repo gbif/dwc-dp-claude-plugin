@@ -1,4 +1,4 @@
-extract,filter,extracted,storage,disposition,dna_ng_ul
-S1-X,S1-F,2025-08-20,-20 C,in collection,12.4
-S2-X,S2-F,2025-08-20,-20 C,in collection,8.9
-FB1-X,FB1-F,2025-08-20,-20 C,used up,0.2
+extract,filter,extracted,storage,disposition,dna_ng_ul,extracted_by
+S1-X,S1-F,2025-08-20,-20 C,in collection,12.4,Cai Lund
+S2-X,S2-F,2025-08-20,-20 C,in collection,8.9,Cai Lund
+FB1-X,FB1-F,2025-08-20,-20 C,used up,0.2,Cai Lund

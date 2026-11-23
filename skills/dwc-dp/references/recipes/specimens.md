@@ -62,7 +62,8 @@ four specimens (one a lot of five), five determinations (one superseded, one wit
    - `collectedBy`, `preparations`, `materialEntityCategory` `preserved`, and the label text as
      `verbatimLabel`.
 4. **The tissue:** its own material row with `derivedFromMaterialEntity_fk` pointing to the
-   specimen and `materialEntityCategory` `tissue`.
+   specimen and `materialEntityCategory` `tissue`. Who took it and when is a `material-agent-role`
+   row (role `sampled by`, date in `agentRoleDate`).
 5. **Determinations:**
    - one identification per row, of the specimen (`materialEntity_fk`);
    - `isAcceptedIdentification` from their "current" column;
@@ -92,7 +93,8 @@ Each piece has its own number in `parts.csv`.
    specimen, and its own `preparations` and `disposition` (`on loan` for the skeleton). What the
    piece is goes in `materialDescription`.
 3. **The tissue:** derived from the specimen (`derivedFromMaterialEntity_fk`), not a part of it,
-   with `materialEntityCategory` `tissue`.
+   with `materialEntityCategory` `tissue`, and who took it and when as a `material-agent-role`
+   row.
 4. **The determination:** one, of the specimen as a whole, not of each piece.
 
 ## Choices the data holder makes
@@ -132,11 +134,20 @@ Each piece has its own number in `parts.csv`.
     `human-made`). For the type it gives examples such as `Pinned object/specimen`,
     `Microscope slide` and `Taxidermy mount`, and no list.
   - Propose from the examples, and leave a type empty when theirs fits none.
-- **When derived material was taken.**
-  - A derivation can be an event of its own (`derivationEvent_fk`, "material derived during
-    event"), with its date and who took it.
-  - The schema's `eventCategory` examples have no category for it, so ask what to call it. Until
-    then, keep the date in `materialEntityRemarks`, as the example does.
+- **Recording a derivation.** No event is needed:
+  - `derivedFromMaterialEntity_fk` says what the material was derived from. The link to a
+    derivation event (`derivationEvent_fk`) is optional.
+  - `material` has no date field for a derivation, so choose the lightest form that holds what they
+    know:
+    1. **Just the link,** when they record nothing about the act.
+    2. **Who and when:** a `material-agent-role` row, with the person as an `agent`, a role such as
+       `sampled by` or `extracted by`, and the date in `agentRoleDate` ("An interval during which
+       a dcterms:AgentRole was in effect"). The examples do this.
+    3. **A derivation event:** only when they also record where or how (a protocol), or several
+       pieces taken in one act. Its `eventCategory` is required, and neither the schema's examples
+       nor TDWG's PostgreSQL build has one for a derivation, so ask what to call it.
+  - The role names are theirs: the schema only recommends "a controlled vocabulary for the roles
+    appropriate to the class of resource".
 - **The current name on the material.**
   - Names go in `identification`, with `isAcceptedIdentification` on the current one. The
     material's own identification fields (`scientificName`, `identifiedBy`, `typeStatus` and

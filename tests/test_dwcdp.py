@@ -197,7 +197,7 @@ class SurveyMaterialRecipe(Base):
         for f in files + ["mapping.sql"]:
             shutil.copy(os.path.join(src, f), self.dir)
         self.ok("init", "event", "survey", "occurrence", "material", "identification",
-                "molecular-protocol", "nucleotide-sequence", "nucleotide-analysis")
+                "molecular-protocol", "nucleotide-sequence", "nucleotide-analysis", "agent", "material-agent-role")
         for f in files:
             self.ok("load", f)
         self.ok("run", "mapping.sql")
@@ -217,7 +217,8 @@ class SpecimensRecipe(Base):
         src = os.path.join(FIXTURES, "specimens-beetles")
         for f in ("specimens.csv", "determinations.csv", "tissues.csv", "mapping.sql"):
             shutil.copy(os.path.join(src, f), self.dir)
-        self.ok("init", "event", "occurrence", "material", "identification", "identification-taxon", "material-assertion")
+        self.ok("init", "event", "occurrence", "material", "identification", "identification-taxon", "material-assertion",
+                "agent", "material-agent-role")
         for f in ("specimens", "determinations", "tissues"):
             self.ok("load", f"{f}.csv")
         self.ok("run", "mapping.sql")
@@ -231,6 +232,8 @@ class SpecimensRecipe(Base):
         self.assertEqual(q("SELECT count(*) FROM identification WHERE scientificName IN ('Pterostichus niger', 'Amara aenea')"), "0")
         self.assertEqual(q("SELECT count(*) FROM (SELECT materialEntity_fk FROM identification WHERE isAcceptedIdentification GROUP BY 1 HAVING count(*) > 1)"), "0")
         self.assertEqual(q("SELECT count(*) FROM material_assertion WHERE assertionType = 'elytron length'"), "3")
+        self.assertEqual(q("SELECT agentRole || ' ' || agentRoleDate FROM material_agent_role WHERE materialEntity_fk = 'NHMD-TIS-77'"), "sampled by 2025-01-15")
+        self.assertEqual(q("SELECT count(*) FROM material WHERE materialEntityRemarks IS NOT NULL"), "0")
         self.ok("package", "out", "--name", "beetles-2024")
         self.assertIn("No problems found", self.ok("check", "out"))
 
@@ -242,7 +245,7 @@ class SpecimenPartsRecipe(Base):
         src = os.path.join(FIXTURES, "specimens-mammal-parts")
         for f in ("specimens.csv", "parts.csv", "mapping.sql"):
             shutil.copy(os.path.join(src, f), self.dir)
-        self.ok("init", "event", "occurrence", "material", "identification")
+        self.ok("init", "event", "occurrence", "material", "identification", "agent", "material-agent-role")
         self.ok("load", "specimens.csv")
         self.ok("load", "parts.csv")
         self.ok("run", "mapping.sql")
@@ -252,6 +255,7 @@ class SpecimenPartsRecipe(Base):
         self.assertEqual(q("SELECT derivedFromMaterialEntity_fk FROM material WHERE materialEntity_pk = 'NHMD-TIS-901'"), "NHMD-MAM-501")
         self.assertEqual(q("SELECT disposition FROM material WHERE materialEntity_pk = 'NHMD-MAM-501-C'"), "on loan")
         self.assertEqual(q("SELECT count(*) FROM identification"), "2")
+        self.assertEqual(q("SELECT agentRoleDate FROM material_agent_role WHERE materialEntity_fk = 'NHMD-TIS-901'"), "2024-10-07")
         self.ok("package", "out", "--name", "mammals-2024")
         self.assertIn("No problems found", self.ok("check", "out"))
 
@@ -305,7 +309,7 @@ class EdnaRecipe(Base):
         for f in os.listdir(src):
             shutil.copy(os.path.join(src, f), self.dir)
         self.ok("init", "event", "material", "molecular-protocol", "nucleotide-sequence", "nucleotide-analysis", "identification",
-                "event-assertion", "material-assertion")
+                "event-assertion", "material-assertion", "agent", "material-agent-role")
         for f in ("samples.csv", "filters.csv", "extracts.csv", "markers.csv"):
             self.ok("load", f)
         for f, name in (("12S_otu_table.tsv", "otu_12s"), ("12S_taxonomy.tsv", "taxonomy_12s"),
@@ -326,6 +330,7 @@ class EdnaRecipe(Base):
         self.assertEqual(q("SELECT assertionValue FROM event_assertion WHERE assertionID = 'Kalø Vig 2025-08-12:water temperature'"), "16.2")
         self.assertEqual(q("SELECT count(*) FROM event_assertion"), "4")
         self.assertEqual(q("SELECT assertionUnit FROM material_assertion WHERE materialEntity_fk = 'S1-X'"), "ng/µl")
+        self.assertEqual(q("SELECT count(*) FROM material_agent_role WHERE agentRole = 'extracted by' AND agentRoleDate = '2025-08-20'"), "3")
         self.assertEqual(q("SELECT scientificName || '/' || taxonRank FROM identification WHERE nucleotideSequence_fk = '12S_a3'"), "Clupeidae/family")
         self.ok("package", "out", "--name", "edna-two-markers-2025")
         self.assertIn("No problems found", self.ok("check", "out"))

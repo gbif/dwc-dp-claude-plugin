@@ -6,6 +6,8 @@
 
 DELETE FROM material_assertion;
 DELETE FROM event_assertion;
+DELETE FROM material_agent_role;
+DELETE FROM agent;
 DELETE FROM identification;
 DELETE FROM nucleotide_analysis;
 DELETE FROM nucleotide_sequence;
@@ -25,8 +27,7 @@ FROM src_samples;
 -- the water sample (collected during the event), the filter it was passed through, and the DNA
 -- extract made from the filter. The filters and extracts are kept, with their preservation and
 -- disposition. Agreed: materialEntityType 'Environmental sample' (a schema example) for the water;
--- the blank is marked as a negative control in its remarks; the extraction date stays in the
--- extract's remarks while derivation events are an open question.
+-- the blank is marked as a negative control in its remarks.
 INSERT INTO material (materialEntity_pk, materialEntityID, collectionEvent_fk, materialEntityType,
                       materialEntityRemarks)
 SELECT sample, sample, site || ' ' || date, 'Environmental sample',
@@ -39,9 +40,21 @@ SELECT filter, filter, sample, 'filter, ' || pore_um || ' µm', preservation, di
 FROM src_filters;
 
 INSERT INTO material (materialEntity_pk, materialEntityID, derivedFromMaterialEntity_fk, materialEntityCategory,
-                      preparations, disposition, materialEntityRemarks)
-SELECT extract, extract, filter, 'DNA extract', storage, disposition, 'extracted ' || extracted
+                      preparations, disposition)
+SELECT extract, extract, filter, 'DNA extract', storage, disposition
 FROM src_extracts;
+
+-- Who extracted it and when, as a role of a person for the derived material (material-agent-role,
+-- with the date in agentRoleDate). Agreed: the role is called 'extracted by'. No derivation event is
+-- needed: derivedFromMaterialEntity_fk already says what it was derived from.
+INSERT INTO agent (agent_pk, agentType, preferredAgentName)
+SELECT DISTINCT lower(replace(extracted_by, ' ', '-')), 'person', extracted_by FROM src_extracts WHERE nullif(extracted_by, '') IS NOT NULL
+  AND lower(replace(extracted_by, ' ', '-')) NOT IN (SELECT agent_pk FROM agent);
+
+INSERT INTO material_agent_role (materialEntity_fk, agent_fk, agentRole, agentRoleOrder, agentRoleDate)
+SELECT extract, lower(replace(extracted_by, ' ', '-')), 'extracted by', 1, extracted
+FROM src_extracts WHERE nullif(extracted_by, '') IS NOT NULL;
+
 
 -- One molecular protocol per marker: the assay, its primers and the reference database.
 -- Agreed: target_gene written as GBIF's concept name (GBIF reads "12S rRNA" as

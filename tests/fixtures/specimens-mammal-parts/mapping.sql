@@ -2,6 +2,8 @@
 -- src_specimens and src_parts. The choices marked "agreed" are the data holder's; see
 -- references/recipes/specimens.md.
 
+DELETE FROM material_agent_role;
+DELETE FROM agent;
 DELETE FROM identification;
 DELETE FROM material;
 DELETE FROM occurrence;
@@ -31,18 +33,28 @@ FROM src_specimens s;
 
 -- Each piece kept on its own, with its own number, preparation and disposition.
 -- Agreed: skin, skull and skeleton are parts of the specimen (isPartOfMaterialEntity_fk); the
--- frozen liver is a subsample taken from it (derivedFromMaterialEntity_fk), with the date in its
--- remarks while derivation events are an open question.
+-- frozen liver is a subsample taken from it (derivedFromMaterialEntity_fk).
 INSERT INTO material (materialEntity_pk, materialEntityID, catalogNumber, isPartOfMaterialEntity_fk,
                       derivedFromMaterialEntity_fk, materialEntityCategory, preparations,
-                      materialDescription, disposition, materialEntityRemarks)
+                      materialDescription, disposition)
 SELECT partNumber, partNumber, partNumber,
        CASE WHEN kind = 'part' THEN catalogNumber END,
        CASE WHEN kind = 'subsample' THEN catalogNumber END,
        CASE WHEN kind = 'subsample' THEN 'tissue' ELSE 'preserved' END,
-       preparation, part, disposition,
-       CASE WHEN taken IS NOT NULL THEN 'taken ' || taken END
+       preparation, part, disposition
 FROM src_parts;
+
+-- Who took it and when, as a role of a person for the derived material (material-agent-role,
+-- with the date in agentRoleDate). Agreed: the role is called 'sampled by'. No derivation event is
+-- needed: derivedFromMaterialEntity_fk already says what it was derived from.
+INSERT INTO agent (agent_pk, agentType, preferredAgentName)
+SELECT DISTINCT lower(replace(taken_by, ' ', '-')), 'person', taken_by FROM src_parts WHERE nullif(taken_by, '') IS NOT NULL
+  AND lower(replace(taken_by, ' ', '-')) NOT IN (SELECT agent_pk FROM agent);
+
+INSERT INTO material_agent_role (materialEntity_fk, agent_fk, agentRole, agentRoleOrder, agentRoleDate)
+SELECT partNumber, lower(replace(taken_by, ' ', '-')), 'sampled by', 1, taken
+FROM src_parts WHERE nullif(taken_by, '') IS NOT NULL;
+
 
 -- The determination is of the specimen as a whole, not of each piece.
 INSERT INTO identification (identification_pk, identificationID, materialEntity_fk,

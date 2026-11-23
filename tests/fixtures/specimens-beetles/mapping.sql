@@ -3,6 +3,8 @@
 -- src_tissues. The choices marked "agreed" are the data holder's; see references/recipes/specimens.md.
 
 DELETE FROM material_assertion;
+DELETE FROM material_agent_role;
+DELETE FROM agent;
 DELETE FROM identification_taxon;
 DELETE FROM identification;
 DELETE FROM material;
@@ -35,13 +37,23 @@ SELECT catalogNumber, catalogNumber, catalogNumber, fieldNumber, catalogNumber |
        collector, preparation, 'preserved', label
 FROM src_specimens;
 
--- The tissue sample, derived from a specimen. Agreed: materialEntityCategory 'tissue'. The date it
--- was taken stays in the remarks; see the recipe for recording it as a derivation event.
+-- The tissue sample, derived from a specimen. Agreed: materialEntityCategory 'tissue'.
 INSERT INTO material (materialEntity_pk, materialEntityID, catalogNumber, derivedFromMaterialEntity_fk,
-                      preparations, materialEntityCategory, materialEntityRemarks)
-SELECT tissueNumber, tissueNumber, tissueNumber, catalogNumber, preparation, 'tissue',
-       'taken ' || taken
+                      preparations, materialEntityCategory)
+SELECT tissueNumber, tissueNumber, tissueNumber, catalogNumber, preparation, 'tissue'
 FROM src_tissues;
+
+-- Who took it and when, as a role of a person for the derived material (material-agent-role,
+-- with the date in agentRoleDate). Agreed: the role is called 'sampled by'. No derivation event is
+-- needed: derivedFromMaterialEntity_fk already says what it was derived from.
+INSERT INTO agent (agent_pk, agentType, preferredAgentName)
+SELECT DISTINCT lower(replace(taken_by, ' ', '-')), 'person', taken_by FROM src_tissues WHERE nullif(taken_by, '') IS NOT NULL
+  AND lower(replace(taken_by, ' ', '-')) NOT IN (SELECT agent_pk FROM agent);
+
+INSERT INTO material_agent_role (materialEntity_fk, agent_fk, agentRole, agentRoleOrder, agentRoleDate)
+SELECT tissueNumber, lower(replace(taken_by, ' ', '-')), 'sampled by', 1, taken
+FROM src_tissues WHERE nullif(taken_by, '') IS NOT NULL;
+
 
 -- Every determination, of the specimen, with the current one marked. The name as written stays in
 -- verbatimIdentification, and the author in scientificNameAuthorship.

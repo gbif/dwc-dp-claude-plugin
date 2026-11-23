@@ -3,6 +3,8 @@
 -- as src_catches, src_vouchers, src_extracts, src_marker, src_otu_table and src_taxonomy.
 -- The choices marked "agreed" are the data holder's; see references/recipes/survey.md.
 
+DELETE FROM material_agent_role;
+DELETE FROM agent;
 DELETE FROM identification;
 DELETE FROM nucleotide_analysis;
 DELETE FROM nucleotide_sequence;
@@ -58,9 +60,21 @@ FROM src_vouchers;
 
 -- The DNA extract made from each catch's ethanol, derived from the catch.
 INSERT INTO material (materialEntity_pk, materialEntityID, derivedFromMaterialEntity_fk, materialEntityCategory,
-                      materialDescription, materialEntityRemarks)
-SELECT extract, extract, catch, 'DNA extract', method, 'extracted ' || extracted
+                      materialDescription)
+SELECT extract, extract, catch, 'DNA extract', method
 FROM src_extracts;
+
+-- Who extracted it and when, as a role of a person for the derived material (material-agent-role,
+-- with the date in agentRoleDate). Agreed: the role is called 'extracted by'. No derivation event is
+-- needed: derivedFromMaterialEntity_fk already says what it was derived from.
+INSERT INTO agent (agent_pk, agentType, preferredAgentName)
+SELECT DISTINCT lower(replace(extracted_by, ' ', '-')), 'person', extracted_by FROM src_extracts WHERE nullif(extracted_by, '') IS NOT NULL
+  AND lower(replace(extracted_by, ' ', '-')) NOT IN (SELECT agent_pk FROM agent);
+
+INSERT INTO material_agent_role (materialEntity_fk, agent_fk, agentRole, agentRoleOrder, agentRoleDate)
+SELECT extract, lower(replace(extracted_by, ' ', '-')), 'extracted by', 1, extracted
+FROM src_extracts WHERE nullif(extracted_by, '') IS NOT NULL;
+
 
 -- The COI run, as in the eDNA recipe.
 INSERT INTO molecular_protocol (molecularProtocol_pk, molecularProtocolID, assayType, target_gene,

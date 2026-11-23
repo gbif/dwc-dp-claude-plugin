@@ -128,6 +128,9 @@ they are worked on locally from this file.
 - **Names** (2026-11-23): the identification table is preferred for names. When a material or
   occurrence has an identification, its own identification fields are not filled. `validate` and
   `check` warn about both cases.
+- **Derivations** (2026-11-23): no event is needed. `derivedFromMaterialEntity_fk` says what
+  material was derived from. Who and when go in `material-agent-role` (`agentRoleDate`), and a
+  derivation event is only for where or how. The examples no longer keep dates in remarks.
 - **Metadata** (2026-11-23): both `eml.xml` (EML 2.2.0) and the Data Package's descriptor
   properties, from one `metadata.json` the data holder confirms (`package --metadata`).
 - **Darwin Core Archives:** yes, help translate them to DwC-DP (`load-dwca`, and the recipe above).
@@ -159,7 +162,3 @@ they are worked on locally from this file.
        `agent` table gets it;
      - `primaryKey`, `mediatype`, a schema given as a reference, and column order are not checked
        at all; `check` keeps them as its own errors.
-
-1. **`eventCategory` for a derivation event** (a tissue taken from a specimen) `needs-human`
-   - The schema's examples have none. Is there a value to use, or should the date stay in
-     `materialEntityRemarks`?

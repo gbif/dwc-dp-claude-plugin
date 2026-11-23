@@ -4,4 +4,4 @@ Made up for testing: an export from a small beetle collection.
   each row.
 - `determinations.csv`: every determination, the current one marked; one name has "cf." and one
   "aff.".
-- `tissues.csv`: a tissue sample taken from one specimen.
+- `tissues.csv`: a tissue sample taken from one specimen, with when and by whom.
