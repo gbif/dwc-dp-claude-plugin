@@ -171,8 +171,8 @@ row its sequence and protocol. In DwC-DP the result is the eDNA tables (`edna.md
    - `sampleSizeValue` becomes `processedTotalReadCount`, when `sampleSizeUnit` is "DNA sequence
      reads".
    - `suggest` lists `survey.sampleSizeValue` for that term. In these archives it is the sample's
-     total reads, which is why it goes to the analysis here. See the open question on
-     `processedTotalReadCount` in `edna.md`.
+     total reads, which is why it goes to the analysis here: `processedTotalReadCount` is the
+     sample's total read count, next to `readCount` (`edna.md`).
 5. **Identifications:** one per sequence, based on it. The archive repeats the taxonomy on every row
    of the same sequence.
 6. **Occurrences:** the core rows are inferred occurrences. Keeping them is the data holder's

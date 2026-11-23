@@ -45,6 +45,10 @@ The protocol is what tells markers apart:
 Read counts compare only within one protocol. Each marker is its own library with its own
 sequencing depth, so a sample's totals are per marker (see `processedTotalReadCount` below).
 
+`processedTotalReadCount` is the total read count of the sample. It sits in `nucleotide-analysis`,
+next to `readCount`, so that the relative read count of a sequence is `readCount /
+processedTotalReadCount` on the same row, without joining tables.
+
 ## Keys
 
 - **Samples:** their sample codes as `materialEntityID`.
@@ -106,12 +110,13 @@ taxonomy table. Load those with `--as` so their table names start with a letter 
 ## Choices the data holder makes
 
 - **What `processedTotalReadCount` holds.**
-  - The schema describes it as "The total number of reads obtained for a processed
-    dwc:NucleotideSequence during a dwc:NucleotideAnalysis". `readCount` already holds the reads of
-    each sequence, so this plugin reads it as the sample's total for that marker. The MDT writes it
-    the same way, as the sample's total.
-  - Whether that total is before or after removing controls, contaminants or unassigned reads is
-    theirs to say.
+  - It is the sample's total read count, repeated on each of the sample's analysis rows, so that
+    `readCount / processedTotalReadCount` gives the relative read count without a join. This is
+    the maintainers' answer (2026-11-23), and the MDT writes it the same way.
+  - With several markers, the example takes the total over the sample's reads for that marker,
+    because each marker is its own library.
+  - Whether the total is before or after removing controls, contaminants or unassigned reads is
+    the data holder's to say.
   - The example sums the reads in the processed table; use their own totals when they have them.
 - **`rawTotalReadCount`:** the reads before processing, when they have them, also per sample and
   marker.

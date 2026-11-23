@@ -120,6 +120,9 @@ they are worked on locally from this file.
   of it.
 - **Upstream examples:** don't raise their pre-1.0 state in gbif/dwc-dp-examples or tdwg/dwc.
 - **eDNA:** no referral to the MDT; the plugin builds DwC-DP for eDNA as for any other data.
+- **`processedTotalReadCount`** (2026-11-23): the total read count of the sample, in
+  `nucleotide-analysis` so that `readCount / processedTotalReadCount` gives the relative read count
+  without a join. The eDNA recipe takes it per sample and marker when several markers are used.
 - **Metadata** (2026-11-23): both `eml.xml` (EML 2.2.0) and the Data Package's descriptor
   properties, from one `metadata.json` the data holder confirms (`package --metadata`).
 - **Darwin Core Archives:** yes, help translate them to DwC-DP (`load-dwca`, and the recipe above).
@@ -165,10 +168,6 @@ they are worked on locally from this file.
      genomes, and GBIF's DNA derived data extension has the same descriptions.
    - The MDT puts the taxonomy reference database in `otu_db`, and the eDNA recipe follows it. Is
      that the intended term?
-3. **`processedTotalReadCount`** `needs-human`
-   - The schema's description reads as per sequence ("for a processed dwc:NucleotideSequence").
-   - The eDNA recipe reads it as the sample's total for one marker, as the MDT writes it, because
-     `readCount` already holds the per-sequence reads. Confirm.
-4. **`eventCategory` for a derivation event** (a tissue taken from a specimen) `needs-human`
+3. **`eventCategory` for a derivation event** (a tissue taken from a specimen) `needs-human`
    - The schema's examples have none. Is there a value to use, or should the date stay in
      `materialEntityRemarks`?
