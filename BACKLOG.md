@@ -45,35 +45,22 @@ they are worked on locally from this file.
   - It also covers where a flat core row splits into several tables.
   - Uses a synthetic archive fixture; cite the Darwin Core text guide (https://dwc.tdwg.org/text/)
     for meta.xml.
-- **Make `check` agree with GBIF's DwC-DP analyser** `ready` `tooling`
-  - gbif/dwc-dp-analyser (Apache-2.0) is the validator GBIF's crawler runs on every DwC-DP it
-    downloads. `check` must reach the same verdict, so that data holders don't need to install it.
-  - Found by reading the 0.0.16 source:
-    - **Field descriptors:** the analyser compares `title`, `description` and
-      `dcterms:isVersionOf` (and `format`, `namespace` and `dcterms:references` when present)
-      with the canonical schema, as a warning (`FIELD_DEFINITION_MISMATCH`). `check` compares
-      only `type` and `dcterms:isVersionOf`.
-    - **Duplicate field names in a resource:** an error (`FIELD_DUPLICATE`), which `check`
-      doesn't test.
-    - **Top-level `name`:** a warning when missing (`MISSING_NAME`, RECOMMENDED by Frictionless).
-      `package` writes no `name`; add `--name`, and ask the data holder for it.
-    - **The profile's JSON Schema:** validated (`JSON_SCHEMA_VIOLATION`, a warning). `check`
-      tests only parts of it, for example the five properties each field must have.
-    - **Data checks:** foreign keys (`NOT EXISTS`), primary key uniqueness and types
-      (`TRY_CAST`, including `date`, `datetime`, `time` and `year`). Compare the type rules
-      exactly.
-    - **EML:** well-formed, `<title>`, `<creator>` and the EML 2.2.0 XSD. These don't affect the
-      analyser's `isValid`.
-  - Match its severities (`DefaultSeverities`): an analyser error is a `check` error, and so on.
-  - Beyond the analyser, `check` and `validate` also cover:
-    - required values that are empty;
-    - `minimum`/`maximum`;
-    - references by public identifier (weak foreign keys);
-    - the conceptual model's one-evidence rule;
-    - GBIF vocabularies.
-    These stay, as warnings or errors of the plugin's own, and say so in the report.
-  - Done when the analyser and `check` agree on every fixture package, with differences either
-    fixed or listed in `references/package.md` with their reason.
+- **Make `check` agree with GBIF's DwC-DP analyser** `in-progress` `tooling`
+  - Done, from the 0.0.16 source:
+    - `check` makes the analyser's descriptor checks at its default severities: profile, `name`,
+      paths, field types, duplicates, required fields, field descriptors and relationships
+      (including weak ones);
+    - it makes the EML checks that need no XSD, and the data checks (keys, links and types cast
+      to the declared type);
+    - the `--json` report names the analyser's violation type for each finding;
+    - `package --name`;
+    - tests for each rule (`AlignedWithAnalyser`);
+    - the differences are documented in `references/package.md`.
+  - Left:
+    - confirm with a real run of the analyser on the test packages (see CI below), and fix what
+      differs;
+    - EML 2.2.0 XSD validation, which needs the XSD and a validator outside the standard library,
+      so it stays the analyser's.
 - **Keep `check` aligned in CI** `ready` `tooling`
   - In `test.yml`:
     - download the pinned analyser release jar (0.0.16), and verify it against the release's
@@ -126,6 +113,20 @@ they are worked on locally from this file.
   - `eventCategory` has no GBIF vocabulary, so it isn't checked.
 
 ## Needs a human decision
+
+0. **Where GBIF's analyser is more lenient than the guide, or warns where the schema allows**
+   `needs-human`
+   - `check` follows the analyser's levels. These may be worth raising with its maintainer:
+     - a field `type` other than the schema's, a resource `profile` other than
+       `tabular-data-resource`, and a relationship the schema doesn't define are warnings, though
+       the guide says MUST;
+     - a custom field is INFO;
+     - a changed `description` is a warning, though the guide (3.4) says it MAY differ;
+     - `FK_UNKNOWN_REFERENCE_RESOURCE` for identifiers (weak foreign keys) that point outside the
+       package, which the schema allows. Every package with, for example, `recordedByID` and no
+       `agent` table gets it;
+     - `primaryKey`, `mediatype`, a schema given as a reference, and column order are not checked
+       at all; `check` keeps them as its own errors.
 
 1. **Metadata** `needs-human`
    - Found so far: `eml.xml` is optional in the guide.

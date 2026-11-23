@@ -88,7 +88,7 @@ class Database(Base):
     def test_toy_survey_validates_packages_and_checks(self):
         self.toy()
         self.assertIn("No problems found", self.ok("validate"))
-        self.ok("package", "out", "--title", "Toy survey")
+        self.ok("package", "out", "--title", "Toy survey", "--name", "toy-survey")
         with open(os.path.join(self.dir, "out", "datapackage.json")) as fh:
             dp = json.load(fh)
         self.assertEqual(dp["profile"], "https://rs.tdwg.org/dwc-dp/1.0/dwc-dp-profile.json")
@@ -183,6 +183,120 @@ class Vocabularies(Base):
         self.assertIn("Present (deprecated, use Detected)", out)
 
 
+class AlignedWithAnalyser(Base):
+    """check reports what GBIF's DwC-DP analyser (gbif/dwc-dp-analyser 0.0.16) reports, at its
+    default severity, with its violation type as `analyser`."""
+
+    def package(self, change=None, files=None):
+        self.toy()
+        with open(os.path.join(self.dir, "id.sql"), "w") as fh:
+            fh.write("UPDATE event SET recordedByID = 'https://orcid.org/0000-0002-1825-0097';")
+        self.ok("run", "id.sql")
+        self.ok("package", "out", "--name", "toy", "--overwrite")
+        path = os.path.join(self.dir, "out", "datapackage.json")
+        with open(path) as fh:
+            dp = json.load(fh)
+        if change:
+            change(dp, {r["name"]: r for r in dp["resources"]})
+            with open(path, "w") as fh:
+                json.dump(dp, fh)
+        for name, text in (files or {}).items():
+            with open(os.path.join(self.dir, "out", name), "w") as fh:
+                fh.write(text)
+        r = run("check", "out", "--json", cwd=self.dir)
+        report = json.loads(r.stdout)
+        return r.returncode, {(i["analyser"], i["level"]) for i in report["items"]}, report
+
+    def test_a_fresh_package_has_only_the_expected_weak_reference_warning(self):
+        code, found, _ = self.package()
+        self.assertEqual(code, 0)
+        self.assertEqual(found, {("FK_UNKNOWN_REFERENCE_RESOURCE", "warning")})
+
+    def test_duplicate_field_is_an_error(self):
+        def change(dp, res):
+            res["occurrence"]["schema"]["fields"].append(dict(res["occurrence"]["schema"]["fields"][0]))
+        code, found, _ = self.package(change)
+        self.assertEqual(code, 1)
+        self.assertIn(("FIELD_DUPLICATE", "error"), found)
+
+    def test_changed_title_or_description_is_a_warning(self):
+        def change(dp, res):
+            res["occurrence"]["schema"]["fields"][0]["title"] = "Record"
+            res["occurrence"]["schema"]["fields"][1]["description"] = "The visit."
+        code, found, report = self.package(change)
+        self.assertEqual(code, 0)
+        mismatch = [i for i in report["items"] if i["analyser"] == "FIELD_DEFINITION_MISMATCH"]
+        self.assertEqual(sorted(i["message"].split(" a ")[1].split(" ")[0] for i in mismatch), ["description", "title"])
+
+    def test_changed_type_is_a_warning_and_values_are_cast_to_the_declared_type(self):
+        def change(dp, res):
+            f = next(f for f in res["event"]["schema"]["fields"] if f["name"] == "eventDate")
+            f["type"] = "integer"
+        code, found, _ = self.package(change)
+        self.assertIn(("FIELD_TYPE_MISMATCH", "warning"), found)
+        self.assertIn(("DATA_TYPE_VIOLATION", "error"), found)
+        self.assertEqual(code, 1)
+
+    def test_missing_title_is_an_error(self):
+        def change(dp, res):
+            del res["event"]["schema"]["fields"][2]["title"]
+        code, found, _ = self.package(change)
+        self.assertIn(("FIELD_DEFINITION_MISSING", "error"), found)
+        self.assertIn(("JSON_SCHEMA_VIOLATION", "warning"), found)
+        self.assertEqual(code, 1)
+
+    def test_custom_field_is_information_only(self):
+        def change(dp, res):
+            res["event"]["schema"]["fields"].append({"name": "weather", "title": "Weather", "description": "x", "type": "string", "dcterms:isVersionOf": "http://example.org/weather"})
+        code, found, _ = self.package(change)
+        self.assertIn(("UNKNOWN_FIELD", "info"), found)
+
+    def test_undeclared_and_unknown_relationships_are_warnings(self):
+        def change(dp, res):
+            res["occurrence"]["schema"]["foreignKeys"][0]["predicate"] = "during"
+        code, found, _ = self.package(change)
+        self.assertEqual(code, 0)
+        self.assertIn(("FOREIGN_KEY_MISSING", "warning"), found)
+        self.assertIn(("FOREIGN_KEY_NOT_IN_CANONICAL_SCHEMA", "warning"), found)
+
+    def test_missing_required_field_is_an_error(self):
+        def change(dp, res):
+            res["event"]["schema"]["fields"] = [f for f in res["event"]["schema"]["fields"] if f["name"] != "eventCategory"]
+        code, found, report = self.package(change)
+        self.assertIn(("REQUIRED_FIELD_MISSING", "error"), found)
+        self.assertFalse(any("the required field eventCategory is missing" in i["message"] for i in report["items"]))
+
+    def test_path_outside_the_package_is_an_error(self):
+        def change(dp, res):
+            res["event"]["path"] = "../event.csv"
+        code, found, _ = self.package(change)
+        self.assertIn(("PATH_NOT_FOUND", "error"), found)
+        self.assertEqual(code, 1)
+
+    def test_missing_package_name_is_a_warning(self):
+        def change(dp, res):
+            del dp["name"]
+        code, found, _ = self.package(change)
+        self.assertEqual(code, 0)
+        self.assertIn(("MISSING_NAME", "warning"), found)
+
+    def test_eml_problems_are_warnings(self):
+        code, found, _ = self.package(files={"eml.xml": "<eml><dataset><title>T</title></dataset></eml>"})
+        self.assertEqual(code, 0)
+        self.assertIn(("EML_MISSING_CREATOR", "warning"), found)
+        code, found, _ = self.package(files={"eml.xml": "<eml><dataset>"})
+        self.assertIn(("INVALID_XML", "warning"), found)
+
+    def test_unrecognised_profile_skips_the_analysers_schema_checks(self):
+        def change(dp, res):
+            dp["profile"] = "https://example.org/profile.json"
+            res["event"]["schema"]["fields"][2]["title"] = "Other"
+        code, found, _ = self.package(change)
+        self.assertIn(("UNRECOGNIZED_PROFILE_VERSION", "error"), found)
+        self.assertIn((None, "warning"), found)
+        self.assertNotIn(("FIELD_DEFINITION_MISMATCH", "warning"), found)
+
+
 class Check(Base):
     def test_package_from_before_1_0_is_refused_clearly(self):
         out = self.fails("check", os.path.join(FIXTURES, "natural-keys-package"))
@@ -191,7 +305,7 @@ class Check(Base):
 
     def test_wrong_type_is_reported(self):
         self.toy()
-        self.ok("package", "out")
+        self.ok("package", "out", "--name", "toy")
         path = os.path.join(self.dir, "out", "event.csv")
         with open(path) as fh:
             text = fh.read()
@@ -202,7 +316,7 @@ class Check(Base):
 
     def test_malformed_csv_is_reported_not_crashed(self):
         self.toy()
-        self.ok("package", "out")
+        self.ok("package", "out", "--name", "toy")
         path = os.path.join(self.dir, "out", "event.csv")
         with open(path) as fh:
             text = fh.read()

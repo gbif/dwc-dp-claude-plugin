@@ -593,11 +593,15 @@ def cmd_status(args):
 # ---------------------------------------------------------------- checks
 
 class Report:
+    """Findings. `code` is the violation type GBIF's DwC-DP analyser (gbif/dwc-dp-analyser) reports
+    for the same problem, at the same level; findings without one are this plugin's own checks."""
+
     def __init__(self):
         self.items = []
 
-    def add(self, level, table, message, examples=None, field=None):
-        self.items.append({"level": level, "table": table, "field": field, "message": message, "examples": examples or []})
+    def add(self, level, table, message, examples=None, field=None, code=None):
+        self.items.append({"level": level, "table": table, "field": field, "message": message,
+                           "examples": examples or [], "analyser": code})
 
     def error(self, *a, **k):
         self.add("error", *a, **k)
@@ -605,18 +609,21 @@ class Report:
     def warning(self, *a, **k):
         self.add("warning", *a, **k)
 
+    def info(self, *a, **k):
+        self.add("info", *a, **k)
+
     @property
     def errors(self):
         return [i for i in self.items if i["level"] == "error"]
 
-    def print(self, as_json=False, ok_text="No problems found."):
+    def print(self, as_json=False, ok_text="No problems found.", analyser_summary=False):
         if as_json:
             print(json.dumps({"errors": len(self.errors), "items": self.items}, indent=2, default=str))
             return
         if not self.items:
             print(ok_text)
             return
-        for level, title in (("error", "Must be fixed"), ("warning", "Worth checking")):
+        for level, title in (("error", "Must be fixed"), ("warning", "Worth checking"), ("info", "For information")):
             items = [i for i in self.items if i["level"] == level]
             if not items:
                 continue
@@ -627,6 +634,15 @@ class Report:
                 ex = f" For example: {', '.join(repr(str(e)) for e in shown)}{more}." if shown else ""
                 print(f"  - {i['table']}: {i['message']}{ex}")
             print()
+        if analyser_summary:
+            gbif = [i for i in self.errors if i["analyser"]]
+            own = [i for i in self.errors if not i["analyser"]]
+            if self.errors:
+                print(f"GBIF's DwC-DP analyser would report {len(gbif)} of these {len(self.errors)} errors; "
+                      f"{'the other' if len(own) == 1 else 'the other ' + str(len(own))} {'is' if len(own) == 1 else 'are'} this tool's own checks of DwC-DP rules." if own else
+                      f"GBIF's DwC-DP analyser would report all {len(gbif)} errors.")
+            else:
+                print("No errors, so GBIF's DwC-DP analyser would find the package valid.")
 
 
 def have(n, total=None):
@@ -640,8 +656,9 @@ def examples(con, sql):
     return [r[0] for r in con.execute(f"{sql} LIMIT {EXAMPLES_SHOWN}").fetchall()]
 
 
-def check_tables(con, present, report):
-    """Relational and field checks. present: {dwc name: (db table, [columns], rows)}."""
+def check_tables(con, present, report, descriptor_checked=False):
+    """Relational and field checks. present: {dwc name: (db table, [columns], rows)}. With
+    descriptor_checked, a required field that is absent was already reported by check_descriptor."""
     for name, (table, cols, rows) in present.items():
         s = schemas()[name]
         fm = field_map(s)
@@ -652,20 +669,23 @@ def check_tables(con, present, report):
         for f in s["fields"]:
             fname, c = f["name"], constraints(f)
             if fname not in cols:
-                if c.get("required"):
+                if c.get("required") and not descriptor_checked:
                     report.error(name, f"the required field {fname} is missing.", field=fname)
                 continue
             F = q(fname)
             if c.get("required"):
                 n = count(con, f"SELECT count(*) FROM {T} WHERE {F} IS NULL OR trim(CAST({F} AS VARCHAR)) = ''")
                 if n:
-                    report.error(name, f"{have(n, rows)} no {fname}, which is required.", field=fname)
+                    pk = fname == s.get("primaryKey")
+                    report.error(name, f"{have(n, rows)} no {fname}, which is required{' (the primary key)' if pk else ''}.", field=fname,
+                                 code="PRIMARY_KEY_VIOLATION" if pk else None)
             if c.get("unique"):
                 n = count(con, f"SELECT count(*) FROM (SELECT {F} FROM {T} WHERE {F} IS NOT NULL GROUP BY {F} HAVING count(*) > 1)")
                 if n:
                     ex = examples(con, f"SELECT {F} FROM {T} WHERE {F} IS NOT NULL GROUP BY {F} HAVING count(*) > 1 ORDER BY 1")
                     what = "the primary key" if fname == s.get("primaryKey") else "a field that must be unique"
-                    report.error(name, f"{n} {'value' if n == 1 else 'values'} of {fname} ({what}) {'occurs' if n == 1 else 'occur'} more than once.", ex, fname)
+                    report.error(name, f"{n} {'value' if n == 1 else 'values'} of {fname} ({what}) {'occurs' if n == 1 else 'occur'} more than once.", ex, fname,
+                                 code="PRIMARY_KEY_VIOLATION" if fname == s.get("primaryKey") else None)
             for bound, op in (("minimum", "<"), ("maximum", ">")):
                 if bound in c:
                     n = count(con, f"SELECT count(*) FROM {T} WHERE TRY_CAST({F} AS DOUBLE) {op} {float(c[bound])}")
@@ -688,7 +708,8 @@ def check_tables(con, present, report):
             bad_sql = f"SELECT DISTINCT {F} FROM {T} WHERE {F} IS NOT NULL AND {F} NOT IN ({sub})"
             n = count(con, f"SELECT count(*) FROM {T} WHERE {F} IS NOT NULL AND {F} NOT IN ({sub})")
             if n:
-                report.error(name, f"{have(n)} a value in {fname} that matches no {tfield} in {target} ({name} {pred} {target}).", examples(con, bad_sql + " ORDER BY 1"), fname)
+                report.error(name, f"{have(n)} a value in {fname} that matches no {tfield} in {target} ({name} {pred} {target}).", examples(con, bad_sql + " ORDER BY 1"), fname,
+                             code="FOREIGN_KEY_VIOLATION")
 
         for fname, pred, target, tfield in keys(s, "weakForeignKeys"):
             tgt = present.get(target)
@@ -786,9 +807,13 @@ def cmd_package(args):
         sys.exit("There are no DwC-DP rows to package yet.")
     report = Report()
     check_tables(con, present, report)
+    if not args.name:
+        report.warning("datapackage.json", "will have no name, a short identifier the Data Package specification recommends. Add --name.", code="MISSING_NAME")
     if report.errors:
         report.print()
         sys.exit("Not packaged: fix the problems above first (dwcdp.py validate shows them again).")
+    if args.name and not NAME_PATTERN.match(args.name):
+        sys.exit(f"--name {args.name!r} may only have lower-case letters, digits and - . _ /, for example 'beetles-mols-2024'.")
     out = os.path.abspath(args.out)
     if os.path.exists(out) and os.listdir(out):
         if not args.overwrite:
@@ -818,7 +843,7 @@ def cmd_package(args):
         })
         print(f"{path}: {rows} rows, {len(used)} fields")
     descriptor = {"profile": PROFILE_URL}
-    for key in ("id", "title", "version"):
+    for key in ("name", "id", "title", "version"):
         if getattr(args, key):
             descriptor[key] = getattr(args, key)
     descriptor["created"] = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat()
@@ -832,69 +857,210 @@ def cmd_package(args):
         print(f"  note, {w['table']}: {w['message']}")
 
 
+# Field types of the Table Schema specification, and the DuckDB types GBIF's DwC-DP analyser
+# casts them to (FrictionlessDescriptorValidator and DuckDbDataTypeValidator in gbif/dwc-dp-analyser).
+FRICTIONLESS_TYPES = {"string", "number", "integer", "boolean", "object", "array", "date", "time",
+                      "datetime", "year", "yearmonth", "duration", "geopoint", "geojson", "any"}
+CAST_TYPES = {"integer": "BIGINT", "number": "DOUBLE", "boolean": "BOOLEAN", "date": "DATE",
+              "datetime": "TIMESTAMP", "time": "TIME", "year": "INTEGER", "object": "JSON", "array": "JSON"}
+# The field descriptor properties the analyser compares with the canonical schema: always, and
+# only when the package declares them (DwcDpTableSchemaValidator).
+DESCRIPTOR_REQUIRED = ("type", "title", "description", "dcterms:isVersionOf")
+DESCRIPTOR_OPTIONAL = ("format", "namespace", "dcterms:references")
+NAME_PATTERN = re.compile(r"^([-a-z0-9._/])+$")
+
+
+def key_refs(schema_node, name):
+    """{(fields, predicate, target resource, target fields)} of foreignKeys and weakForeignKeys,
+    compared as the analyser does (ForeignKeyCrossChecker): predicate included, an empty target
+    resource meaning the table itself."""
+    out = set()
+    for kind in ("foreignKeys", "weakForeignKeys"):
+        for k in schema_node.get(kind) or []:
+            fields = tuple(x.strip() for x in as_list(k.get("fields")) if x and x.strip())
+            if not fields:
+                continue
+            ref = k.get("reference") or {}
+            out.add((fields, (k.get("predicate") or "").strip(), (ref.get("resource") or "").strip(),
+                     tuple(x.strip() for x in as_list(ref.get("fields")) if x and x.strip())))
+    return out
+
+
+def describe_ref(ref):
+    fields, pred, target, tfields = ref
+    return f"{'+'.join(fields)} → {target or 'itself'}.{'+'.join(tfields)}" + (f" ({pred})" if pred else "")
+
+
+def check_descriptor(dp, root, report):
+    """The descriptor checks of GBIF's DwC-DP analyser, at its default severities, plus the guide's
+    rules it doesn't check (marked as this tool's own by having no code)."""
+    profile = dp.get("profile") or ""
+    # The analyser runs its profile and table schema checks (layers 1 and 2) only for a profile it
+    # recognises; otherwise it reports UNRECOGNIZED_PROFILE_VERSION and skips them. Findings of those
+    # layers then count as this tool's own.
+    recognised = bool(re.match(r"^https?://rs\.tdwg\.org/dwc-dp/[^/]+/dwc-dp-profile\.json$", profile))
+    layer2 = lambda code: code if recognised else None
+    if not recognised:
+        report.error("datapackage.json", f"profile is {profile!r}; a DwC-DP names a versioned profile on rs.tdwg.org, such as {PROFILE_URL}.",
+                     code="UNRECOGNIZED_PROFILE_VERSION")
+    elif f"/dwc-dp/{VERSION}/" not in profile:
+        report.error("datapackage.json", f"profile is {profile}, and this tool checks DwC-DP {VERSION}.")
+    if not (dp.get("name") or "").strip():
+        report.warning("datapackage.json", "has no name, a short identifier for the package that the Data Package specification recommends (package --name).",
+                       code="MISSING_NAME")
+    elif not NAME_PATTERN.match(dp["name"]):
+        report.warning("datapackage.json", f"name {dp['name']!r} may only have lower-case letters, digits and - . _ /.", code=layer2("JSON_SCHEMA_VIOLATION"))
+    resources = dp.get("resources")
+    if not isinstance(resources, list) or not resources:
+        report.error("datapackage.json", "has no resources.", code="MISSING_RESOURCES")
+        return []
+    declared_fields = {}
+    for r in resources:
+        rname = (r.get("name") or "").strip()
+        if rname:
+            declared_fields[rname] = {(f.get("name") or "").strip() for f in ((r.get("schema") or {}).get("fields") or []) if isinstance(f, dict)}
+    usable = []
+    for i, r in enumerate(resources):
+        name = (r.get("name") or "").strip()
+        label = name or f"resource {i + 1}"
+        if not name:
+            report.warning(label, "has no name.", code="RESOURCE_MISSING_NAME")
+        rel = r.get("path") or ""
+        path = os.path.realpath(os.path.join(root, rel)) if isinstance(rel, str) and rel else None
+        if not path:
+            report.error(label, "has no path to its file.", code="PATH_NOT_FOUND")
+        elif os.path.isabs(rel) or ".." in rel.replace("\\", "/").split("/"):
+            report.error(label, f"path {rel!r} points outside the package.", code="PATH_NOT_FOUND")
+            path = None
+        elif not os.path.exists(path):
+            report.error(label, f"its file {rel!r} is not in the package.", code="PATH_NOT_FOUND")
+            path = None
+        rs = r.get("schema")
+        fields = [f for f in ((rs or {}).get("fields") or []) if isinstance(f, dict)] if isinstance(rs, dict) else []
+        for f in fields:
+            t = f.get("type")
+            if t is not None and t not in FRICTIONLESS_TYPES:
+                report.warning(label, f"field {f.get('name')} has type {t!r}, which the Table Schema specification doesn't have.", field=f.get("name"), code="UNKNOWN_FIELD_TYPE")
+        for k in (rs or {}).get("foreignKeys") or [] if isinstance(rs, dict) else []:
+            target = ((k.get("reference") or {}).get("resource") or "").strip()
+            if target and target not in declared_fields:
+                report.warning(label, f"declares a foreign key to {target!r}, which is not in the package.", code="FK_UNKNOWN_REFERENCE_RESOURCE")
+        if name not in schemas():
+            if r.get("profile") == "tabular-data-resource":
+                report.info(label, f"is not a DwC-DP {VERSION} table, so only its file was checked.")
+            continue
+        s = schemas()[name]
+        fm = field_map(s)
+        if r.get("profile") != "tabular-data-resource":
+            report.warning(name, "resource profile must be tabular-data-resource.", code=layer2("JSON_SCHEMA_VIOLATION"))
+        if r.get("mediatype") != "text/csv":
+            report.error(name, f"mediatype is {r.get('mediatype')!r}; the DwC-DP guide (3.2.2) requires text/csv.")
+        if not isinstance(rs, dict):
+            report.error(name, "schema must be the table schema itself, not a reference to one (DwC-DP guide 3.2.2).")
+            continue
+        names = [(f.get("name") or "").strip() for f in fields]
+        dupes = sorted({n for n in names if n and names.count(n) > 1})
+        if dupes:
+            report.error(name, f"{len(dupes)} {'field is' if len(dupes) == 1 else 'fields are'} declared more than once.", dupes, code=layer2("FIELD_DUPLICATE"))
+        missing_props = [f"{f.get('name')}: {p}" for f in fields for p in ("name", "title", "description", "type", "dcterms:isVersionOf") if f.get(p) in (None, "")]
+        if missing_props:
+            report.warning(name, f"{len(missing_props)} field {'descriptor lacks' if len(missing_props) == 1 else 'descriptors lack'} a property the DwC-DP profile requires.", missing_props, code=layer2("JSON_SCHEMA_VIOLATION"))
+        bad_iri = [f["name"] for f in fields if f.get("dcterms:isVersionOf") and not re.match(r"^https?://.+$", str(f["dcterms:isVersionOf"]))]
+        if bad_iri:
+            report.warning(name, "dcterms:isVersionOf must be a URL.", bad_iri, code=layer2("JSON_SCHEMA_VIOLATION"))
+        required_missing = [f["name"] for f in s["fields"] if constraints(f).get("required") and f["name"] not in names]
+        if required_missing:
+            report.error(name, f"{len(required_missing)} required {'field is' if len(required_missing) == 1 else 'fields are'} not declared.", required_missing, code=layer2("REQUIRED_FIELD_MISSING"))
+        unknown = [n for n in names if n and n not in fm]
+        if unknown:
+            report.info(name, f"{len(unknown)} of its {len(fields)} fields {'is not a DwC-DP ' + VERSION + ' field' if len(unknown) == 1 else 'are not DwC-DP ' + VERSION + ' fields'} of {name} (custom fields SHOULD NOT be added, DwC-DP guide 3.3).", unknown, code=layer2("UNKNOWN_FIELD"))
+        absent, differ = {}, {}
+        for f in fields:
+            v = fm.get((f.get("name") or "").strip())
+            if not v:
+                continue
+            for prop in DESCRIPTOR_REQUIRED:
+                if f.get(prop) is None:
+                    absent.setdefault(prop, []).append(v["name"])
+                elif str(f.get(prop)).strip() != str(v.get(prop) or "").strip():
+                    differ.setdefault(prop, []).append(v["name"])
+            for prop in DESCRIPTOR_OPTIONAL:
+                if prop in f and str(f.get(prop)).strip() != str(v.get(prop) or "").strip():
+                    differ.setdefault(prop, []).append(v["name"])
+        for prop, lst in absent.items():
+            report.error(name, f"{len(lst)} {'field lacks' if len(lst) == 1 else 'fields lack'} {prop}.", lst, code=layer2("FIELD_DEFINITION_MISSING"))
+        for prop, lst in differ.items():
+            code = layer2("FIELD_TYPE_MISMATCH" if prop == "type" else "FIELD_DEFINITION_MISMATCH")
+            report.warning(name, f"{len(lst)} {'field has' if len(lst) == 1 else 'fields have'} a {prop} other than the DwC-DP schema's (copy field descriptors from it, DwC-DP guide 3.3).", lst, code=code)
+        pk = rs.get("primaryKey")
+        if pk is not None and as_list(pk) != as_list(s.get("primaryKey")):
+            report.error(name, f"primaryKey is {pk!r}; the DwC-DP schema defines {s.get('primaryKey')!r} (DwC-DP guide 3.3).")
+        canonical, declared = key_refs(s, name), key_refs(rs, name)
+        present_names = set(names)
+        undeclared = [describe_ref(k) for k in canonical if set(k[0]) <= present_names and k not in declared]
+        if undeclared:
+            report.warning(name, f"has the {'field' if len(undeclared) == 1 else 'fields'} of {len(undeclared)} {'relationship' if len(undeclared) == 1 else 'relationships'} in the DwC-DP schema without declaring {'it' if len(undeclared) == 1 else 'them'}.", sorted(undeclared), code=layer2("FOREIGN_KEY_MISSING"))
+        for k in sorted(declared):
+            fields_, _, target, tfields = k
+            for fld in fields_:
+                if fld not in present_names:
+                    report.warning(name, f"declares {describe_ref(k)}, and has no field {fld}.", code=layer2("FOREIGN_KEY_FIELD_NOT_DECLARED"))
+            tgt = target or name
+            if tgt in declared_fields:
+                for tf in tfields:
+                    if tf not in declared_fields[tgt]:
+                        report.warning(name, f"declares {describe_ref(k)}, and {tgt} has no field {tf}.", code=layer2("FOREIGN_KEY_TARGET_FIELD_NOT_DECLARED"))
+            elif any(rk == k for rk in key_refs({"weakForeignKeys": rs.get("weakForeignKeys") or []}, name)):
+                report.warning(name, f"refers by identifier to {tgt} ({describe_ref(k)}), and the package has no {tgt} table. That is expected when the identifiers point outside the package.", code=layer2("FK_UNKNOWN_REFERENCE_RESOURCE"))
+        not_canonical = [describe_ref(k) for k in declared if k not in canonical]
+        if not_canonical:
+            report.warning(name, f"{len(not_canonical)} declared {'relationship is not one' if len(not_canonical) == 1 else 'relationships are not ones'} the DwC-DP schema defines.", sorted(not_canonical), code=layer2("FOREIGN_KEY_NOT_IN_CANONICAL_SCHEMA"))
+        if path:
+            usable.append((r, name, fields, path))
+    return usable
+
+
+def check_eml(root, report):
+    """The EML checks of GBIF's DwC-DP analyser that need no XSD: well-formed, title and creator.
+    They don't affect its verdict, so they are warnings here."""
+    path = os.path.join(root, "eml.xml")
+    if not os.path.exists(path):
+        return
+    import xml.etree.ElementTree as ET
+    try:
+        tree = ET.parse(path).getroot()
+    except ET.ParseError as e:
+        report.warning("eml.xml", f"is not well-formed XML ({e}). GBIF's analyser reports this as an error, though it doesn't make the package invalid.", code="INVALID_XML")
+        return
+    local = lambda el: el.tag.rsplit("}", 1)[-1]
+    found = {local(el): el for el in tree.iter() if local(el) in ("title", "creator")}
+    if "title" not in found or not "".join(found["title"].itertext()).strip():
+        report.warning("eml.xml", "has no title.", code="EML_MISSING_TITLE")
+    if "creator" not in found or not "".join(found["creator"].itertext()).strip():
+        report.warning("eml.xml", "has no creator.", code="EML_MISSING_CREATOR")
+    report.info("eml.xml", "was not checked against the EML 2.2.0 schema; GBIF's analyser does that.")
+
+
 def cmd_check(args):
     root = os.path.abspath(args.path)
     dp_path = os.path.join(root, "datapackage.json")
     if not os.path.exists(dp_path):
         sys.exit(f"No datapackage.json in {args.path}")
-    with open(dp_path, encoding="utf-8") as fh:
-        dp = json.load(fh)
     report = Report()
-    profile = dp.get("profile") or ""
-    if not re.match(r"^https?://rs\.tdwg\.org/dwc-dp/[^/]+/dwc-dp-profile\.json$", profile):
-        report.error("datapackage.json", f"profile is {profile!r}; a DwC-DP names a versioned profile on rs.tdwg.org, such as {PROFILE_URL}.")
-    elif f"/dwc-dp/{VERSION}/" not in profile:
-        report.error("datapackage.json", f"profile is {profile}, and this tool checks DwC-DP {VERSION}.")
-    resources = dp.get("resources") or []
-    if not resources:
-        report.error("datapackage.json", "has no resources.")
+    try:
+        with open(dp_path, encoding="utf-8") as fh:
+            dp = json.load(fh)
+    except ValueError as e:
+        report.error("datapackage.json", f"is not valid JSON ({e}).", code="INVALID_JSON")
+        report.print(args.json, analyser_summary=True)
+        sys.exit(1)
+    usable = check_descriptor(dp, root, report)
+    check_eml(root, report)
     con = connect(":memory:")
     present = {}
-    for r in resources:
-        name = r.get("name", "")
-        if name not in schemas():
-            continue
-        s = schemas()[name]
-        fm = field_map(s)
-        if r.get("profile") != "tabular-data-resource":
-            report.error(name, "resource profile must be tabular-data-resource.")
-        if r.get("mediatype") != "text/csv":
-            report.error(name, f"mediatype is {r.get('mediatype')!r}; DwC-DP tables must say text/csv.")
-        rs = r.get("schema")
-        if not isinstance(rs, dict):
-            report.error(name, "schema must be the table schema itself, not a reference to one.")
-            continue
-        fields = rs.get("fields") or []
-        names = [f.get("name") for f in fields]
-        unknown = [f.get("name") for f in fields if f.get("name") not in fm]
-        if unknown:
-            report.error(name, f"{len(unknown)} of its {len(fields)} fields {'is' if len(unknown) == 1 else 'are'} not DwC-DP {VERSION} fields of {name}.", unknown)
-        for k in ("type", "dcterms:isVersionOf"):
-            differ = [f["name"] for f in fields if f.get("name") in fm and f.get(k) != fm[f["name"]].get(k)]
-            if differ:
-                report.error(name, f"{len(differ)} {'field has' if len(differ) == 1 else 'fields have'} a {k} other than the DwC-DP schema's (field descriptors must be copied from it).", differ)
-        bad = bool(unknown)
-        pk = rs.get("primaryKey")
-        if pk is not None and as_list(pk) != as_list(s.get("primaryKey")):
-            report.error(name, f"primaryKey is {pk!r}; the DwC-DP schema defines {s.get('primaryKey')!r}.")
-        bad_fks = []
-        allowed = {(as_list(k["fields"])[0], (k.get("reference") or {}).get("resource") or name, as_list((k.get("reference") or {}).get("fields"))[0]) for k in s.get("foreignKeys") or []}
-        declared = set()
-        for k in rs.get("foreignKeys") or []:
-            key = (as_list(k.get("fields"))[0], (k.get("reference") or {}).get("resource") or name, as_list((k.get("reference") or {}).get("fields"))[0])
-            declared.add(key[0])
-            if key not in allowed:
-                bad_fks.append(f"{key[0]} → {key[1]}.{key[2]}")
-        if bad_fks:
-            report.error(name, f"{len(bad_fks)} {'foreign key is not one' if len(bad_fks) == 1 else 'foreign keys are not ones'} the DwC-DP schema defines.", bad_fks)
-        for f, _, t, tf in keys(s, "foreignKeys"):
-            if f in names and f not in declared:
-                report.error(name, f"has the field {f} but does not declare its foreign key to {t}.{tf}.", field=f)
-        path = os.path.join(root, r.get("path") or "")
-        if not r.get("path") or not os.path.exists(path):
-            report.error(name, f"its file {r.get('path')!r} is not in the package.")
-            continue
-        if bad:
+    for r, name, fields, path in usable:
+        names = [(f.get("name") or "").strip() for f in fields]
+        if len(set(names)) != len(names):
             continue
         dialect = r.get("dialect") or {}
         delim = dialect.get("delimiter") or ("\t" if (r.get("format") == "tsv" or path.endswith((".tsv", ".tsv.gz"))) else ",")
@@ -914,24 +1080,23 @@ def cmd_check(args):
             continue
         cols = db_columns(con, table)
         if cols != names:
-            report.error(name, f"the file's columns do not match the schema's fields in order and number (file: {len(cols)}, schema: {len(names)}).", [c for c in cols if c not in names][:EXAMPLES_SHOWN] or None)
+            report.error(name, f"the file's columns do not match the schema's fields in order and number (file: {len(cols)}, schema: {len(names)}; DwC-DP guide 3.3).", [c for c in cols if c not in names][:EXAMPLES_SHOWN] or None)
             continue
-        rows = count(con, f"SELECT count(*) FROM {q(table)}")
-        for f in fields:
-            sql_type = SQL_TYPES.get(fm[f["name"]]["type"])
-            if sql_type and sql_type != "VARCHAR":
-                F = q(f["name"])
-                cast = f"TRY_CAST(trim({F}) AS {sql_type})"
-                n = count(con, f"SELECT count(*) FROM {q(table)} WHERE trim({F}) <> '' AND {cast} IS NULL")
-                if n:
-                    report.error(name, f"{n} {'value' if n == 1 else 'values'} of {f['name']} {'is' if n == 1 else 'are'} not of type {fm[f['name']]['type']}.", examples(con, f"SELECT DISTINCT {F} FROM {q(table)} WHERE trim({F}) <> '' AND {cast} IS NULL"), f["name"])
         con.execute(f"UPDATE {q(table)} SET " + ", ".join(f"{q(c)} = NULLIF({q(c)}, '')" for c in cols))
+        rows = count(con, f"SELECT count(*) FROM {q(table)}")
+        # Types are checked against the type the package declares, as the analyser does.
+        for f in fields:
+            cast = CAST_TYPES.get(str(f.get("type", "")).lower())
+            if not cast:
+                continue
+            F = q(f["name"])
+            bad = f"FROM {q(table)} WHERE {F} IS NOT NULL AND TRY_CAST({F} AS {cast}) IS NULL"
+            n = count(con, f"SELECT count(*) {bad}")
+            if n:
+                report.error(name, f"{n} {'value' if n == 1 else 'values'} of {f['name']} {'is' if n == 1 else 'are'} not of type {f['type']}.", examples(con, f"SELECT DISTINCT {F} {bad}"), f["name"], code="DATA_TYPE_VIOLATION")
         present[name] = (table, cols, rows)
-    unknown = [r.get("name") for r in resources if r.get("name") not in schemas() and r.get("profile") == "tabular-data-resource"]
-    if unknown:
-        report.warning("datapackage.json", f"has tables that are not DwC-DP {VERSION} tables, and they were not checked: {', '.join(map(str, unknown))}.")
-    check_tables(con, present, report)
-    report.print(args.json, f"No problems found in {args.path}: " + ", ".join(f"{t} ({r[2]} rows)" for t, r in present.items()) + ".")
+    check_tables(con, present, report, descriptor_checked=True)
+    report.print(args.json, f"No problems found in {args.path}: " + ", ".join(f"{t} ({r[2]} rows)" for t, r in present.items()) + ".", analyser_summary=True)
     sys.exit(1 if report.errors else 0)
 
 
@@ -988,6 +1153,7 @@ def main():
     s.set_defaults(func=cmd_diagram)
     s = sub.add_parser("package", help="write the tables and datapackage.json to a folder")
     s.add_argument("out")
+    s.add_argument("--name", help="a short identifier for the package: lower-case letters, digits, - . _ /")
     s.add_argument("--eml", help="an eml.xml to include")
     s.add_argument("--id", help="dataset identifier, preferably a DOI")
     s.add_argument("--title")

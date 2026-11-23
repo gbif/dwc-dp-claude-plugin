@@ -141,9 +141,12 @@ Ask for them; draft from their documents for them to confirm.
 
 ## Stage 7: Package
 
-`package <folder>` checks again, then writes one CSV per table and a `datapackage.json` whose field
-descriptions are copied from the DwC-DP schemas. `check <folder>` checks a finished package, and
-also works on packages made elsewhere. Tell them what the folder holds and that they can open the
+`package <folder> --name <name>` checks again, then writes one CSV per table and a `datapackage.json`
+whose field descriptions are copied from the DwC-DP schemas. Agree on the name with them first
+(`references/package.md`). `check <folder>` checks a finished package, including the checks GBIF's
+own DwC-DP analyser makes, and also works on packages made elsewhere. The package is done when
+`check` reports nothing that must be fixed. Explain each warning that remains, including the
+expected one for identifiers that point outside the package. Tell them what the folder holds and that they can open the
 CSVs in a spreadsheet.
 
 This is where the skill ends. Publishing the package is not part of it.
