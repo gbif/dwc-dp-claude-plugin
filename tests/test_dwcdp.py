@@ -140,6 +140,33 @@ class Database(Base):
         self.assertIn("3", self.ok("sql", "SELECT count(*) FROM occurrence"))
 
 
+class SurveyRecipe(Base):
+    """The worked example of references/recipes/survey.md validates, packages and checks."""
+
+    TABLES = ["event", "survey", "survey-target", "survey-target-descriptor", "survey-survey-target", "occurrence"]
+
+    def test_point_counts(self):
+        src = os.path.join(FIXTURES, "survey-point-counts")
+        for f in ("sites.csv", "visits.csv", "counts.csv", "mapping.sql"):
+            shutil.copy(os.path.join(src, f), self.dir)
+        self.ok("init", *self.TABLES)
+        for f in ("sites", "visits", "counts"):
+            self.ok("load", f"{f}.csv")
+        self.ok("run", "mapping.sql")
+        out = self.ok("validate")
+        self.assertIn("No problems found", out)
+        q = lambda sql: self.ok("sql", sql).split("\n")[2].split()
+        self.assertEqual(q("SELECT count(*) FROM survey"), ["3"])
+        self.assertEqual(q("SELECT count(*) FROM event WHERE parentEvent_fk = 'PC2025'"), ["3"])
+        self.assertEqual(q("SELECT count(*) FROM occurrence WHERE occurrenceStatus = 'notDetected'"), ["2"])
+        self.assertEqual(q("SELECT string_agg(scientificName, '|' ORDER BY scientificName) FROM occurrence WHERE surveyTarget_fk IS NULL"),
+                         ["Larus", "canus|Lepus", "europaeus"])
+        self.ok("package", "out", "--name", "point-counts-2025")
+        self.assertIn("No problems found", self.ok("check", "out"))
+        with open(os.path.join(self.dir, "out", "survey.csv")) as fh:
+            self.assertIn(",10,minutes", fh.read())
+
+
 class DarwinCoreArchive(Base):
     def test_zipped_archive_is_staged_with_term_names(self):
         import zipfile

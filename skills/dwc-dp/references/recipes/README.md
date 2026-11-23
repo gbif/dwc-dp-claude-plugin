@@ -1,8 +1,15 @@
 # Recipes
 
-One file per kind of dataset: `survey.md`, `edna.md`, `specimens.md`, `observations.md` (which
-covers observations, interactions and camera traps). There are none yet. Each is written from an
-issue, with a fixture under `tests/fixtures/` that validates.
+One file per kind of dataset. Each is written from an issue, with a worked example under
+`tests/fixtures/` that a test validates, packages and checks.
+
+| Recipe | For | Worked example |
+|---|---|---|
+| `survey.md` | surveys and sampling events: visits, counts, targets, absences | `survey-point-counts/` |
+| `specimens.md` | specimens and collections (planned) | |
+| `observations.md` | observations, interactions and camera traps (planned) | |
+| `edna.md` | eDNA and metabarcoding (planned) | |
+| `dwca.md` | Darwin Core Archives (planned) | |
 
 A recipe holds:
 

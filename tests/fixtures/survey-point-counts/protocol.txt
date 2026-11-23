@@ -1,0 +1,5 @@
+Point counts, made up for testing.
+Each visit is a 10-minute count from the point. Every bird species seen or heard is counted,
+except gulls (Larus), which are not counted reliably from inland points. All counts of the other
+species are reported; a 0 means the species was looked for and not found. Other animals are noted
+when seen.

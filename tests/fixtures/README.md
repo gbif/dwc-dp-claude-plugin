@@ -5,3 +5,8 @@
   the key, a 0.1 profile), for testing that `check` refuses it clearly.
 - `dwca-occurrence/`: made up, a Darwin Core Archive (unzipped) with an occurrence core, a
   measurement extension and a default value in `meta.xml`.
+- `survey-point-counts/`: made up, bird point counts (two sites, three visits, zeros, a gull and
+  a hare outside the target) with a methods text; the worked example of
+  `skills/dwc-dp/references/recipes/survey.md`.
+- `analyser-0.0.16/`: reports of GBIF's DwC-DP analyser on the packages of
+  `tests/analyser_packages.py`.

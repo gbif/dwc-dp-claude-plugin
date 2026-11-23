@@ -1,0 +1,9 @@
+visit,species,count,note
+V1,Fringilla coelebs,4,
+V1,Erithacus rubecula,2,
+V1,Larus canus,1,flying over
+V2,Lullula arborea,1,
+V2,Fringilla coelebs,0,
+V3,Fringilla coelebs,3,
+V3,Erithacus rubecula,0,
+V3,Lepus europaeus,1,"hare, not a bird"

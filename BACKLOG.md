@@ -16,12 +16,6 @@ they are worked on locally from this file.
 
 ## Ready
 
-- **Recipe: surveys** `ready` `recipe` `survey`
-  - Learn from `survey/NEON-fish`, `survey/broke-west-fish` and `survey/insektmobilen` in
-    gbif/dwc-dp-examples (pre-1.0: insektmobilen has `_pk`/`_fk` columns, but its file names and
-    some fields are not 1.0).
-  - Write `recipes/survey.md` and a small synthetic fixture with an event hierarchy, a survey,
-    survey targets and absences, and test that it validates and packages.
 - **Recipe: specimens and collections** `ready` `recipe` `specimens`
   - Sources: `material/bgbm`, `material/dissco` and `material/cyanolichens`.
   - Cover material derived from material, identifications with history, agents in roles, and
@@ -101,6 +95,12 @@ they are worked on locally from this file.
   - Reading `.xlsx` needs DuckDB's excel extension, which downloads on first use.
   - Find out whether it can be bundled or installed once, and otherwise document saving sheets as
     CSV.
+
+## Done since
+
+- **Recipe: surveys** (2026-11-23): `references/recipes/survey.md`, with the worked example
+  `tests/fixtures/survey-point-counts/` and the test `SurveyRecipe`. `package` now writes whole
+  numbers without `.0`.
 
 ## Decided
 

@@ -749,7 +749,7 @@ def cmd_validate(args):
     if not present:
         sys.exit("The database has no DwC-DP tables yet. Start with: dwcdp.py init <tables>")
     check_tables(con, present, report)
-    report.print(args.json, "No problems found in " + ", ".join(f"{t} ({r[2]} rows)" for t, r in present.items()) + ".")
+    report.print(args.json, "No problems found in " + ", ".join(f"{t} ({r[2]} {'row' if r[2] == 1 else 'rows'})" for t, r in present.items()) + ".")
     sys.exit(1 if report.errors else 0)
 
 
@@ -829,7 +829,11 @@ def cmd_package(args):
             sys.exit(f"{table} has columns that are not DwC-DP fields of {name}: {', '.join(unknown)}")
         used = [f["name"] for f in s["fields"] if f["name"] in cols and (constraints(f).get("required") or count(con, f"SELECT count(*) FROM {q(table)} WHERE {q(f['name'])} IS NOT NULL"))]
         path = f"{name}.csv"
-        select = ", ".join(q(c) for c in used)
+        # A whole number in a number field is written without ".0", as the data holder wrote it.
+        number = lambda c: fm[c]["type"] == "number"
+        select = ", ".join(
+            f"CASE WHEN {q(c)} = trunc({q(c)}) AND abs({q(c)}) < 1e15 THEN CAST(CAST({q(c)} AS BIGINT) AS VARCHAR) ELSE CAST({q(c)} AS VARCHAR) END AS {q(c)}"
+            if number(c) else q(c) for c in used)
         order = f" ORDER BY {q(s['primaryKey'])}" if s.get("primaryKey") in used else ""
         con.execute(f"COPY (SELECT {select} FROM {q(table)}{order}) TO {lit(os.path.join(out, path))} (HEADER, DELIMITER ',', QUOTE '\"', ESCAPE '\"')")
         resources.append({
@@ -841,7 +845,7 @@ def cmd_package(args):
             "encoding": "utf-8",
             "schema": resource_schema(s, used),
         })
-        print(f"{path}: {rows} rows, {len(used)} fields")
+        print(f"{path}: {rows} {'row' if rows == 1 else 'rows'}, {len(used)} fields")
     descriptor = {"profile": PROFILE_URL}
     for key in ("name", "id", "title", "version"):
         if getattr(args, key):
@@ -1101,7 +1105,7 @@ def cmd_check(args):
                 report.error(name, f"{n} {'value' if n == 1 else 'values'} of {f['name']} {'is' if n == 1 else 'are'} not of type {f['type']}.", examples(con, f"SELECT DISTINCT {F} {bad}"), f["name"], code="DATA_TYPE_VIOLATION")
         present[name] = (table, cols, rows)
     check_tables(con, present, report, descriptor_checked=True)
-    report.print(args.json, f"No problems found in {args.path}: " + ", ".join(f"{t} ({r[2]} rows)" for t, r in present.items()) + ".", analyser_summary=True)
+    report.print(args.json, f"No problems found in {args.path}: " + ", ".join(f"{t} ({r[2]} {'row' if r[2] == 1 else 'rows'})" for t, r in present.items()) + ".", analyser_summary=True)
     sys.exit(1 if report.errors else 0)
 
 
