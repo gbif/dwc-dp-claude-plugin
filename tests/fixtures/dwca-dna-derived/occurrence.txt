@@ -1,0 +1,4 @@
+occurrenceID	eventID	basisOfRecord	eventDate	locality	decimalLatitude	decimalLongitude	geodeticDatum	organismQuantity	organismQuantityType	sampleSizeValue	sampleSizeUnit	scientificName	kingdom	phylum	taxonRank
+S1:asv1	S1	MaterialSample	2025-08-12	Kalø Vig	56.2702	10.4811	EPSG:4326	15012	DNA sequence reads	16210	DNA sequence reads	Mytilus edulis	Animalia	Mollusca	species
+S1:asv2	S1	MaterialSample	2025-08-12	Kalø Vig	56.2702	10.4811	EPSG:4326	1198	DNA sequence reads	16210	DNA sequence reads	Balanidae	Animalia	Arthropoda	family
+S2:asv1	S2	MaterialSample	2025-08-12	Ebeltoft Vig	56.1934	10.6620	EPSG:4326	9870	DNA sequence reads	9870	DNA sequence reads	Mytilus edulis	Animalia	Mollusca	species

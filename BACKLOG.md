@@ -16,10 +16,6 @@ they are worked on locally from this file.
 
 ## Ready
 
-- **Worked example: DNA derived data archive** `ready` `recipe` `edna`
-  - `dwca.md` describes how a DNA derived data extension translates (protocols, sequences,
-    analyses from `organismQuantity`/`sampleSizeValue`), without an example. Add one, for example
-    from the MDT's own archive output.
 - **Make `check` agree with GBIF's DwC-DP analyser** `tooling` (mostly done)
   - Done, from the 0.0.16 source:
     - `check` makes the analyser's descriptor checks at its default severities: profile, `name`,
@@ -114,6 +110,9 @@ they are worked on locally from this file.
     `dcterms:isVersionOf`;
   - worked examples `tests/fixtures/dwca-occurrence-core/` and `tests/fixtures/dwca-event-core/`,
     and the test `DwcaRecipe`.
+- **DNA derived data archive** (2026-11-23): a section of `dwca.md`, with the worked example
+  `tests/fixtures/dwca-dna-derived/`. `load-dwca` now names numbered MIxS term columns after their
+  DwC-DP field.
 
 ## Decided
 

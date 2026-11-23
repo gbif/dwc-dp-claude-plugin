@@ -378,6 +378,20 @@ class DwcaRecipe(Base):
         self.assertEqual(q("SELECT occurrence_fk FROM occurrence_assertion"), "G2-1")
         self.assertEqual(q("SELECT count(*) FROM event_assertion WHERE assertionType = 'water depth'"), "0")
 
+    def test_dna_derived_data(self):
+        q = self.translate("dwca-dna-derived", ["event", "material", "molecular-protocol", "nucleotide-sequence",
+                                                "nucleotide-analysis", "identification"], "ddd-example")
+        self.assertEqual(q("SELECT count(*) FROM nucleotide_sequence"), "2")
+        self.assertEqual(q("SELECT count(*) FROM molecular_protocol"), "1")
+        self.assertEqual(q("SELECT readCount || '/' || processedTotalReadCount FROM nucleotide_analysis WHERE nucleotideAnalysis_pk = 'S1:asv2'"), "1198/16210")
+        self.assertEqual(q("SELECT count(DISTINCT materialEntity_fk) FROM nucleotide_analysis WHERE nucleotideSequence_fk = "
+                           "(SELECT nucleotideSequence_fk FROM nucleotide_analysis WHERE nucleotideAnalysis_pk = 'S2:asv1')"), "2")
+
+    def test_numbered_terms_get_field_names(self):
+        out = self.ok("load-dwca", os.path.join(FIXTURES, "dwca-dna-derived"))
+        self.assertIn("target_gene", out)
+        self.assertNotIn("0000044", out)
+
     def test_suggest_matches_archive_columns_by_term(self):
         self.ok("load-dwca", os.path.join(FIXTURES, "dwca-event-core"))
         out = self.ok("suggest", "src_dwca_event")

@@ -139,20 +139,58 @@ They become assertions (`references/assertions.md`). The evidence:
 
 - **Simple Multimedia, Audubon Media:** `media`, plus the `*-media` table of what it shows; the
   licence in `media.license`; the creator as an agent.
-- **DNA derived data:** see `edna.md`.
-  - The protocol terms (`target_gene`, `pcr_primer_forward`, ...) go to `molecular-protocol`, one
-    row per distinct protocol rather than per occurrence.
-  - `DNA_sequence` goes to `nucleotide-sequence.sequence`.
-  - The reads become `nucleotide-analysis` rows. In these archives they are usually the
-    occurrence's `organismQuantity` with `organismQuantityType` `DNA sequence reads`, and
-    `sampleSizeValue` holds the sample's total reads.
-  - Whether occurrences are kept is the data holder's choice.
-
-  No worked example yet.
+- **DNA derived data:** see `edna.md` and the section below.
 - **ResourceRelationship:** `resource-relationship` for general relationships, or
   `organism-interaction` when it is an observed interaction between two occurrences
   (`observations.md`). Ask which it is.
 - **Identification History:** one `identification` row per determination (`specimens.md`).
+
+## DNA derived data
+
+Archives of metabarcoding data, such as those the GBIF Metabarcoding Data Toolkit writes, are
+an Occurrence core with one row per sample and sequence. A DNA derived data extension gives each
+row its sequence and protocol. In DwC-DP the result is the eDNA tables (`edna.md`):
+
+1. **Events and material:** one event per `eventID`. A `MaterialSample` row's sample is material.
+   In MDT archives the `eventID` also names the sample, so it can key both, with the data holder's
+   agreement.
+2. **Protocols:** the extension repeats the protocol on every row, so make one `molecular-protocol`
+   per distinct combination of target gene, primers, reference database and sequencing method.
+   - By term: `target_gene`, `pcr_primer_*`, `otu_db` and `seq_meth` are versions of the same terms
+     on `molecular-protocol`.
+   - `load-dwca` names the numbered MIxS term columns after their DwC-DP field (`target_gene`
+     rather than `0000044`).
+3. **Sequences:** one `nucleotide-sequence` per distinct `DNA_sequence`.
+   - The extension's term (`http://rs.gbif.org/terms/dna_sequence`) has no DwC-DP version.
+     `nucleotide-sequence.sequence` is a version of `dwc:sequence`, so this is a match by meaning.
+     Don't confuse it with `molecular-protocol.sequence`, which describes the protocol.
+   - When the archive has no sequence ids, a hash of the sequence (`md5(...)`) gives the same key
+     for the same sequence in every sample, with agreement.
+4. **Analyses:** one per occurrence row:
+   - `organismQuantity` becomes `readCount`, when `organismQuantityType` is "DNA sequence reads";
+   - `sampleSizeValue` becomes `processedTotalReadCount`, when `sampleSizeUnit` is "DNA sequence
+     reads".
+   - `suggest` lists `survey.sampleSizeValue` for that term. In these archives it is the sample's
+     total reads, which is why it goes to the analysis here. See the open question on
+     `processedTotalReadCount` in `edna.md`.
+5. **Identifications:** one per sequence, based on it. The archive repeats the taxonomy on every row
+   of the same sequence.
+6. **Occurrences:** the core rows are inferred occurrences. Keeping them is the data holder's
+   choice (`edna.md`). The example leaves them out.
+
+The worked example is `tests/fixtures/dwca-dna-derived/`:
+- **The archive:** made up in the MDT's shape, two samples and two COI sequences, one of them found
+  in both samples and one assigned only to family.
+- **The result:**
+  - two events and two samples;
+  - one protocol;
+  - two sequences, keyed by their MD5;
+  - three analyses with reads and totals;
+  - two identifications.
+
+Pitfall: if the same sequence carries different taxonomy on different rows (assigned twice, or
+edited), one identification per sequence gives two rows with one key. `validate` reports the
+duplicate; ask which assignment stands, or keep both with `isAcceptedIdentification`.
 
 ## Taxon core
 

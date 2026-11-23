@@ -521,6 +521,10 @@ def cmd_load_dwca(args):
             for fe in e.findall("d:field", ns):
                 term = fe.get("term", "")
                 name = term.rstrip("/").split("/")[-1].split("#")[-1]
+                if not re.match(r"^[A-Za-z_]", name):
+                    # A numbered term such as https://w3id.org/mixs/0000044: use the name of the
+                    # DwC-DP field that is a version of it (target_gene), if there is one.
+                    name = term_field_names().get(term, name)
                 if name in names:
                     name = re.sub(r"[^0-9a-zA-Z]+", "_", term.split("//")[-1]).strip("_")
                 if fe.get("index") is not None:
@@ -549,6 +553,15 @@ def cmd_load_dwca(args):
     finally:
         if tmp:
             shutil.rmtree(tmp, ignore_errors=True)
+
+
+def term_field_names():
+    """{term URI: a DwC-DP field name that is a version of it}."""
+    out = {}
+    for sch in schemas().values():
+        for f in sch["fields"]:
+            out.setdefault(f.get("dcterms:isVersionOf"), f["name"])
+    return out
 
 
 def db_columns_temp(con, table):

@@ -26,3 +26,5 @@
   Simple Multimedia and MeasurementOrFact; a worked example of `skills/dwc-dp/references/recipes/dwca.md`.
 - `dwca-event-core/`: made up, an Event-core archive (a survey and its samples) with occurrences
   and OBIS extended MeasurementOrFact; the other worked example of `dwca.md`.
+- `dwca-dna-derived/`: made up, a DNA derived data archive in the shape the MDT writes; the DNA
+  derived data example of `dwca.md`.
