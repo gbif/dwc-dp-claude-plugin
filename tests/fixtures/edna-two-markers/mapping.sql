@@ -4,6 +4,8 @@
 -- --as: otu_12s, taxonomy_12s, otu_coi, taxonomy_coi (load adds src_).
 -- The choices marked "agreed" are the data holder's; see references/recipes/edna.md.
 
+DELETE FROM material_assertion;
+DELETE FROM event_assertion;
 DELETE FROM identification;
 DELETE FROM nucleotide_analysis;
 DELETE FROM nucleotide_sequence;
@@ -92,3 +94,21 @@ SELECT 'id:' || asv, 'id:' || asv, asv, 'nucleotideAnalysis',
             WHEN nullif(genus, '') IS NOT NULL THEN 'genus' ELSE 'family' END,
        kingdom, phylum, class, "order", family, nullif(genus, '')
 FROM (SELECT * FROM src_taxonomy_12s UNION ALL SELECT * FROM src_taxonomy_coi);
+
+-- Measurements without a field of their own, as assertions about what they describe (see
+-- references/assertions.md). Agreed: water temperature and salinity were measured on site when
+-- sampling, so they are about the sampling event, taken from the water sample's row (the blank has
+-- none). The units come from the column names; the decimal comma becomes a point. The DNA
+-- concentration is about the extract.
+INSERT INTO event_assertion (assertionID, event_fk, verbatimAssertionType, assertionType, assertionValue, assertionUnit)
+SELECT s.site || ' ' || s.date || ':' || a.type, s.site || ' ' || s.date, a.verbatim, a.type, a.value, a.unit
+FROM src_samples s,
+     LATERAL (VALUES ('water_temp_C', 'water temperature', replace(s.water_temp_C, ',', '.'), '°C'),
+                     ('salinity_psu', 'salinity', s.salinity_psu, 'PSU')) AS a(verbatim, type, value, unit)
+WHERE s.type = 'water' AND a.value IS NOT NULL;
+
+INSERT INTO material_assertion (assertionID, materialEntity_fk, verbatimAssertionType, assertionType,
+                                assertionValue, assertionUnit)
+SELECT extract || ':DNA concentration', extract, 'dna_ng_ul', 'DNA concentration', dna_ng_ul, 'ng/µl'
+FROM src_extracts
+WHERE dna_ng_ul IS NOT NULL;

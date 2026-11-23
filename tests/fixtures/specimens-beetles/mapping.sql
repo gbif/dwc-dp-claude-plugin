@@ -2,6 +2,7 @@
 -- Load first: specimens.csv, determinations.csv, tissues.csv as src_specimens, src_determinations,
 -- src_tissues. The choices marked "agreed" are the data holder's; see references/recipes/specimens.md.
 
+DELETE FROM material_assertion;
 DELETE FROM identification_taxon;
 DELETE FROM identification;
 DELETE FROM material;
@@ -67,3 +68,11 @@ INSERT INTO identification_taxon (identification_fk, taxonSortOrder, scientificN
 SELECT catalogNumber || ':' || date, 1, split_part(name, ' ', 1) || ' ' || split_part(name, ' ', 3), 'species'
 FROM src_determinations
 WHERE split_part(name, ' ', 2) IN ('cf.', 'aff.');
+
+-- Elytron length has no field of its own: an assertion about the specimen (see
+-- references/assertions.md). The unit comes from the column name.
+INSERT INTO material_assertion (assertionID, materialEntity_fk, verbatimAssertionType, assertionType,
+                                assertionValue, assertionUnit)
+SELECT catalogNumber || ':elytron length', catalogNumber, 'elytra_length_mm', 'elytron length', elytra_length_mm, 'mm'
+FROM src_specimens
+WHERE elytra_length_mm IS NOT NULL;

@@ -13,6 +13,7 @@ tables and the DwC-DP tables they are mapped into. Table names use underscores
   python3 dwcdp.py init event occurrence       # create DwC-DP tables in the database
   python3 dwcdp.py load samples.csv            # stage a source file as src_samples
   python3 dwcdp.py load-dwca archive.zip       # stage a Darwin Core Archive
+  python3 dwcdp.py suggest src_samples         # which columns have a DwC-DP field, which don't
   python3 dwcdp.py run mapping.sql             # fill the DwC-DP tables
   python3 dwcdp.py validate                    # check them, in plain words
   python3 dwcdp.py package out/                # write CSVs and datapackage.json
@@ -579,6 +580,56 @@ def cmd_sql(args):
     header = [d[0] for d in cur.description]
     rows = cur.fetchmany(args.limit)
     print(table_text(rows, header))
+
+
+def normalise(name):
+    return re.sub(r"[^0-9a-z]", "", name.lower())
+
+
+def cmd_suggest(args):
+    """For each column of a source table: the DwC-DP fields it could be, or a note that none
+    matches, so it may be a measurement or fact for an assertion table."""
+    con = connect(args.db, read_only=True)
+    src = args.source if args.source in db_tables(con) else f"src_{args.source}"
+    if src not in db_tables(con):
+        sys.exit(f"No table {args.source} in the database. Run: dwcdp.py status")
+    target = schema(args.table)["name"] if args.table else None
+    by_name, by_title, all_fields = {}, {}, []
+    for t, sch in schemas().items():
+        if target and t != target:
+            continue
+        for f in sch["fields"]:
+            by_name.setdefault(normalise(f["name"]), []).append(f"{t}.{f['name']}")
+            by_title.setdefault(normalise(f.get("title") or ""), []).append(f"{t}.{f['name']}")
+            all_fields.append((normalise(f["name"]), f"{t}.{f['name']}"))
+    rows = []
+    for col in db_columns(con, src):
+        C = q(col)
+        values = con.execute(f"SELECT DISTINCT CAST({C} AS VARCHAR) FROM {q(src)} WHERE {C} IS NOT NULL AND trim(CAST({C} AS VARCHAR)) <> '' LIMIT 3").fetchall()
+        filled = count(con, f"SELECT count(*) FROM {q(src)} WHERE {C} IS NOT NULL AND trim(CAST({C} AS VARCHAR)) <> ''")
+        numeric = filled and count(con, f"SELECT count(*) FROM {q(src)} WHERE TRY_CAST(replace(trim(CAST({C} AS VARCHAR)), ',', '.') AS DOUBLE) IS NOT NULL") >= 0.9 * filled
+        hits = by_name.get(normalise(col)) or by_title.get(normalise(col)) or []
+        # Field names that contain the column's name, such as minimumDepthInMeters for "depth":
+        # likely dedicated fields to check before anything goes in an assertion.
+        words = [w for w in re.split(r"[^0-9a-z]+", re.sub(r"([a-z])([A-Z])", r"\1 \2", col).lower()) if len(w) >= 3]
+        maybe = sorted({ref for n, ref in all_fields for w in words if w in n},
+                       key=lambda ref: (not ref.split(".")[0] == (target or ref.split(".")[0]), len(ref)))
+        if hits:
+            note = ", ".join(hits[:4]) + (f" and {len(hits) - 4} more" if len(hits) > 4 else "")
+        elif maybe and filled:
+            note = "maybe " + ", ".join(maybe[:3]) + (f" ({len(maybe) - 3} more: find-term)" if len(maybe) > 3 else "") + "; else an assertion"
+        elif not filled:
+            note = "(empty)"
+        else:
+            assertion = f"{target}-assertion" if target and f"{target}-assertion" in schemas() else "an assertion table"
+            note = (f"no field; looks like a measurement for {assertion}" if numeric
+                    else f"no field; a fact for {assertion}, or try find-term")
+        rows.append([col, ", ".join(str(v[0]) for v in values), note])
+    print(table_text(rows, ["column", "values", "DwC-DP field"]))
+    if target and f"{target}-assertion" not in schemas():
+        print(f"\n{target} has no assertion table. A measurement about it needs another home; ask the data holder.")
+    print("\nA match by name is a suggestion, not a decision: check it with describe --field. For the others, "
+          "try find-term with other words first; see references/assertions.md.")
 
 
 def cmd_status(args):
@@ -1153,6 +1204,10 @@ def main():
     s.add_argument("--limit", type=int, default=20)
     s.set_defaults(func=cmd_sql)
     sub.add_parser("status", help="tables in the database and their rows").set_defaults(func=cmd_status)
+    s = sub.add_parser("suggest", help="for each column of a source table: matching DwC-DP fields, or an assertion candidate")
+    s.add_argument("source", help="a source table, e.g. src_samples or samples")
+    s.add_argument("--table", help="only fields of this DwC-DP table, e.g. event")
+    s.set_defaults(func=cmd_suggest)
     s = sub.add_parser("validate", help="check the DwC-DP tables in the database")
     s.add_argument("--json", action="store_true")
     s.set_defaults(func=cmd_validate)

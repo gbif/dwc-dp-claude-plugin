@@ -20,6 +20,9 @@ they are worked on locally from this file.
   - `load-dwca` stages an archive. The recipe covers the usual cores (Occurrence, Event) and
     extensions (MeasurementOrFact, Multimedia, DNA derived data, ResourceRelationship), and which
     DwC-DP tables their terms go to.
+  - MeasurementOrFact rows become assertions: the assertion tables are versions of
+    `dwc:MeasurementOrFact`. Each row goes to the table of the thing it is about (event,
+    occurrence or material), which the archive's core alone doesn't always say.
   - DwC-DP 1.0 has no table for a checklist of taxa (`identification-taxon` holds the taxon of an
     identification), so whether a Taxon core archive can be translated is a question for the
     maintainer.
@@ -107,6 +110,13 @@ they are worked on locally from this file.
     analyses pointing to the extract;
   - `survey.md`: trap catches kept as bulk samples, with vouchers and metabarcoding, in
     `tests/fixtures/survey-malaise-bulk/`.
+- **Assertions** (2026-11-23):
+  - `references/assertions.md`: a dedicated field first; which thing a value is about; how to fill
+    the fields; never guess a unit;
+  - `dwcdp.py suggest`, which lists each source column's possible fields or flags it as an
+    assertion candidate;
+  - SKILL.md stages 1 and 2 use them, and the eDNA, specimen and point-count examples each map a
+    measurement as an assertion.
 
 ## Decided
 

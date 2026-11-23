@@ -72,6 +72,10 @@ Its `mapping.sql` is the full mapping.
    - `surveyTarget_fk` for the species the target covers, and empty for the gull and the hare;
    - the note as `occurrenceRemarks`.
 
+7. **Weather:** the weather and wind force of each visit have no field, so they are
+   `event-assertion` rows about the visit, with the unit (`Beaufort`) from the column name
+   (`references/assertions.md`).
+
 `dwcdp.py diagram` shows the result, and `validate` and `check` pass on it.
 
 ### Trap catches kept as material: `tests/fixtures/survey-malaise-bulk/`

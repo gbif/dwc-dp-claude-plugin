@@ -1,4 +1,4 @@
-sample,site,date,lat,lon,volume_ml,type
-S1,Kalø Vig,2025-08-12,56.2702,10.4811,1000,water
-S2,Ebeltoft Vig,2025-08-12,56.1934,10.6620,1000,water
-FB1,Kalø Vig,2025-08-12,56.2702,10.4811,1000,field blank
+sample,site,date,lat,lon,volume_ml,type,water_temp_C,salinity_psu
+S1,Kalø Vig,2025-08-12,56.2702,10.4811,1000,water,"16,2",18.5
+S2,Ebeltoft Vig,2025-08-12,56.1934,10.6620,1000,water,"17,0",19.1
+FB1,Kalø Vig,2025-08-12,56.2702,10.4811,1000,field blank,,

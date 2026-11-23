@@ -2,6 +2,7 @@
 -- Load first: sites.csv, visits.csv, counts.csv as src_sites, src_visits, src_counts.
 -- The choices marked "agreed" are the data holder's; see references/recipes/survey.md.
 
+DELETE FROM event_assertion;
 DELETE FROM occurrence;
 DELETE FROM survey_survey_target;
 DELETE FROM survey_target_descriptor;
@@ -59,3 +60,12 @@ SELECT c.visit || ':' || c.species, c.visit || ':' || c.species, c.visit,
        CASE WHEN c.count = '0' THEN 'notDetected' ELSE 'detected' END,
        c.count, 'individuals', c.note
 FROM src_counts c;
+
+-- The weather during each visit, as assertions about the visit (see references/assertions.md).
+-- Agreed: wind as a Beaufort force, which is what "bft" in the column name stands for.
+INSERT INTO event_assertion (assertionID, event_fk, verbatimAssertionType, assertionType, assertionValue, assertionUnit)
+SELECT v.visit || ':' || a.type, v.visit, a.verbatim, a.type, a.value, a.unit
+FROM src_visits v,
+     LATERAL (VALUES ('weather', 'weather', v.weather, NULL),
+                     ('wind_bft', 'wind force', v.wind_bft, 'Beaufort')) AS a(verbatim, type, value, unit)
+WHERE a.value IS NOT NULL;

@@ -1,5 +1,5 @@
-catalogNumber,fieldNumber,collected,locality,country,lat,lon,collector,preparation,sex,count,label
-NHMD-COL-1001,F-12,2024-06-03,Mols Bjerge,Denmark,56.22,10.58,Ann Berg,pinned,female,1,"DK Mols Bjerge 3.vi.2024 A. Berg"
-NHMD-COL-1002,F-12,2024-06-03,Mols Bjerge,Denmark,56.22,10.58,Ann Berg,pinned,male,1,"DK Mols Bjerge 3.vi.2024 A. Berg"
-NHMD-COL-1003,F-13,2024-06-04,Kalø,Denmark,56.29,10.47,Ann Berg,in ethanol,,5,"DK Kalø 4.vi.2024 A. Berg"
-NHMD-COL-1004,F-13,2024-06-04,Kalø,Denmark,56.29,10.47,Ann Berg,pinned,female,1,"DK Kalø 4.vi.2024 A. Berg"
+catalogNumber,fieldNumber,collected,locality,country,lat,lon,collector,preparation,sex,count,label,elytra_length_mm
+NHMD-COL-1001,F-12,2024-06-03,Mols Bjerge,Denmark,56.22,10.58,Ann Berg,pinned,female,1,DK Mols Bjerge 3.vi.2024 A. Berg,14.1
+NHMD-COL-1002,F-12,2024-06-03,Mols Bjerge,Denmark,56.22,10.58,Ann Berg,pinned,male,1,DK Mols Bjerge 3.vi.2024 A. Berg,15.0
+NHMD-COL-1003,F-13,2024-06-04,Kalø,Denmark,56.29,10.47,Ann Berg,in ethanol,,5,DK Kalø 4.vi.2024 A. Berg,
+NHMD-COL-1004,F-13,2024-06-04,Kalø,Denmark,56.29,10.47,Ann Berg,pinned,female,1,DK Kalø 4.vi.2024 A. Berg,12.3

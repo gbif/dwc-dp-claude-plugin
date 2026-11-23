@@ -55,7 +55,8 @@ someone new, give each idea once in plain words, using their own data.
   number) goes in the table's public identifier field (`xID`) unchanged. You may generate the
   package keys (`x_pk`), and you say how.
 - **Use only DwC-DP fields.** A column of theirs that has no field goes in an assertion table if
-  one fits, or stays out, with their agreement. Never add custom columns to a DwC-DP table.
+  one fits, or stays out, with their agreement. Never add custom columns to a DwC-DP table. See
+  `references/assertions.md`.
 - **Nothing leaves their machine.** Don't upload, post or email their data, or contact anyone on
   their behalf. Terms and vocabularies are in the copies bundled with this skill (`describe`,
   `find-term`, `vocab`); look nothing up on the web unless they agree.
@@ -75,6 +76,10 @@ Core names, but a DwC-DP table is not one archive file: the core usually splits 
 tables (for example the event of each occurrence). Model it as any other data, with the recipe
 for archives when there is one.
 
+For each source table, `suggest <table>` lists its columns with the DwC-DP fields they could be.
+Columns with no field are candidates for assertions: measurements and facts such as pH, water
+temperature, body length or sample volume. Note them for Stage 2.
+
 Ask what was done: who collected or observed what, where and when, by which method, and what
 happened to the material afterwards. Read any methods text or README they have. The answers decide
 the model more than the column names do.
@@ -88,6 +93,14 @@ Explain the model with their own records. For example: "each row of your `sample
 to a trap on a date, which DwC-DP calls an event. The species counted on that visit are
 occurrences that point to the event". Show the result as a diagram: `init` the tables, then
 `diagram` gives Mermaid text. Agree on the table list before any mapping.
+
+For every column without a field, settle with them:
+- whether it is a dedicated field after all (`find-term`);
+- whether it is a measurement or fact to keep as an assertion, and about which thing (the event,
+  the material, the occurrence…). `references/assertions.md` has the question and the tables;
+- or whether it stays out.
+
+Ask for units and methods; never guess them.
 
 Split a wide spreadsheet where one row mixes things, for example a visit and the specimens taken on
 it. Say what goes where and why: repeating the same visit on every specimen row is what the split
@@ -156,6 +169,7 @@ This is where the skill ends. Publishing the package is not part of it.
 - `references/concepts.md`: always, before Stage 2.
 - `references/choosing-tables.md`: in Stage 2.
 - `references/recipes/<kind>.md`: when there is one for their kind of data.
+- `references/assertions.md`: when a column has no DwC-DP field.
 - `references/package.md`: in Stages 6 and 7.
 
 ## Feedback

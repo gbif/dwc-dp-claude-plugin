@@ -90,6 +90,11 @@ taxonomy table. Load those with `--as` so their table names start with a letter 
      ranks.
    - `identificationType` `nucleotideAnalysis`, a schema example.
 
+7. **Measurements:** these have no field (`references/assertions.md`):
+   - water temperature and salinity were measured on site, so they are `event-assertion` rows
+     about the sampling event;
+   - the DNA concentration is a `material-assertion` row about the extract.
+
 `validate` and `check` pass on it. The analyses show the point of the protocol link:
 
 | material | protocol | sequence | readCount | processedTotalReadCount |

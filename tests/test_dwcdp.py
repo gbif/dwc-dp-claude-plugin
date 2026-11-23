@@ -140,10 +140,24 @@ class Database(Base):
         self.assertIn("3", self.ok("sql", "SELECT count(*) FROM occurrence"))
 
 
+class Suggest(Base):
+    def test_columns_with_and_without_fields(self):
+        with open(os.path.join(self.dir, "samples.csv"), "w") as fh:
+            fh.write("sample,habitat,depth,pH,colour,note\nS1,seagrass,1.5,8.1,green,calm\nS2,sand,2.0,8.0,brown,\n")
+        self.ok("load", "samples.csv")
+        rows = {line.split()[0]: line for line in self.ok("suggest", "samples", "--table", "event").splitlines()[2:] if line.strip() and not line.startswith(("A match", "\n"))}
+        self.assertIn("event.habitat", rows["habitat"])
+        self.assertIn("maybe event.", rows["depth"])
+        self.assertIn("DepthInMeters", rows["depth"])
+        self.assertIn("looks like a measurement for event-assertion", rows["pH"])
+        self.assertIn("a fact for event-assertion", rows["colour"])
+        self.assertIn("maybe event.fieldNotes", rows["note"])
+
+
 class SurveyRecipe(Base):
     """The worked example of references/recipes/survey.md validates, packages and checks."""
 
-    TABLES = ["event", "survey", "survey-target", "survey-target-descriptor", "survey-survey-target", "occurrence"]
+    TABLES = ["event", "survey", "survey-target", "survey-target-descriptor", "survey-survey-target", "occurrence", "event-assertion"]
 
     def test_point_counts(self):
         src = os.path.join(FIXTURES, "survey-point-counts")
@@ -165,6 +179,7 @@ class SurveyRecipe(Base):
         self.assertIn("No problems found", self.ok("check", "out"))
         with open(os.path.join(self.dir, "out", "survey.csv")) as fh:
             self.assertIn(",10,minutes", fh.read())
+        self.assertEqual(q("SELECT assertionValue || ' ' || assertionUnit FROM event_assertion WHERE assertionID = 'V2:wind force'"), ["3", "Beaufort"])
 
 
 class SurveyMaterialRecipe(Base):
@@ -196,7 +211,7 @@ class SpecimensRecipe(Base):
         src = os.path.join(FIXTURES, "specimens-beetles")
         for f in ("specimens.csv", "determinations.csv", "tissues.csv", "mapping.sql"):
             shutil.copy(os.path.join(src, f), self.dir)
-        self.ok("init", "event", "occurrence", "material", "identification", "identification-taxon")
+        self.ok("init", "event", "occurrence", "material", "identification", "identification-taxon", "material-assertion")
         for f in ("specimens", "determinations", "tissues"):
             self.ok("load", f"{f}.csv")
         self.ok("run", "mapping.sql")
@@ -209,6 +224,7 @@ class SpecimensRecipe(Base):
         self.assertEqual(q("SELECT t.scientificName FROM identification_taxon t JOIN identification i ON i.identification_pk = t.identification_fk WHERE i.verbatimIdentification = 'Pterostichus cf. niger'"), "Pterostichus niger")
         self.assertEqual(q("SELECT count(*) FROM identification WHERE scientificName IN ('Pterostichus niger', 'Amara aenea')"), "0")
         self.assertEqual(q("SELECT count(*) FROM (SELECT materialEntity_fk FROM identification WHERE isAcceptedIdentification GROUP BY 1 HAVING count(*) > 1)"), "0")
+        self.assertEqual(q("SELECT count(*) FROM material_assertion WHERE assertionType = 'elytron length'"), "3")
         self.ok("package", "out", "--name", "beetles-2024")
         self.assertIn("No problems found", self.ok("check", "out"))
 
@@ -279,7 +295,8 @@ class EdnaRecipe(Base):
         src = os.path.join(FIXTURES, "edna-two-markers")
         for f in os.listdir(src):
             shutil.copy(os.path.join(src, f), self.dir)
-        self.ok("init", "event", "material", "molecular-protocol", "nucleotide-sequence", "nucleotide-analysis", "identification")
+        self.ok("init", "event", "material", "molecular-protocol", "nucleotide-sequence", "nucleotide-analysis", "identification",
+                "event-assertion", "material-assertion")
         for f in ("samples.csv", "filters.csv", "extracts.csv", "markers.csv"):
             self.ok("load", f)
         for f, name in (("12S_otu_table.tsv", "otu_12s"), ("12S_taxonomy.tsv", "taxonomy_12s"),
@@ -297,6 +314,9 @@ class EdnaRecipe(Base):
         self.assertEqual(q("SELECT count(*) FROM nucleotide_analysis a JOIN material m ON m.materialEntity_pk = a.materialEntity_fk "
                            "WHERE m.materialEntityCategory IS DISTINCT FROM 'DNA extract'"), "0")
         self.assertEqual(q("SELECT target_gene FROM molecular_protocol WHERE molecularProtocol_pk = '12S'"), "SSU_rRNA_12S_mitochondrial")
+        self.assertEqual(q("SELECT assertionValue FROM event_assertion WHERE assertionID = 'Kalø Vig 2025-08-12:water temperature'"), "16.2")
+        self.assertEqual(q("SELECT count(*) FROM event_assertion"), "4")
+        self.assertEqual(q("SELECT assertionUnit FROM material_assertion WHERE materialEntity_fk = 'S1-X'"), "ng/µl")
         self.assertEqual(q("SELECT scientificName || '/' || taxonRank FROM identification WHERE nucleotideSequence_fk = '12S_a3'"), "Clupeidae/family")
         self.ok("package", "out", "--name", "edna-two-markers-2025")
         self.assertIn("No problems found", self.ok("check", "out"))

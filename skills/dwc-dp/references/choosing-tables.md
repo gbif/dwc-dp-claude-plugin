@@ -17,7 +17,7 @@ data holder (and, if it stays open, for the maintainers).
 | Do they record interactions between organisms: visits, predation, parasitism? | `organism-interaction`, linking two `occurrence` rows |
 | Is the same individual recorded several times (tags, rings, named animals)? | `organism`, with `occurrence.organism_fk` |
 | Are there images, sound or video? | `media`, and `occurrence-media`, `material-media`, `event-media` and so on for what they show |
-| Are there measurements with no DwC-DP field, such as water temperature, body length or trap height? | the matching `*-assertion` table (`event-assertion`, `occurrence-assertion`, `material-assertion`, ...) |
+| Are there measurements or facts with no DwC-DP field, such as water temperature, pH, body length, sample volume or trap height? | the `*-assertion` table of the thing they describe (`event-assertion`, `material-assertion`, `occurrence-assertion`, ...); see `assertions.md` |
 | Are people or organisations named, and do they want them identified (ORCID, ROR) or credited by role? | `agent`, `agent-identifier`, and the `*-agent-role` tables |
 | Do they describe methods, cite literature, or state rights per record? | `protocol` and `*-protocol`, `bibliographic-resource` and `*-reference`, `usage-policy` and `*-usage-policy`, `provenance` |
 | Rocks, fossils, dating? | `geological-context`, `chronometric-age`, `geological-material` |

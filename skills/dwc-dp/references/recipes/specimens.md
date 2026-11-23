@@ -71,6 +71,8 @@ four specimens (one a lot of five), five determinations (one superseded, one wit
    - `identifiedBy` and `dateIdentified`;
    - for a qualified name, `taxonFormula` and an `identification-taxon` row (see the choices
      below).
+6. **Measurements:** the elytron length has no field, so it is a `material-assertion` row about the
+   specimen, with the unit from the column name (`references/assertions.md`).
 
 `validate` and `check` pass on it.
 
