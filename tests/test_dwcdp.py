@@ -382,6 +382,32 @@ class DwcaRecipe(Base):
         self.assertEqual(q("SELECT format FROM media"), "image/jpeg")
         self.assertEqual(q("SELECT count(*) FROM material_assertion"), "2")
 
+    def test_associated_taxa_become_interactions(self):
+        q = self.translate("dwca-associated-taxa", ["event", "occurrence", "identification", "organism-interaction"],
+                           "fungi-associated-trees")
+        self.assertEqual(q("SELECT count(*) FROM organism_interaction"), "5")
+        self.assertEqual(q("SELECT s.scientificName || ' ' || i.organismInteractionType || ' ' || r.scientificName "
+                           "FROM organism_interaction i JOIN identification s ON s.occurrence_fk = i.subjectOccurrence_fk "
+                           "JOIN identification r ON r.occurrence_fk = i.relatedOccurrence_fk WHERE i.subjectOccurrence_fk = 'F-1'"),
+                         "Boletus edulis mycorrhizal symbiont of Fagus")
+        self.assertEqual(q("SELECT coalesce(organismInteractionType, '(none)') || ' / ' || organismInteractionDescription "
+                           "FROM organism_interaction WHERE subjectOccurrence_fk = 'F-5'"), "(none) / gran (Picea)")
+        self.assertEqual(q("SELECT count(*) FROM organism_interaction i JOIN occurrence s ON s.occurrence_pk = i.subjectOccurrence_fk "
+                           "JOIN occurrence r ON r.occurrence_pk = i.relatedOccurrence_fk WHERE s.event_fk <> r.event_fk OR i.event_fk <> s.event_fk"), "0")
+
+    def test_suggest_flags_columns_that_name_other_organisms(self):
+        self.ok("load-dwca", os.path.join(FIXTURES, "dwca-associated-taxa"))
+        rows = {line.split()[0]: line for line in self.ok("suggest", "src_dwca_occurrence").splitlines()[2:] if line.strip()}
+        self.assertIn("organism-interaction", rows["associatedTaxa"])
+        self.assertNotIn("organism-interaction", rows["dynamicProperties"])
+        with open(os.path.join(self.dir, "plants.csv"), "w") as fh:
+            fh.write("visit,insect,host_plant,temp_C\nV1,Apis mellifera,Knautia arvensis,18.5\n")
+        self.ok("load", "plants.csv")
+        rows = {line.split()[0]: line for line in self.ok("suggest", "plants").splitlines()[2:] if line.strip()}
+        self.assertIn("organism-interaction", rows["host_plant"])
+        self.assertNotIn("organism-interaction", rows["visit"])
+        self.assertNotIn("organism-interaction", rows["temp_C"])
+
     def test_event_core(self):
         q = self.translate("dwca-event-core", ["event", "survey", "occurrence", "identification", "event-assertion",
                                                "occurrence-assertion"], "benthos-kalo-2025")

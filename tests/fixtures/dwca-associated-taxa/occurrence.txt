@@ -1,0 +1,7 @@
+occurrenceID	basisOfRecord	eventDate	locality	decimalLatitude	decimalLongitude	geodeticDatum	recordedBy	scientificName	associatedTaxa	dynamicProperties
+F-1	HumanObservation	2025-09-14	Rold Skov	56.81	9.85	EPSG:4326	Ann Berg	Boletus edulis	bøg (Fagus)	{"Substrate":"soil"}
+F-2	HumanObservation	2025-09-14	Rold Skov	56.81	9.85	EPSG:4326	Ann Berg	Fomes fomentarius	bøg (Fagus)	{"Substrate":"dead wood (including bark)"}
+F-3	HumanObservation	2025-09-14	Rold Skov	56.81	9.85	EPSG:4326	Ann Berg	Inonotus obliquus	birk (Betula)	{"Substrate":"bark of living trees"}
+F-4	HumanObservation	2025-09-20	Gribskov	55.98	12.30	EPSG:4326	Bo Holm	Trametes versicolor	eg (Quercus)	{"Substrate":"wood"}
+F-5	HumanObservation	2025-09-20	Gribskov	55.98	12.30	EPSG:4326	Bo Holm	Coprinopsis nivea	gran (Picea)	{"Substrate":"faeces"}
+F-6	HumanObservation	2025-09-20	Gribskov	55.98	12.30	EPSG:4326	Bo Holm	Mycena galericulata		{"Substrate":"dead wood (including bark)"}

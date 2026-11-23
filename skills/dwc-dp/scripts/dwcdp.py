@@ -607,6 +607,19 @@ def normalise(name):
     return re.sub(r"[^0-9a-z]", "", name.lower())
 
 
+# Darwin Core terms whose values name other organisms, and words in column names that often do:
+# an interaction or relationship between organisms, not a measurement (references/interactions.md).
+ASSOCIATION_TERMS = {"associatedTaxa", "associatedOccurrences", "associatedOrganisms"}
+ASSOCIATION_WORDS = ("associat", "host", "prey", "predat", "parasit", "pollinat", "visited", "visitor", "symbio",
+                     "mycorrhiz", "partner", "foodplant", "epiphyt", "interact")
+
+
+def names_other_organism(col, term):
+    if term and term.rsplit("/", 1)[-1] in ASSOCIATION_TERMS:
+        return True
+    return any(w in col.lower() for w in ASSOCIATION_WORDS)
+
+
 def cmd_suggest(args):
     """For each column of a source table: the DwC-DP fields it could be, or a note that none
     matches, so it may be a measurement or fact for an assertion table."""
@@ -666,12 +679,17 @@ def cmd_suggest(args):
             assertion = f"{target}-assertion" if target and f"{target}-assertion" in schemas() else "an assertion table"
             note = (f"no field; looks like a measurement for {assertion}" if numeric
                     else f"no field; a fact for {assertion}, or try find-term")
+        if filled and names_other_organism(col, term):
+            note = ("names other organisms? then organism-interaction (references/interactions.md), not an assertion; "
+                    + note)
         rows.append([col, ", ".join(str(v[0]) for v in values), note])
     print(table_text(rows, ["column", "values", "DwC-DP field"], last=130))
     if target and f"{target}-assertion" not in schemas():
         print(f"\n{target} has no assertion table. A measurement about it needs another home; ask the data holder.")
     print("\nA match by name is a suggestion, not a decision: check it with describe --field. For the others, "
-          "try find-term with other words first; see references/assertions.md.")
+          "try find-term with other words first. A column whose values name another organism (a host, a prey, a "
+          "plant visited or grown on) is an interaction: see references/interactions.md. Measurements and facts: "
+          "references/assertions.md.")
 
 
 def cmd_status(args):
@@ -1510,7 +1528,7 @@ def main():
     s.add_argument("--limit", type=int, default=20)
     s.set_defaults(func=cmd_sql)
     sub.add_parser("status", help="tables in the database and their rows").set_defaults(func=cmd_status)
-    s = sub.add_parser("suggest", help="for each column of a source table: matching DwC-DP fields, or an assertion candidate")
+    s = sub.add_parser("suggest", help="for each column of a source table: matching DwC-DP fields, an interaction or an assertion candidate")
     s.add_argument("source", help="a source table, e.g. src_samples or samples")
     s.add_argument("--table", help="only fields of this DwC-DP table, e.g. event")
     s.set_defaults(func=cmd_suggest)

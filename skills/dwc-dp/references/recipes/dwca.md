@@ -36,6 +36,8 @@ dwcdp.py suggest src_dwca_occurrence
 | `basisOfRecord` | expressed by the tables. A `PreservedSpecimen`, `FossilSpecimen`, `LivingSpecimen` or `MaterialSample` becomes a `material` row, the evidence for its occurrence. A `HumanObservation` or `MachineObservation` is an occurrence without material |
 | `individualCount` | `occurrence.organismQuantity` with `organismQuantityType` `individuals` |
 | `associatedMedia` | rows in `media`, linked to what they show (`occurrence-media`, `material-media`) |
+| `associatedTaxa`, `associatedOccurrences` | not assertions. When they name organisms seen with this one at the find, each becomes an occurrence in the same event, with its identification, and an `organism-interaction` (`interactions.md`). `associatedOrganisms` has a field on `organism`, but an observed partner is still an interaction |
+| `dynamicProperties` | look inside: a JSON key may be a dedicated field (`Substrate` is `occurrence.substrate`), an assertion, or part of an interaction |
 | `measurementType`, `measurementValue`, `measurementUnit`, … | assertions; see below |
 | `kingdom` … `genus`, `specificEpithet` and other ranks | only on `identification` (and `identification-taxon`), not on `occurrence` or `material` |
 | `dcterms:creator` of an image | an `agent` and a `media-agent-role` (the media table has no creator field) |
@@ -76,6 +78,18 @@ The worked example is `tests/fixtures/dwca-occurrence-core/`:
   - the body lengths become `material-assertion` rows.
 - **Multimedia:** `dcterms:format` holds a MIME type there, so it goes in `media.format`. In
   DwC-DP, `formatIRI` is the version of `dcterms:format` and is meant for an IRI.
+
+### Implicit interactions: `tests/fixtures/dwca-associated-taxa/`
+
+- **The archive:** made up, fungus finds in an Occurrence core. `associatedTaxa` names the tree each
+  one grew with (`bøg (Fagus)`), and `dynamicProperties` holds the substrate.
+- **The mapping:**
+  - each tree is an occurrence in the find's event, named in `identification`;
+  - an `organism-interaction` has the fungus as its subject and the tree as the related
+    occurrence, with the value as written in `organismInteractionDescription`;
+  - the type follows the data holder's rule for the substrate (soil: `mycorrhizal symbiont of`,
+    dead wood: `saprophyte of`, bark of living trees: `parasite of`). Other substrates say nothing
+    about the tree, so their interactions have no type.
 
 ## Event core
 
@@ -204,6 +218,8 @@ question. Say so, and don't force one into the tables.
   the grouping first.
 - **`present`/`absent`, `PreservedSpecimen` and other values copied as they are:** `validate` warns
   about deprecated vocabulary values. `basisOfRecord` has no field at all.
+- **`associatedTaxa` as an assertion,** or left out because no field is a version of it: it names
+  organisms, so it is an interaction (`interactions.md`).
 - **Higher ranks lost** by putting the name only on `occurrence`: there is no `kingdom` there.
 - **Dataset terms repeated on every row** (`datasetName`, `license`): they belong to the package's
   metadata.

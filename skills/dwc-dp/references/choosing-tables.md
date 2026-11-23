@@ -14,7 +14,7 @@ data holder (and, if it stays open, for the maintainers).
 | Was physical material kept: specimens, tissue, soil or water samples, extracts? | `material` (with `collectionEvent_fk`). For subsamples, `derivedFromMaterialEntity_fk` |
 | Are names given to organisms or specimens, perhaps more than once, by named people? | `identification` and `identification-taxon`. For several people or roles, `identification-agent-role` |
 | Was DNA sequenced (eDNA, metabarcoding, barcoding)? | `nucleotide-analysis`, `nucleotide-sequence`, `molecular-protocol`; usually `material` for the sample |
-| Do they record interactions between organisms: visits, predation, parasitism? | `organism-interaction`, linking two `occurrence` rows |
+| Does a record name a second organism: a host, a prey, a flower visited, a tree it grew on, `associatedTaxa`? Even when they don't call it an interaction | `organism-interaction`, linking two `occurrence` rows; the partner gets an occurrence and an identification. See `interactions.md` |
 | Is the same individual recorded several times (tags, rings, named animals)? | `organism`, with `occurrence.organism_fk` |
 | Are there images, sound or video? | `media`, and `occurrence-media`, `material-media`, `event-media` and so on for what they show |
 | Are there measurements or facts with no DwC-DP field, such as water temperature, pH, body length, sample volume or trap height? | the `*-assertion` table of the thing they describe (`event-assertion`, `material-assertion`, `occurrence-assertion`, ...); see `assertions.md` |

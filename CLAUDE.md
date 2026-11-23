@@ -91,7 +91,7 @@ field, or a URL and section.
 
 - `skills/dwc-dp/SKILL.md`: the workflow and rules for Claude.
 - `skills/dwc-dp/references/`:
-  - `concepts.md`, `choosing-tables.md` and `assertions.md`;
+  - `concepts.md`, `choosing-tables.md`, `interactions.md` and `assertions.md`;
   - `package.md`;
   - `recipes/`, one file per kind of dataset (see `recipes/README.md`).
 - `skills/dwc-dp/scripts/dwcdp.py`: the CLI, with these commands:

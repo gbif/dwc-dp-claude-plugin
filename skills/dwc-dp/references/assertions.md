@@ -24,8 +24,15 @@ Use an assertion only for what has no field. Many measurements do have one, for 
 
 `dwcdp.py suggest <source table> --table <table>` lists each column with the fields it could be,
 "maybe" fields whose names contain the column's words, or a note that nothing matches.
-`dwcdp.py find-term <word> --notes` searches further. A column that matches nothing after both is
-an assertion candidate. Whether it is published at all is still the data holder's choice.
+`dwcdp.py find-term <word> --notes` searches further.
+
+## Second: does it name another organism?
+
+A value that names a second organism is not an assertion. Examples: a host, a prey, the flower
+visited, the tree a fungus grew with, or `associatedTaxa`. That organism is an occurrence of its
+own, linked by an `organism-interaction`; see `interactions.md`.
+
+A column that matches no field and names no organism is an assertion candidate. Whether it is published at all is still the data holder's choice.
 
 ## Which table: what is it about?
 

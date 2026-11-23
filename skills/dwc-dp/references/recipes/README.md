@@ -9,7 +9,10 @@ One file per kind of dataset. Each is written from an issue, with a worked examp
 | `specimens.md` | specimens and collections: material, parts and derived material, determinations | `specimens-beetles/`, `specimens-mammal-parts/` |
 | `observations.md` | observations, interactions and camera traps (Camtrap DP) | `observations-pollinators/`, `observations-camtrap/` |
 | `edna.md` | eDNA and metabarcoding: several markers, kept samples, filters and extracts | `edna-two-markers/` |
-| `dwca.md` | Darwin Core Archives: Occurrence and Event cores, MeasurementOrFact, Multimedia | `dwca-occurrence-core/`, `dwca-event-core/` |
+| `dwca.md` | Darwin Core Archives: Occurrence and Event cores, MeasurementOrFact, Multimedia, DNA derived data, `associatedTaxa` | `dwca-occurrence-core/`, `dwca-associated-taxa/`, `dwca-event-core/`, `dwca-dna-derived/` |
+
+Interactions between organisms turn up in every kind of dataset, often unnamed: a host, a prey, the
+tree a fungus grew on. `../interactions.md` covers them for all recipes.
 
 A recipe holds:
 

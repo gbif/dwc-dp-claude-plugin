@@ -72,7 +72,8 @@ From the conceptual model:
 - **Survey** (`survey`, `survey-target`): an event that is a biotic survey or inventory, with what
   it targeted. With enough detail, it supports inferring absences and abundances.
 - **Organism interaction** (`organism-interaction`): two occurrences in one interaction, such as a
-  bee visiting a flower, or a predator and its prey.
+  bee visiting a flower, a predator and its prey, or a fungus and the tree it grew on. Data often
+  hold these without the word, as a host or `associatedTaxa` column (`interactions.md`).
 - **Material** (`material`): something physical: a specimen, a tissue sample, a soil or water
   sample, a DNA extract. It points to the event it was collected during, and to other material it
   was derived from.

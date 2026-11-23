@@ -57,8 +57,9 @@ someone new, give each idea once in plain words, using their own data.
 - **Names go in `identification`.** One identification per name, of the material or based on the
   occurrence, media or sequence it was made from. When a record has an identification, its own
   name fields (`scientificName`, `identifiedBy`, ...) stay empty.
-- **Use only DwC-DP fields.** A column of theirs that has no field goes in an assertion table if
-  one fits, or stays out, with their agreement. Never add custom columns to a DwC-DP table. See
+- **Use only DwC-DP fields.** A column of theirs that has no field names another organism (an
+  interaction, see `references/interactions.md`), goes in an assertion table if one fits, or stays
+  out, with their agreement. Never add custom columns to a DwC-DP table. See
   `references/assertions.md`.
 - **Nothing leaves their machine.** Don't upload, post or email their data, or contact anyone on
   their behalf. Terms and vocabularies are in the copies bundled with this skill (`describe`,
@@ -80,8 +81,14 @@ tables (for example the event of each occurrence). `suggest` matches the archive
 term, and `references/recipes/dwca.md` covers the rest.
 
 For each source table, `suggest <table>` lists its columns with the DwC-DP fields they could be.
-Columns with no field are candidates for assertions: measurements and facts such as pH, water
-temperature, body length or sample volume. Note them for Stage 2.
+Read a few values of each column with no field, and sort it:
+- **Does it name another organism?** Examples: a host, a prey, a flower visited, or the tree a
+  fungus grew with (`associatedTaxa`, "on *Betula*"). Then it is an interaction between two
+  organisms, never an assertion. See `references/interactions.md`.
+- **Otherwise,** it is a candidate for an assertion: a measurement or fact such as pH, water
+  temperature, body length or sample volume.
+
+Note them for Stage 2.
 
 Ask what was done: who collected or observed what, where and when, by which method, and what
 happened to the material afterwards. Read any methods text or README they have. The answers decide
@@ -99,6 +106,9 @@ occurrences that point to the event". Show the result as a diagram: `init` the t
 
 For every column without a field, settle with them:
 - whether it is a dedicated field after all (`find-term`);
+- whether it names a second organism, which makes it an `organism-interaction` with an occurrence
+  of that organism. `references/interactions.md` has the questions, and the type of interaction is
+  theirs to give;
 - whether it is a measurement or fact to keep as an assertion, and about which thing (the event,
   the material, the occurrence…). `references/assertions.md` has the question and the tables;
 - or whether it stays out.
@@ -177,7 +187,9 @@ This is where the skill ends. Publishing the package is not part of it.
 - `references/concepts.md`: always, before Stage 2.
 - `references/choosing-tables.md`: in Stage 2.
 - `references/recipes/<kind>.md`: when there is one for their kind of data.
-- `references/assertions.md`: when a column has no DwC-DP field.
+- `references/interactions.md`: when a record names another organism (host, prey, plant,
+  `associatedTaxa`).
+- `references/assertions.md`: when a column has no DwC-DP field and names no organism.
 - `references/package.md`: in Stages 6 and 7.
 
 ## Feedback

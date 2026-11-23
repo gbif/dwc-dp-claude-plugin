@@ -5,7 +5,9 @@
 The data are organisms seen, heard, photographed or recorded, without specimens kept:
 
 - **field notebooks and observation spreadsheets:** one row per organism seen, often with photos;
-- **interactions:** a visitor on a flower, a predator with its prey, a parasite on its host;
+- **interactions:** a visitor on a flower, a predator with its prey, a parasite on its host. They are
+  often unnamed: a host column, or `associatedTaxa`. `../interactions.md` covers how to spot and
+  build them;
 - **camera traps:** deployments, images and the observations classified from them, often already
   as a Camtrap DP package (https://camtrap-dp.tdwg.org).
 
