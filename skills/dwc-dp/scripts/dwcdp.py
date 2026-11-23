@@ -1049,6 +1049,117 @@ def cmd_diagram(args):
     print("\n".join(lines))
 
 
+def summary_links(con, names, filled):
+    """{table: [(field, predicate, target, linked rows)]} for the links in use between the tables."""
+    links = {}
+    for n in names:
+        out = []
+        for field, pred, target, _ in keys(schemas()[n], "foreignKeys"):
+            if target in names and field in filled[n]:
+                out.append((field, pred or field, target, filled[n][field]))
+        links[n] = out
+    return links
+
+
+def summary_tree(names, rows, links):
+    """The tables as a tree in plain text: each under the table its most used link points to, with
+    the other links beside it. Reads as the ER diagram for a terminal."""
+    parent = {}
+    for n in names:
+        out = [l for l in links[n] if l[2] != n]
+        parent[n] = max(out, key=lambda l: l[3])[2] if out else None
+    children = {n: [c for c in names if parent[c] == n] for n in names}
+    lines = []
+
+    def link_text(field, pred, target, linked, n):
+        return f"{pred} {target} ({field}, {linked:,} of {rows[n]:,} rows)"
+
+    def walk(n, prefix, last, depth):
+        branch = "" if depth == 0 else ("└── " if last else "├── ")
+        own = sorted((l for l in links[n] if l[2] == parent[n]), key=lambda l: -l[3])[:1]
+        head = f"{n}  {rows[n]:,} rows" + (f"  {link_text(*own[0], n)}" if own else "")
+        lines.append(prefix + branch + head)
+        inner = prefix + ("" if depth == 0 else ("    " if last else "│   "))
+        for l in links[n]:
+            if own and l is own[0]:
+                continue
+            mark = "↺ " if l[2] == n else "→ "
+            lines.append(inner + ("│   " if children[n] else "    ") + mark + link_text(*l, n))
+        for i, c in enumerate(children[n]):
+            walk(c, inner, i == len(children[n]) - 1, depth + 1)
+
+    for root in [n for n in names if parent[n] is None]:
+        walk(root, "", True, 0)
+        lines.append("")
+    return lines
+
+
+def column_blocks(header, rows, width):
+    """Split a wide table into blocks of columns that fit the width, repeating the first column."""
+    cells = [["" if v is None else str(v) for v in r] for r in rows]
+    w = [min(max([len(h)] + [len(r[i]) for r in cells]), 40) for i, h in enumerate(header)]
+    blocks, cur, used = [], [0], w[0]
+    for i in range(1, len(header)):
+        if used + 2 + w[i] > width and len(cur) > 1:
+            blocks.append(cur)
+            cur, used = [0], w[0]
+        cur.append(i)
+        used += 2 + w[i]
+    blocks.append(cur)
+    out = []
+    for b in blocks:
+        out.append(table_text([[r[i] for i in b] for r in cells], [header[i] for i in b], last=40)
+                   .replace("\n", "\n  ").join(["  ", ""]))
+    return "\n\n".join(out)
+
+
+def cmd_summary(args):
+    """What the working database holds: the tables and their rows, how they link, and the first
+    rows of each, with only the columns that have values."""
+    con = connect(args.db, read_only=True)
+    present = {t: n for t, n in dwc_tables_in(con).items() if n}
+    if not present:
+        sys.exit("No DwC-DP table has rows yet. Run: dwcdp.py status")
+    ordered, cycle = fill_order(list(present))
+    names = ordered + cycle
+    filled = {}
+    for n in names:
+        cols = [c for c in db_columns(con, db_name(n)) if c in field_map(schema(n))]
+        counts = con.execute("SELECT " + ", ".join(f"count({q(c)})" for c in cols) + f" FROM {q(db_name(n))}").fetchone()
+        filled[n] = {c: k for c, k in zip(cols, counts) if k}
+    width = args.width or shutil.get_terminal_size((120, 40)).columns
+
+    print(f"DwC-DP tables in {args.db}: {len(names)}, {sum(present.values()):,} rows in all\n")
+    print(table_text([[n, f"{present[n]:,}", schema(n).get("description", "")] for n in names],
+                     ["table", "rows", "what one row is"], last=90))
+    print("\nHow the tables link (each table under the one it points to; → another link, ↺ a link within the table):\n")
+    print("\n".join(summary_tree(names, present, summary_links(con, names, filled))).rstrip())
+    print("\nFor a drawn diagram: dwcdp.py diagram gives Mermaid text, which GitHub and other Mermaid viewers draw.")
+    if args.rows:
+        print(f"\n{args.rows} rows of each table, those with the most values filled in, and only the "
+              "columns that have values somewhere in the table:")
+        for n in names:
+            cols = [c for c in db_columns(con, db_name(n)) if c in filled[n]]
+            fullness = " + ".join(f"({q(c)} IS NOT NULL)::INT" for c in cols)
+            cur = con.execute(f"SELECT {', '.join(q(c) for c in cols)} FROM {q(db_name(n))} "
+                              f"ORDER BY {fullness} DESC, {q(cols[0])} LIMIT {int(args.rows)}")
+            print(f"\n{n} ({present[n]:,} rows)")
+            print(column_blocks(cols, cur.fetchall(), width - 2))
+    print("\nAsk Claude anything about these tables, in your own words: Claude answers by querying the "
+          f"working database ({args.db}) with DuckDB. For example:")
+    examples = ["How many records per year?"] if "event" in present else []
+    if "identification" in present:
+        examples.append("Which ten names occur most often?")
+    if "organism-interaction" in present:
+        examples.append("Which interaction types are there, and between which taxa?")
+    if "material" in present:
+        examples.append("How many specimens are in each collection?")
+    if "media" in present:
+        examples.append("Which records have the most images?")
+    examples.append("Show me everything linked to one record.")
+    print("\n".join(f"  - {e}" for e in examples[:4]))
+
+
 # ---------------------------------------------------------------- package
 
 def resource_schema(s, cols):
@@ -1347,6 +1458,7 @@ def cmd_package(args):
         for missing in [k for k in ("description", "license") if not md.get(k)]:
             print(f"Note: metadata.json has no {missing}.")
     print(f"\nWrote {args.out}: datapackage.json{', eml.xml' if args.eml or md else ''} and {len(resources)} tables.")
+    print("dwcdp.py summary shows what the tables hold: rows, links and examples.")
     for w in report.items:
         print(f"  note, {w['table']}: {w['message']}")
 
@@ -1654,6 +1766,10 @@ def main():
     s.add_argument("--country", help="ISO 3166-1 alpha-2 code, to narrow the match, e.g. DK")
     s.add_argument("--json", action="store_true")
     s.set_defaults(func=cmd_grscicoll)
+    s = sub.add_parser("summary", help="the tables made, their rows, how they link, and their first rows")
+    s.add_argument("--rows", type=int, default=3, help="rows to show per table (0 for none)")
+    s.add_argument("--width", type=int, help="line width for the example rows (default: the terminal's)")
+    s.set_defaults(func=cmd_summary)
     s = sub.add_parser("validate", help="check the DwC-DP tables in the database")
     s.add_argument("--json", action="store_true")
     s.set_defaults(func=cmd_validate)

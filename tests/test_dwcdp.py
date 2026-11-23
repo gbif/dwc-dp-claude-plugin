@@ -442,6 +442,31 @@ class DwcaRecipe(Base):
         self.assertIn("no DwC-DP field is a version of measurementType", out)
 
 
+class Summary(Base):
+    def test_tables_links_and_example_rows(self):
+        src = os.path.join(FIXTURES, "observations-pollinators")
+        for f in ("observations.csv", "photos.csv", "mapping.sql"):
+            shutil.copy(os.path.join(src, f), self.dir)
+        self.ok("init", "event", "occurrence", "organism-interaction", "agent", "media", "media-agent-role",
+                "occurrence-media", "identification")
+        self.ok("load", "observations.csv")
+        self.ok("load", "photos.csv")
+        self.ok("run", "mapping.sql")
+        out = self.ok("summary", "--rows", "2", "--width", "100")
+        self.assertRegex(out, r"organism-interaction\s+\d+\s+An interaction between two")
+        self.assertIn("├── occurrence", out)
+        self.assertIn("by occurrence (subjectOccurrence_fk", out)
+        self.assertIn("identification", out.split("How the tables link")[1].split("├── occurrence")[1])
+        self.assertIn("visited flower of", out)
+        self.assertNotIn("eventRemarks", out)
+        self.assertTrue(all(len(line) <= 100 for line in out.split("rows of each table")[1].split("Ask Claude")[0].splitlines()[1:]))
+        self.assertIn("Ask Claude anything", out)
+
+    def test_empty_database_is_refused(self):
+        self.ok("init", "event")
+        self.assertIn("No DwC-DP table has rows", self.fails("summary"))
+
+
 class Grscicoll(Base):
     """grscicoll looks codes up in GRSciColl; here against recorded responses on a local server."""
 

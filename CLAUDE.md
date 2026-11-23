@@ -97,7 +97,7 @@ field, or a URL and section.
 - `skills/dwc-dp/scripts/dwcdp.py`: the CLI, with these commands:
   - `tables`, `describe`, `find-term`, `order` and `vocab` read the schemas and vocabularies;
   - `init`, `load`, `load-dwca`, `suggest`, `run`, `sql`, `status`, `validate`, `diagram`,
-    `metadata-template` and `package` work on the working DuckDB;
+    `metadata-template`, `package` and `summary` work on the working DuckDB;
   - `check` tests a package on disk;
   - `grscicoll` looks institution and collection codes up in GBIF's GRSciColl API. It is the
     tool's only network call, and its tests use recorded responses on a local server.

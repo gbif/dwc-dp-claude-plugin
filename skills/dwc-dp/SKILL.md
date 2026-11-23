@@ -185,6 +185,17 @@ own DwC-DP analyser makes, and also works on packages made elsewhere. The packag
 expected one for identifiers that point outside the package. Tell them what the folder holds and that they can open the
 CSVs in a spreadsheet.
 
+Then show them what was made. Run `summary` and put its output in your reply as it is, in a code
+block: the command's own output may be folded away in their terminal. It holds:
+- the tables and the number of rows in each;
+- how the tables link, as a tree that reads as an entity-relationship diagram;
+- a few example rows of each table, with only the columns that have values.
+
+Walk them through it with their own records: "each of your 1.3 million finds is an occurrence, under
+the event of its date and place". Then tell them they can ask questions about the result in their
+own words, such as how many records per year or which names are most common. Answer those with
+`sql` against the working database. It is read-only, so nothing in the package changes.
+
 This is where the skill ends. Publishing the package is not part of it.
 
 ## Read only if
