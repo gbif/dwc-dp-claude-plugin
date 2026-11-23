@@ -122,7 +122,7 @@ they are worked on locally from this file.
 - **eDNA:** no referral to the MDT; the plugin builds DwC-DP for eDNA as for any other data.
 - **`processedTotalReadCount`** (2026-11-23): the total read count of the sample, in
   `nucleotide-analysis` so that `readCount / processedTotalReadCount` gives the relative read count
-  without a join. The eDNA recipe takes it per sample and marker when several markers are used.
+  without a join. With several markers, it is the total per sample and marker (confirmed).
 - **Metadata** (2026-11-23): both `eml.xml` (EML 2.2.0) and the Data Package's descriptor
   properties, from one `metadata.json` the data holder confirms (`package --metadata`).
 - **Darwin Core Archives:** yes, help translate them to DwC-DP (`load-dwca`, and the recipe above).

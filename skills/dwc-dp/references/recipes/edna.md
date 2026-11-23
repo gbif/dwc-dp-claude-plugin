@@ -113,8 +113,9 @@ taxonomy table. Load those with `--as` so their table names start with a letter 
   - It is the sample's total read count, repeated on each of the sample's analysis rows, so that
     `readCount / processedTotalReadCount` gives the relative read count without a join. This is
     the maintainers' answer (2026-11-23), and the MDT writes it the same way.
-  - With several markers, the example takes the total over the sample's reads for that marker,
-    because each marker is its own library.
+  - With several markers it is the total per sample and marker (confirmed by the maintainers,
+    2026-11-23), because each marker is its own library. A total over all markers would make one
+    marker's relative read counts depend on how deeply the others were sequenced.
   - Whether the total is before or after removing controls, contaminants or unassigned reads is
     the data holder's to say.
   - The example sums the reads in the processed table; use their own totals when they have them.
