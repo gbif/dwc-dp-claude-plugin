@@ -1,0 +1,6 @@
+{"institutionMatch": {"matchType": "NONE", "status": "AMBIGUOUS"},
+ "collectionMatch": {"matchType": "NONE"},
+ "alternativeMatches": {"institutionMatches": [
+   {"matchType": "FUZZY", "reasons": ["ALTERNATIVE_CODE_MATCH"],
+    "entityMatched": {"key": "00000000-0000-0000-0000-000000000001", "name": "Example Museum", "code": "XMUS"}}],
+  "collectionMatches": []}}

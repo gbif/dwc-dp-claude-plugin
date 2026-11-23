@@ -59,7 +59,8 @@ also holds the specimen and its name. Split it:
      with the data holder's agreement that the rows record organisms found.
 3. **Material:** for specimens (by `basisOfRecord`), a material row with `catalogNumber`,
    `institutionCode`, `preparations` and the rest, the evidence for the occurrence
-   (`evidenceForOccurrence_fk`).
+   (`evidenceForOccurrence_fk`). For `institutionID` and `collectionID`, `grscicoll` can propose
+   registry identifiers from the codes (`specimens.md`).
 4. **Identifications:**
    - one per row, *of* the material for specimens and *based on* the occurrence for observations;
    - the name and its higher ranks go here, the only table with them;

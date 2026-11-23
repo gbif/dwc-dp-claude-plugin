@@ -692,6 +692,121 @@ def cmd_suggest(args):
           "references/assertions.md.")
 
 
+# ---------------------------------------------------------------- GRSciColl
+
+GRSCICOLL_API = os.environ.get("DWCDP_GRSCICOLL_API", "https://api.gbif.org/v1/grscicoll")
+GRSCICOLL_PAGE = "https://scientific-collections.gbif.org"
+GRSCICOLL_COLUMNS = {"institutionCode": "institutionCode", "institutionID": "institutionId",
+                     "collectionCode": "collectionCode", "collectionID": "collectionId"}
+
+
+def grscicoll_get(path, params=None):
+    import urllib.error
+    import urllib.parse
+    import urllib.request
+    url = f"{GRSCICOLL_API}/{path}" + ("?" + urllib.parse.urlencode(params) if params else "")
+    try:
+        with urllib.request.urlopen(urllib.request.Request(url, headers={"Accept": "application/json"}), timeout=30) as r:
+            return json.load(r)
+    except (urllib.error.URLError, OSError, ValueError) as e:
+        sys.exit(f"Could not reach GRSciColl ({url}): {e}. Nothing was changed.")
+
+
+def grscicoll_entity(kind, key, cache):
+    """An institution or collection, with every identifier GRSciColl holds for it."""
+    if (kind, key) not in cache:
+        d = grscicoll_get(f"{kind}/{key}")
+        ids = [{"type": "GRSciColl page", "identifier": f"{GRSCICOLL_PAGE}/{kind}/{key}"},
+               {"type": "GRSciColl key", "identifier": key}]
+        for i in d.get("identifiers") or []:
+            entry = {"type": i.get("type"), "identifier": i.get("identifier")}
+            if entry not in ids:
+                ids.append(entry)
+        cache[(kind, key)] = {
+            "kind": kind, "key": key, "code": d.get("code"), "name": d.get("name"), "active": d.get("active"),
+            "country": (d.get("address") or {}).get("country") or (d.get("mailingAddress") or {}).get("country"),
+            "institution": d.get("institutionName"), "alternativeCodes": [a["code"].strip() for a in d.get("alternativeCodes") or [] if (a.get("code") or "").strip()],
+            "identifiers": ids}
+    return cache[(kind, key)]
+
+
+def grscicoll_lookup(query, cache):
+    d = grscicoll_get("lookup", dict(query, verbose="true"))
+    out = {}
+    for kind, name in (("institution", "institutionMatch"), ("collection", "collectionMatch")):
+        m = d.get(name) or {}
+        entry = {"matchType": m.get("matchType"), "status": m.get("status"), "reasons": m.get("reasons") or [],
+                 "match": grscicoll_entity(kind, m["entityMatched"]["key"], cache) if m.get("entityMatched") else None,
+                 "alternatives": []}
+        for a in ((d.get("alternativeMatches") or {}).get(f"{kind}Matches") or []):
+            if a.get("entityMatched"):
+                entry["alternatives"].append({"matchType": a.get("matchType"), "reasons": a.get("reasons") or [],
+                                              "entity": grscicoll_entity(kind, a["entityMatched"]["key"], cache)})
+        out[kind] = entry
+    return out
+
+
+def cmd_grscicoll(args):
+    """Look institution and collection codes up in GRSciColl, the Global Registry of Scientific
+    Collections, and print the candidates with all their identifiers. Only the distinct codes (and
+    the country, if given) are sent; nothing is written."""
+    queries = []
+    if args.table:
+        con = connect(args.db, read_only=True)
+        t = next((n for n in (db_name(args.table), f"src_{args.table}") if n in db_tables(con)), None)
+        if not t:
+            sys.exit(f"No table {args.table} in the database. Run: dwcdp.py status")
+        cols = [c for c in GRSCICOLL_COLUMNS if c in db_columns(con, t)]
+        if not cols:
+            sys.exit(f"{args.table} has none of the columns {', '.join(GRSCICOLL_COLUMNS)}.")
+        sel = ", ".join(f"nullif(trim(CAST({q(c)} AS VARCHAR)), '') AS {q(c)}" for c in cols)
+        for row in con.execute(f"SELECT {sel}, count(*) FROM {q(t)} GROUP BY ALL ORDER BY count(*) DESC").fetchall():
+            query = {c: v for c, v in zip(cols, row) if v is not None}
+            if query:
+                queries.append((query, row[-1]))
+    else:
+        query = {c: getattr(args, c) for c in GRSCICOLL_COLUMNS if getattr(args, c)}
+        if not query:
+            sys.exit("Give a table, or at least one of --institutionCode, --collectionCode, --institutionID, --collectionID.")
+        queries.append((query, None))
+    cache, results = {}, []
+    for query, rows in queries:
+        params = {GRSCICOLL_COLUMNS[c]: v for c, v in query.items()}
+        if args.country:
+            params["country"] = args.country
+        results.append({"query": query, "rows": rows, **grscicoll_lookup(params, cache)})
+    if args.json:
+        print(json.dumps(results, indent=2, ensure_ascii=False))
+        return
+
+    def entity_lines(e, indent):
+        flag = "" if e["active"] in (True, None) else " (inactive)"
+        lines = [f"{indent}{e['code']}: {e['name']}{flag}" + (f", {e['country']}" if e["country"] else "")]
+        if e["institution"]:
+            lines.append(f"{indent}  of institution: {e['institution']}")
+        if e["alternativeCodes"]:
+            lines.append(f"{indent}  other codes: {', '.join(e['alternativeCodes'])}")
+        lines += [f"{indent}  {i['type']}: {i['identifier']}" for i in e["identifiers"]]
+        return lines
+
+    for r in results:
+        q_text = ", ".join(f"{k} {v!r}" for k, v in r["query"].items()) + (f", country {args.country!r}" if args.country else "")
+        print(f"{q_text}" + (f" ({r['rows']} rows)" if r["rows"] is not None else ""))
+        for kind in ("institution", "collection"):
+            m = r[kind]
+            how = " ".join(x for x in [m["matchType"], m["status"]] if x) or "NONE"
+            why = f" by {', '.join(m['reasons'])}" if m["reasons"] else ""
+            print(f"  {kind}: {how}{why}")
+            if m["match"]:
+                print("\n".join(entity_lines(m["match"], "    ")))
+            for a in m["alternatives"]:
+                print(f"    or ({a['matchType']} by {', '.join(a['reasons'])}):")
+                print("\n".join(entity_lines(a["entity"], "      ")))
+        print()
+    print("These are candidates from GRSciColl, not decisions. A match on a code alone is reported as "
+          "DOUBTFUL. The data holder chooses which identifier, if any, goes in institutionID and collectionID.")
+
+
 def cmd_status(args):
     con = connect(args.db, read_only=True)
     rows = []
@@ -1532,6 +1647,13 @@ def main():
     s.add_argument("source", help="a source table, e.g. src_samples or samples")
     s.add_argument("--table", help="only fields of this DwC-DP table, e.g. event")
     s.set_defaults(func=cmd_suggest)
+    s = sub.add_parser("grscicoll", help="look institution and collection codes up in GRSciColl (sends only the codes, over the internet)")
+    s.add_argument("table", nargs="?", help="a table with institutionCode, collectionCode, institutionID or collectionID columns, e.g. material")
+    for c in GRSCICOLL_COLUMNS:
+        s.add_argument(f"--{c}", dest=c)
+    s.add_argument("--country", help="ISO 3166-1 alpha-2 code, to narrow the match, e.g. DK")
+    s.add_argument("--json", action="store_true")
+    s.set_defaults(func=cmd_grscicoll)
     s = sub.add_parser("validate", help="check the DwC-DP tables in the database")
     s.add_argument("--json", action="store_true")
     s.set_defaults(func=cmd_validate)

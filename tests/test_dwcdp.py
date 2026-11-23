@@ -442,6 +442,81 @@ class DwcaRecipe(Base):
         self.assertIn("no DwC-DP field is a version of measurementType", out)
 
 
+class Grscicoll(Base):
+    """grscicoll looks codes up in GRSciColl; here against recorded responses on a local server."""
+
+    def setUp(self):
+        super().setUp()
+        import http.server
+        import threading
+        import urllib.parse
+        src = os.path.join(FIXTURES, "grscicoll")
+        self.requests = requests = []
+
+        class Handler(http.server.BaseHTTPRequestHandler):
+            def do_GET(self):
+                url = urllib.parse.urlparse(self.path)
+                requests.append(url.path + "?" + url.query)
+                if url.path == "/lookup":
+                    code = urllib.parse.parse_qs(url.query).get("institutionCode", [""])[0]
+                    name = "lookup-XMUS.json" if code == "XMUS" else "lookup-none.json"
+                else:
+                    name = url.path.strip("/").replace("/", "-") + ".json"
+                path = os.path.join(src, name)
+                if not os.path.exists(path):
+                    self.send_response(404)
+                    self.end_headers()
+                    return
+                self.send_response(200)
+                self.send_header("Content-Type", "application/json")
+                self.end_headers()
+                with open(path, "rb") as fh:
+                    self.wfile.write(fh.read())
+
+            def log_message(self, *a):
+                pass
+
+        self.server = http.server.HTTPServer(("127.0.0.1", 0), Handler)
+        threading.Thread(target=self.server.serve_forever, daemon=True).start()
+        self.env = os.environ.get("DWCDP_GRSCICOLL_API")
+        os.environ["DWCDP_GRSCICOLL_API"] = f"http://127.0.0.1:{self.server.server_port}"
+
+    def tearDown(self):
+        self.server.shutdown()
+        if self.env is None:
+            os.environ.pop("DWCDP_GRSCICOLL_API", None)
+        else:
+            os.environ["DWCDP_GRSCICOLL_API"] = self.env
+        super().tearDown()
+
+    def test_codes_give_candidates_with_all_identifiers(self):
+        out = self.ok("grscicoll", "--institutionCode", "XMUS", "--collectionCode", "XMUS-F", "--country", "DK")
+        self.assertIn("institution: FUZZY DOUBTFUL by CODE_MATCH", out)
+        self.assertIn("ROR: https://ror.org/000000000", out)
+        self.assertEqual(out.count("ROR:"), 1)
+        self.assertIn("WIKIDATA: http://www.wikidata.org/entity/Q0", out)
+        self.assertIn("GRSciColl page: https://scientific-collections.gbif.org/collection/00000000-0000-0000-0000-000000000002", out)
+        self.assertIn("other codes: XM", out)
+        self.assertIn("country=DK", self.requests[0])
+
+    def test_distinct_codes_of_a_table_are_looked_up_once(self):
+        with open(os.path.join(self.dir, "specimens.csv"), "w") as fh:
+            fh.write("catalogNumber,institutionCode,collectionCode\nA1,XMUS,XMUS-F\nA2,XMUS,XMUS-F\nA3,BM,\nA4,,\n")
+        self.ok("load", "specimens.csv")
+        result = json.loads(self.ok("grscicoll", "specimens", "--json"))
+        self.assertEqual([(r["query"], r["rows"]) for r in result],
+                         [({"institutionCode": "XMUS", "collectionCode": "XMUS-F"}, 2), ({"institutionCode": "BM"}, 1)])
+        self.assertEqual(len([r for r in self.requests if r.startswith("/lookup")]), 2)
+        none = result[1]["institution"]
+        self.assertIsNone(none["match"])
+        self.assertEqual(none["alternatives"][0]["entity"]["code"], "XMUS")
+        self.assertEqual(len([r for r in self.requests if r.startswith("/institution/")]), 1)
+
+    def test_unreachable_service_is_reported(self):
+        os.environ["DWCDP_GRSCICOLL_API"] = "http://127.0.0.1:9"
+        self.assertIn("Could not reach GRSciColl", self.fails("grscicoll", "--institutionCode", "XMUS"))
+
+
 class Metadata(Base):
     METADATA = {
         "title": "Toy survey",

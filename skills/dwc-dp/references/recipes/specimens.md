@@ -189,6 +189,21 @@ Each piece has its own number in `parts.csv`.
   - GBIF reads it with its TypeStatus vocabulary; `vocab TypeStatus` lists the concepts.
 - **Institution and collection codes.** Use the codes they publish under; never fill them in from
   memory. If the export lacks them, ask.
+- **`institutionID` and `collectionID`.** The schema's notes recommend "a globally unique and
+  resolvable identifier from a collections registry", such as ROR or GRSciColl
+  (https://scientific-collections.gbif.org/). `grscicoll` looks codes up there:
+  - It sends only the distinct codes (and `--country`, if given) to GBIF's GRSciColl API, so ask
+    first. Their records stay on their machine.
+  - `grscicoll material` (or a source table) looks up each distinct combination of
+    `institutionCode`, `collectionCode`, `institutionID` and `collectionID`.
+    `grscicoll --institutionCode NHMD --collectionCode C-F --country DK` looks up one.
+  - It prints the match and its status, any alternatives, and every identifier GRSciColl holds for
+    each: its page and key, ROR, Wikidata, Index Herbariorum and others.
+  - A match on a code alone is `DOUBTFUL`, so show them the name and country and let them confirm.
+  - Show them all the identifiers and let them choose which goes in each field. The schema's
+    examples include ROR and GRSciColl page URLs for `institutionID`, and a GRSciColl page URL for
+    `collectionID`.
+  - No match, or several: ask them. Never pick one.
 - **Agents.**
   - Names in `collectedBy`, `recordedBy` and `identifiedBy` are enough to start.
   - Add `agent` rows (and `collectedBy_fk`, `identifiedBy_fk` or `*-agent-role` rows) when they

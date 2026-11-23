@@ -1,0 +1,5 @@
+{"institutionMatch": {"matchType": "FUZZY", "status": "DOUBTFUL", "reasons": ["CODE_MATCH"],
+  "entityMatched": {"key": "00000000-0000-0000-0000-000000000001", "name": "Example Museum", "code": "XMUS"}},
+ "collectionMatch": {"matchType": "FUZZY", "status": "DOUBTFUL", "reasons": ["CODE_MATCH"],
+  "entityMatched": {"key": "00000000-0000-0000-0000-000000000002", "name": "Example Museum Fungi", "code": "XMUS-F"}},
+ "alternativeMatches": {"institutionMatches": [], "collectionMatches": []}}

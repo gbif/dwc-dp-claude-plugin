@@ -98,7 +98,9 @@ field, or a URL and section.
   - `tables`, `describe`, `find-term`, `order` and `vocab` read the schemas and vocabularies;
   - `init`, `load`, `load-dwca`, `suggest`, `run`, `sql`, `status`, `validate`, `diagram`,
     `metadata-template` and `package` work on the working DuckDB;
-  - `check` tests a package on disk.
+  - `check` tests a package on disk;
+  - `grscicoll` looks institution and collection codes up in GBIF's GRSciColl API. It is the
+    tool's only network call, and its tests use recorded responses on a local server.
 - `tests/`: `unittest`, with fixtures in `tests/fixtures/`.
 - `skills/dwc-dp/vocabularies/`: the pinned GBIF vocabularies and `mapping.json`.
 - `tools/pin_schemas.py` and `tools/pin_vocabularies.py`: copy the schemas from a tdwg/dwc commit,

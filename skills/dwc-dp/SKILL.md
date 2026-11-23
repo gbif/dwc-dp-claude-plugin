@@ -63,7 +63,8 @@ someone new, give each idea once in plain words, using their own data.
   `references/assertions.md`.
 - **Nothing leaves their machine.** Don't upload, post or email their data, or contact anyone on
   their behalf. Terms and vocabularies are in the copies bundled with this skill (`describe`,
-  `find-term`, `vocab`); look nothing up on the web unless they agree.
+  `find-term`, `vocab`); look nothing up on the web unless they agree. The one lookup the tool
+  makes, `grscicoll`, sends only institution and collection codes, and only after they agree.
 - **The goal is a valid package.** This skill ends when `check` passes on their package.
   Publishing it is a separate step outside this skill.
 
@@ -132,6 +133,10 @@ For each table they'll use, settle:
   has context event".
 
 Show them the result for a few records before mapping everything.
+
+For material in a collection, `institutionID` and `collectionID` should be registry identifiers.
+With their agreement, `grscicoll` looks their codes up in GRSciColl; see
+`references/recipes/specimens.md`.
 
 ## Stage 4: Map
 

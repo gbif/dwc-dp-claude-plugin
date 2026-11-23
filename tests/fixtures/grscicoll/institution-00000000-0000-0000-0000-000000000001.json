@@ -1,0 +1,5 @@
+{"key": "00000000-0000-0000-0000-000000000001", "code": "XMUS", "name": "Example Museum", "active": true,
+ "address": {"country": "DK"}, "alternativeCodes": [{"code": "XM", "description": "older code"}],
+ "identifiers": [{"type": "ROR", "identifier": "https://ror.org/000000000"},
+                 {"type": "WIKIDATA", "identifier": "http://www.wikidata.org/entity/Q0"},
+                 {"type": "ROR", "identifier": "https://ror.org/000000000"}]}
