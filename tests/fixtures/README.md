@@ -10,3 +10,5 @@
   `skills/dwc-dp/references/recipes/survey.md`.
 - `analyser-0.0.16/`: reports of GBIF's DwC-DP analyser on the packages of
   `tests/analyser_packages.py`.
+- `specimens-beetles/`: made up, a beetle collection export (specimens, a lot, determination history
+  with a "cf.", a tissue sample); the worked example of `skills/dwc-dp/references/recipes/specimens.md`.

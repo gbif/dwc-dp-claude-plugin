@@ -6,7 +6,7 @@ One file per kind of dataset. Each is written from an issue, with a worked examp
 | Recipe | For | Worked example |
 |---|---|---|
 | `survey.md` | surveys and sampling events: visits, counts, targets, absences | `survey-point-counts/` |
-| `specimens.md` | specimens and collections (planned) | |
+| `specimens.md` | specimens and collections: material, derived material, determinations | `specimens-beetles/` |
 | `observations.md` | observations, interactions and camera traps (planned) | |
 | `edna.md` | eDNA and metabarcoding (planned) | |
 | `dwca.md` | Darwin Core Archives (planned) | |

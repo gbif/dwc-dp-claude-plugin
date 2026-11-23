@@ -16,10 +16,6 @@ they are worked on locally from this file.
 
 ## Ready
 
-- **Recipe: specimens and collections** `ready` `recipe` `specimens`
-  - Sources: `material/bgbm`, `material/dissco` and `material/cyanolichens`.
-  - Cover material derived from material, identifications with history, agents in roles, and
-    media.
 - **Recipe: observations, interactions and camera traps** `ready` `recipe` `observations`
   - Sources: `observation/bird-tracking`, `organism_interaction/inaturalist` and
     `organism_interaction/conabio-bees`.
@@ -101,6 +97,8 @@ they are worked on locally from this file.
 - **Recipe: surveys** (2026-11-23): `references/recipes/survey.md`, with the worked example
   `tests/fixtures/survey-point-counts/` and the test `SurveyRecipe`. `package` now writes whole
   numbers without `.0`.
+- **Recipe: specimens and collections** (2026-11-23): `references/recipes/specimens.md`, with the
+  worked example `tests/fixtures/specimens-beetles/` and the test `SpecimensRecipe`.
 
 ## Decided
 
@@ -132,7 +130,23 @@ they are worked on locally from this file.
      - `primaryKey`, `mediatype`, a schema given as a reference, and column order are not checked
        at all; `check` keeps them as its own errors.
 
-1. **Metadata** `needs-human`
+1. **The identification fields on `material`** `needs-human`
+   - `material` has `scientificName`, `identifiedBy`, `typeStatus` and other identification
+     fields, as well as the `identification` table with `isAcceptedIdentification`. The schema
+     doesn't say how they relate.
+   - Should the material repeat the accepted determination, hold something else, or stay empty
+     when `identification` is used? bgbm's mapping has the copy commented out.
+   - The specimens recipe leaves them empty until this is settled.
+2. **Identification qualifiers ("cf.", "aff.")** `needs-human`
+   - `taxonFormula` recommends the Arctos formula vocabulary (`A cf.`, `A aff.`, ...), which
+     couldn't be read when the specimens recipe was written. Is that the vocabulary to use, and
+     what does each formula mean?
+   - Until then, the recipe keeps the name as written in `verbatimIdentification` and leaves
+     `scientificName` empty.
+3. **`eventCategory` for a derivation event** (a tissue taken from a specimen) `needs-human`
+   - The schema's examples have none. Is there a value to use, or should the date stay in
+     `materialEntityRemarks`?
+4. **Metadata** `needs-human`
    - Found so far: `eml.xml` is optional in the guide.
    - GBIF's crawler forwards `eml.xml` when the package has one, and the `datapackage.json`
      metadata otherwise (gbif/crawler `DwcDpMetasyncCallback`).

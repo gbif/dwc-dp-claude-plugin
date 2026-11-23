@@ -167,6 +167,28 @@ class SurveyRecipe(Base):
             self.assertIn(",10,minutes", fh.read())
 
 
+class SpecimensRecipe(Base):
+    """The worked example of references/recipes/specimens.md validates, packages and checks."""
+
+    def test_beetle_collection(self):
+        src = os.path.join(FIXTURES, "specimens-beetles")
+        for f in ("specimens.csv", "determinations.csv", "tissues.csv", "mapping.sql"):
+            shutil.copy(os.path.join(src, f), self.dir)
+        self.ok("init", "event", "occurrence", "material", "identification")
+        for f in ("specimens", "determinations", "tissues"):
+            self.ok("load", f"{f}.csv")
+        self.ok("run", "mapping.sql")
+        self.assertIn("No problems found", self.ok("validate"))
+        q = lambda sql: self.ok("sql", sql).split("\n")[2].strip()
+        self.assertEqual(q("SELECT count(*) FROM event"), "2")
+        self.assertEqual(q("SELECT derivedFromMaterialEntity_fk FROM material WHERE materialEntity_pk = 'NHMD-TIS-77'"), "NHMD-COL-1002")
+        self.assertEqual(q("SELECT scientificName FROM identification WHERE materialEntity_fk = 'NHMD-COL-1002' AND isAcceptedIdentification"), "Carabus problematicus")
+        self.assertEqual(q("SELECT count(*) FROM identification WHERE scientificName IS NULL"), "1")
+        self.assertEqual(q("SELECT count(*) FROM (SELECT materialEntity_fk FROM identification WHERE isAcceptedIdentification GROUP BY 1 HAVING count(*) > 1)"), "0")
+        self.ok("package", "out", "--name", "beetles-2024")
+        self.assertIn("No problems found", self.ok("check", "out"))
+
+
 class DarwinCoreArchive(Base):
     def test_zipped_archive_is_staged_with_term_names(self):
         import zipfile
