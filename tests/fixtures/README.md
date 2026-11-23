@@ -16,3 +16,5 @@
   worked example of `skills/dwc-dp/references/recipes/observations.md`.
 - `observations-camtrap/`: made up, the three tables of a Camtrap DP package (deployments, media,
   observations, including a blank and a person); the other worked example of `observations.md`.
+- `edna-two-markers/`: made up, two water samples and a field blank run with 12S and COI, an OTU
+  table and taxonomy per marker; the worked example of `skills/dwc-dp/references/recipes/edna.md`.

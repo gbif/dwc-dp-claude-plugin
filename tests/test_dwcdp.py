@@ -229,6 +229,32 @@ class ObservationsRecipe(Base):
         self.assertEqual(q("SELECT assertionValue FROM occurrence_assertion WHERE assertionID = 'OB2:classificationProbability'"), "0.93")
 
 
+class EdnaRecipe(Base):
+    """The worked example of references/recipes/edna.md validates, packages and checks."""
+
+    def test_two_markers_on_the_same_samples(self):
+        src = os.path.join(FIXTURES, "edna-two-markers")
+        for f in os.listdir(src):
+            shutil.copy(os.path.join(src, f), self.dir)
+        self.ok("init", "event", "material", "molecular-protocol", "nucleotide-sequence", "nucleotide-analysis", "identification")
+        self.ok("load", "samples.csv")
+        self.ok("load", "markers.csv")
+        for f, name in (("12S_otu_table.tsv", "otu_12s"), ("12S_taxonomy.tsv", "taxonomy_12s"),
+                        ("COI_otu_table.tsv", "otu_coi"), ("COI_taxonomy.tsv", "taxonomy_coi")):
+            self.ok("load", f, "--as", name)
+        self.ok("run", "mapping.sql")
+        self.assertIn("No problems found", self.ok("validate"))
+        q = lambda sql: self.ok("sql", sql).split("\n")[2].strip()
+        self.assertEqual(q("SELECT string_agg(molecularProtocol_fk || '=' || processedTotalReadCount, '|' ORDER BY molecularProtocol_fk) "
+                           "FROM (SELECT DISTINCT molecularProtocol_fk, processedTotalReadCount FROM nucleotide_analysis WHERE materialEntity_fk = 'S1')"),
+                         "12S=6000|COI=15012")
+        self.assertEqual(q("SELECT count(*) FROM nucleotide_analysis WHERE readCount = 0"), "0")
+        self.assertEqual(q("SELECT target_gene FROM molecular_protocol WHERE molecularProtocol_pk = '12S'"), "SSU_rRNA_12S_mitochondrial")
+        self.assertEqual(q("SELECT scientificName || '/' || taxonRank FROM identification WHERE nucleotideSequence_fk = '12S_a3'"), "Clupeidae/family")
+        self.ok("package", "out", "--name", "edna-two-markers-2025")
+        self.assertIn("No problems found", self.ok("check", "out"))
+
+
 class DarwinCoreArchive(Base):
     def test_zipped_archive_is_staged_with_term_names(self):
         import zipfile

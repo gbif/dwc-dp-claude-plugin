@@ -16,10 +16,6 @@ they are worked on locally from this file.
 
 ## Ready
 
-- **Recipe: eDNA** `ready` `recipe` `edna`
-  - Source: `edna/obis-edna-expeditions` (0.1).
-  - Covers OTU/ASV tables and sample sheets, with nucleotide-analysis, nucleotide-sequence,
-    molecular-protocol and material.
 - **Recipe: Darwin Core Archives** `ready` `recipe`
   - `load-dwca` stages an archive. The recipe covers the usual cores (Occurrence, Event) and
     extensions (MeasurementOrFact, Multimedia, DNA derived data, ResourceRelationship), and which
@@ -99,6 +95,11 @@ they are worked on locally from this file.
   - worked examples `tests/fixtures/observations-pollinators/` and
     `tests/fixtures/observations-camtrap/` (from Camtrap DP 1.0.2 tables);
   - the test `ObservationsRecipe`.
+- **Recipe: eDNA** (2026-11-23):
+  - `references/recipes/edna.md`, built around several markers on the same samples, with one
+    `molecular-protocol` per marker;
+  - the worked example `tests/fixtures/edna-two-markers/`;
+  - the test `EdnaRecipe`.
 
 ## Decided
 
@@ -143,10 +144,20 @@ they are worked on locally from this file.
    - Should the material repeat the accepted determination, hold something else, or stay empty
      when `identification` is used? bgbm's mapping has the copy commented out.
    - The specimens recipe leaves them empty until this is settled.
-2. **`eventCategory` for a derivation event** (a tissue taken from a specimen) `needs-human`
+2. **Where an amplicon study's reference database goes** `needs-human`
+   - `otu_db` is described as the reference database "used to cluster new genomes in
+     "species-level" OTUs" and `ref_db` as for ORF annotation. Both are MIxS terms written for
+     genomes, and GBIF's DNA derived data extension has the same descriptions.
+   - The MDT puts the taxonomy reference database in `otu_db`, and the eDNA recipe follows it. Is
+     that the intended term?
+3. **`processedTotalReadCount`** `needs-human`
+   - The schema's description reads as per sequence ("for a processed dwc:NucleotideSequence").
+   - The eDNA recipe reads it as the sample's total for one marker, as the MDT writes it, because
+     `readCount` already holds the per-sequence reads. Confirm.
+4. **`eventCategory` for a derivation event** (a tissue taken from a specimen) `needs-human`
    - The schema's examples have none. Is there a value to use, or should the date stay in
      `materialEntityRemarks`?
-3. **Metadata** `needs-human`
+5. **Metadata** `needs-human`
    - Found so far: `eml.xml` is optional in the guide.
    - GBIF's crawler forwards `eml.xml` when the package has one, and the `datapackage.json`
      metadata otherwise (gbif/crawler `DwcDpMetasyncCallback`).

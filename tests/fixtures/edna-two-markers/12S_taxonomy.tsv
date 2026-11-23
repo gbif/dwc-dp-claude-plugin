@@ -1,0 +1,4 @@
+asv	sequence	kingdom	phylum	class	order	family	genus	species
+12S_a1	CACCGCGGTTATACGAGAGGCCCAAGTTGATAGA	Animalia	Chordata	Actinopterygii	Gadiformes	Gadidae	Gadus	Gadus morhua
+12S_a2	CACCGCGGTTATACGAGAGACCCAAGTTGACAGA	Animalia	Chordata	Actinopterygii	Pleuronectiformes	Pleuronectidae	Platichthys	Platichthys flesus
+12S_a3	CACCGCGGTCATACGATTAACCCAAGTCAATAGA	Animalia	Chordata	Actinopterygii	Clupeiformes	Clupeidae		
