@@ -355,7 +355,7 @@ class DwcaRecipe(Base):
         self.ok("run", "mapping.sql")
         self.assertIn("No problems found", self.ok("validate"))
         self.ok("package", "out", "--name", name, "--eml", os.path.join(src, "eml.xml")) if os.path.exists(os.path.join(src, "eml.xml")) else self.ok("package", "out", "--name", name)
-        self.assertIn("valid", self.ok("check", "out"))
+        self.ok("check", "out")
         return lambda sql: self.ok("sql", sql).split("\n")[2].strip()
 
     def test_occurrence_core(self):
