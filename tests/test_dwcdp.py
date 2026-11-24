@@ -493,6 +493,84 @@ class MovebankCrosswalk(unittest.TestCase):
                     self.assertIn(field, names, target)
 
 
+class AllTables(Base):
+    """One row in every DwC-DP table, linked to the rows it can point to, validates, packages and
+    checks. This covers the side tables (references/side-tables.md) that no worked example fills."""
+
+    # identification is based on one kind of evidence, and names belong in identification
+    SKIP = {("identification", f) for f in ("materialEntity_fk", "media_fk", "nucleotideSequence_fk",
+                                            "nucleotideAnalysis_fk", "organism_fk")}
+    SKIP |= {("material", "identifiedBy_fk"), ("occurrence", "identifiedBy_fk")}
+    VALUES = {("occurrence", "occurrenceStatus"): "'detected'"}
+
+    def mapping(self):
+        sys.path.insert(0, os.path.dirname(SCRIPT))
+        import dwcdp
+        ordered, cycle = dwcdp.fill_order(list(dwcdp.schemas()))
+        self.assertEqual(cycle, [])
+        lines, links = [f"DELETE FROM {dwcdp.db_name(t)};" for t in reversed(ordered)], 0
+        for t in ordered:
+            s = dwcdp.schema(t)
+            fks = {f: target for f, _, target, _ in dwcdp.keys(s, "foreignKeys")}
+            cols, vals = [], []
+            for f in s["fields"]:
+                n, c = f["name"], f.get("constraints", {})
+                if n == s.get("primaryKey"):
+                    v = f"'{t}:1'"
+                elif n in fks:
+                    if fks[n] == t or (t, n) in self.SKIP:
+                        continue
+                    v, links = f"'{fks[n]}:1'", links + 1
+                elif (t, n) in self.VALUES:
+                    v = self.VALUES[(t, n)]
+                elif not c.get("required"):
+                    continue
+                elif f["type"] in ("number", "integer"):
+                    v = str(c.get("minimum", 1))
+                elif f["type"] == "boolean":
+                    v = "true"
+                else:
+                    v = f"'{n}'"
+                cols.append(f'"{n}"')
+                vals.append(v)
+            lines.append(f'INSERT INTO {dwcdp.db_name(t)} ({", ".join(cols)}) VALUES ({", ".join(vals)});')
+        return ordered, "\n".join(lines), links
+
+    def test_every_table_validates_packages_and_checks(self):
+        tables, sql, links = self.mapping()
+        self.assertEqual(len(tables), 81)
+        self.assertGreater(links, 150)
+        with open(os.path.join(self.dir, "mapping.sql"), "w") as fh:
+            fh.write(sql)
+        self.ok("init", *tables)
+        self.ok("run", "mapping.sql")
+        self.assertIn("No problems found", self.ok("validate"))
+        self.assertIn("81 tables", self.ok("package", "out", "--name", "all-tables"))
+        out = self.ok("check", "out")
+        self.assertIn("No problems found", out)
+        self.assertEqual(out.count("(1 row)"), 81)
+        # a broken link in a side table is found
+        with open(os.path.join(self.dir, "break.sql"), "w") as fh:
+            fh.write("UPDATE survey_protocol SET protocol_fk = 'nothing';")
+        self.ok("run", "break.sql")
+        self.assertIn("survey-protocol", self.fails("validate"))
+
+    def test_every_table_is_named_in_the_references(self):
+        sys.path.insert(0, os.path.dirname(SCRIPT))
+        import dwcdp
+        refs = os.path.join(ROOT, "skills", "dwc-dp", "references")
+        text = ""
+        for folder, _, files in os.walk(refs):
+            for f in files:
+                with open(os.path.join(folder, f)) as fh:
+                    text += fh.read()
+        missing = [t for t in dwcdp.schemas() if f"`{t}`" not in text
+                   and not any(t == f"{m}{suffix}" for suffix in ("-agent-role", "-identifier", "-reference", "-protocol",
+                                                                    "-provenance", "-usage-policy", "-media", "-assertion")
+                               for m in dwcdp.schemas())]
+        self.assertEqual(missing, [])
+
+
 class DwcaRecipe(Base):
     """The worked examples of references/recipes/dwca.md validate, package and check."""
 

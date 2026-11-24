@@ -206,6 +206,8 @@ This is where the skill ends. Publishing the package is not part of it.
 - `references/interactions.md`: when a record names another organism (host, prey, plant,
   `associatedTaxa`).
 - `references/assertions.md`: when a column has no DwC-DP field and names no organism.
+- `references/side-tables.md`: when a record has roles, extra identifiers, references, protocols,
+  sources, rights or media beyond what the recipe uses.
 - `references/package.md`: in Stages 6 and 7.
 
 ## Feedback
