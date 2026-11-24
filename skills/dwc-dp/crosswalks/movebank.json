@@ -1,0 +1,316 @@
+{
+ "about": "Where Movebank attributes go in DwC-DP, written by hand from references/recipes/tracking.md. Keys are MVB ids (crosswalks/movebank-attributes.json). An empty 'to' means the attribute decides something rather than filling a field.",
+ "attributes": {
+  "MVB000103": {
+   "label": "event ID",
+   "to": [
+    "event.eventID",
+    "event.event_pk"
+   ],
+   "note": "of the location event"
+  },
+  "MVB000200": {
+   "label": "timestamp",
+   "to": [
+    "event.eventDate"
+   ],
+   "note": "of the location event, in UTC as ISO 8601"
+  },
+  "MVB000145": {
+   "label": "location lat",
+   "to": [
+    "event.decimalLatitude"
+   ],
+   "note": "of the location event; WGS84"
+  },
+  "MVB000146": {
+   "label": "location long",
+   "to": [
+    "event.decimalLongitude"
+   ],
+   "note": "of the location event; WGS84"
+  },
+  "MVB000034": {
+   "label": "Argos LC",
+   "to": [
+    "event.georeferenceRemarks",
+    "event.coordinateUncertaintyInMeters"
+   ],
+   "note": "the class in remarks; an uncertainty only by an agreed rule"
+  },
+  "MVB000118": {
+   "label": "GPS HDOP",
+   "to": [
+    "event.georeferenceRemarks"
+   ],
+   "note": "HDOP is not a distance; an uncertainty only by an agreed rule"
+  },
+  "MVB000142": {
+   "label": "location error numerical",
+   "to": [
+    "event.coordinateUncertaintyInMeters"
+   ],
+   "note": "the sensor's own error estimate, if in metres"
+  },
+  "MVB000162": {
+   "label": "modelled",
+   "to": [],
+   "note": "decides which rows become occurrences: modelled positions are estimates; ask"
+  },
+  "MVB000209": {
+   "label": "visible",
+   "to": [],
+   "note": "decides which rows become occurrences: FALSE marks outliers; ask"
+  },
+  "MVB000011": {
+   "label": "algorithm marked outlier",
+   "to": [],
+   "note": "decides which rows become occurrences (outliers); ask"
+  },
+  "MVB000156": {
+   "label": "manually marked outlier",
+   "to": [],
+   "note": "decides which rows become occurrences (outliers); ask"
+  },
+  "MVB000133": {
+   "label": "import marked outlier",
+   "to": [],
+   "note": "decides which rows become occurrences (outliers); ask"
+  },
+  "MVB000157": {
+   "label": "manually marked valid",
+   "to": [],
+   "note": "overrides the outlier flags; ask"
+  },
+  "MVB000069": {
+   "label": "comments",
+   "to": [
+    "event.eventRemarks"
+   ],
+   "note": "of the location event"
+  },
+  "MVB000016": {
+   "label": "animal ID",
+   "to": [
+    "organism.organismID",
+    "organism.organism_pk",
+    "occurrence.organism_fk"
+   ],
+   "note": "the tracked animal"
+  },
+  "MVB000134": {
+   "label": "individual local identifier",
+   "to": [
+    "organism.organismID",
+    "organism.organism_pk",
+    "occurrence.organism_fk"
+   ],
+   "note": "the tracked animal"
+  },
+  "MVB000024": {
+   "label": "animal taxon",
+   "to": [
+    "identification.scientificName"
+   ],
+   "note": "one identification of the organism (organism_fk)"
+  },
+  "MVB000135": {
+   "label": "individual taxon canonical name",
+   "to": [
+    "identification.scientificName"
+   ],
+   "note": "one identification of the organism (organism_fk)"
+  },
+  "MVB000020": {
+   "label": "animal nickname",
+   "to": [
+    "organism.organismName"
+   ],
+   "note": ""
+  },
+  "MVB000023": {
+   "label": "animal sex",
+   "to": [
+    "occurrence.sex"
+   ],
+   "note": "m/f; ask what u (unknown) means"
+  },
+  "MVB000018": {
+   "label": "animal life stage",
+   "to": [
+    "occurrence.lifeStage"
+   ],
+   "note": "of the tag attachment: recorded for the start of the deployment"
+  },
+  "MVB000021": {
+   "label": "animal reproductive condition",
+   "to": [
+    "occurrence.reproductiveCondition"
+   ],
+   "note": "of the tag attachment: recorded for the deployment"
+  },
+  "MVB000340": {
+   "label": "animal group ID",
+   "to": [
+    "organism-assertion"
+   ],
+   "note": "a trait of the animal without a field"
+  },
+  "MVB000013": {
+   "label": "animal death comments",
+   "to": [
+    "organism.causeOfDeath"
+   ],
+   "note": "only if it states a cause; otherwise organismRemarks"
+  },
+  "MVB000012": {
+   "label": "animal comments",
+   "to": [
+    "organism.organismRemarks"
+   ],
+   "note": ""
+  },
+  "MVB000085": {
+   "label": "deployment ID",
+   "to": [
+    "event.eventID",
+    "event.event_pk"
+   ],
+   "note": "of the deployment event (eventType Sensor)"
+  },
+  "MVB000081": {
+   "label": "deploy on timestamp",
+   "to": [
+    "event.eventDate"
+   ],
+   "note": "start of the deployment interval, and the attachment event's date"
+  },
+  "MVB000077": {
+   "label": "deploy off timestamp",
+   "to": [
+    "event.eventDate"
+   ],
+   "note": "end of the deployment interval"
+  },
+  "MVB000078": {
+   "label": "deploy on latitude",
+   "to": [
+    "event.decimalLatitude"
+   ],
+   "note": "of the tag attachment event"
+  },
+  "MVB000079": {
+   "label": "deploy on longitude",
+   "to": [
+    "event.decimalLongitude"
+   ],
+   "note": "of the tag attachment event"
+  },
+  "MVB000052": {
+   "label": "attachment type",
+   "to": [
+    "event-assertion"
+   ],
+   "note": "about the deployment, with the MVB IRI as assertionTypeIRI"
+  },
+  "MVB000086": {
+   "label": "duty cycle",
+   "to": [
+    "event-assertion"
+   ],
+   "note": "about the deployment, with the MVB IRI as assertionTypeIRI"
+  },
+  "MVB000155": {
+   "label": "manipulation type",
+   "to": [
+    "event-assertion"
+   ],
+   "note": "about the deployment, with the MVB IRI as assertionTypeIRI"
+  },
+  "MVB000188": {
+   "label": "tag readout method",
+   "to": [
+    "event-assertion"
+   ],
+   "note": "about the deployment, with the MVB IRI as assertionTypeIRI"
+  },
+  "MVB000374": {
+   "label": "outlier comments",
+   "to": [
+    "event-assertion"
+   ],
+   "note": "about the deployment, with the MVB IRI as assertionTypeIRI"
+  },
+  "MVB000082": {
+   "label": "deployment comments",
+   "to": [
+    "event.eventRemarks"
+   ],
+   "note": "of the deployment event"
+  },
+  "MVB000019": {
+   "label": "animal mass",
+   "to": [
+    "occurrence-assertion"
+   ],
+   "note": "about the tag attachment occurrence"
+  },
+  "MVB000181": {
+   "label": "tag ID",
+   "to": [
+    "agent.agent_pk"
+   ],
+   "note": "the tag, as an agent of type machine, with an event-agent-role on the deployment"
+  },
+  "MVB000182": {
+   "label": "tag local identifier",
+   "to": [
+    "agent.agent_pk"
+   ],
+   "note": "the tag, as an agent of type machine, with an event-agent-role on the deployment"
+  },
+  "MVB000183": {
+   "label": "tag manufacturer name",
+   "to": [
+    "agent.preferredAgentName"
+   ],
+   "note": "part of the tag's name, or agentRemarks"
+  },
+  "MVB000185": {
+   "label": "tag model",
+   "to": [
+    "agent.preferredAgentName"
+   ],
+   "note": "part of the tag's name, or agentRemarks"
+  },
+  "MVB000173": {
+   "label": "study name",
+   "to": [],
+   "note": "the study event, and the package's title"
+  },
+  "MVB000170": {
+   "label": "sensor type",
+   "to": [
+    "event.georeferenceProtocol"
+   ],
+   "note": "how the location was determined; one sensor per row"
+  },
+  "MVB000067": {
+   "label": "behavioural classification",
+   "to": [
+    "occurrence.behavior"
+   ],
+   "note": "if the data holder agrees it is the animal's behaviour"
+  },
+  "MVB000131": {
+   "label": "height above mean sea level",
+   "to": [],
+   "note": "an altitude; ask which DwC-DP field and reference surface"
+  },
+  "MVB000130": {
+   "label": "height above ellipsoid",
+   "to": [],
+   "note": "an altitude above the ellipsoid; ask which DwC-DP field and reference surface"
+  }
+ }
+}

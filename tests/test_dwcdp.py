@@ -446,6 +446,45 @@ class TrackingRecipe(Base):
                            "WHERE e.eventDate LIKE '%Z' AND d.eventType <> 'Sensor'"), "0")
 
 
+    def test_suggest_recognises_movebank_attributes(self):
+        src = os.path.join(FIXTURES, "tracking-argos")
+        for f in ("locations.csv", "reference-data.csv"):
+            shutil.copy(os.path.join(src, f), self.dir)
+        self.ok("load", "locations.csv")
+        self.ok("load", "reference-data.csv", "--as", "reference")
+        out = self.ok("suggest", "locations")
+        rows = {line.split()[0]: line for line in out.splitlines()[2:] if line.strip() and not line.startswith(("This", "A match"))}
+        self.assertIn("This looks like a Movebank export (19 of 19 columns", out)
+        self.assertIn("Movebank animal ID (MVB000016, individual): organism.organismID", rows["individual-local-identifier"])
+        self.assertIn("MVB000209", rows["visible"])
+        self.assertIn("no crosswalk entry; an assertion about the location", rows["argos:lat1"])
+        rows = {line.split()[0]: line for line in self.ok("suggest", "reference").splitlines()[2:] if line.strip()}
+        self.assertIn("event-assertion", rows["duty-cycle"])
+        # a table that only shares a few names with Movebank is not taken for one
+        with open(os.path.join(self.dir, "notes.csv"), "w") as fh:
+            fh.write("site,timestamp,comments,species\nA,2025-01-01 10:00,windy,Apis mellifera\n")
+        self.ok("load", "notes.csv")
+        self.assertNotIn("Movebank", self.ok("suggest", "notes"))
+
+
+class MovebankCrosswalk(unittest.TestCase):
+    def test_crosswalk_points_to_real_attributes_and_fields(self):
+        base = os.path.join(ROOT, "skills", "dwc-dp", "crosswalks")
+        with open(os.path.join(base, "movebank-attributes.json")) as fh:
+            attrs = {a["id"]: a for a in json.load(fh)["attributes"]}
+        with open(os.path.join(base, "movebank.json")) as fh:
+            crosswalk = json.load(fh)["attributes"]
+        for key, entry in crosswalk.items():
+            self.assertIn(key, attrs)
+            self.assertEqual(entry["label"], attrs[key]["label"])
+            for target in entry["to"]:
+                table, _, field = target.partition(".")
+                with open(os.path.join(TABLE_SCHEMAS, table + ".json")) as fh:
+                    names = [f["name"] for f in json.load(fh)["fields"]]
+                if field:
+                    self.assertIn(field, names, target)
+
+
 class DwcaRecipe(Base):
     """The worked examples of references/recipes/dwca.md validate, package and check."""
 

@@ -68,8 +68,10 @@ field, or a URL and section.
 
 ## Never
 
-- Edit the vendored schemas or vocabularies. Move to a new pin only with `tools/pin_schemas.py` or
-  `tools/pin_vocabularies.py`, in its own PR.
+- Edit the vendored schemas or vocabularies, or `crosswalks/movebank-attributes.json`. Move to a new
+  pin only with `tools/pin_schemas.py`, `tools/pin_vocabularies.py` or `tools/pin_movebank.py`, in
+  its own PR. `crosswalks/movebank.json` is hand-written: keep it in step with
+  `references/recipes/tracking.md`.
 - Commit data without a clear open licence, or any data from `gbif/model-material`. Fixtures are
   small, synthetic or cut from Apache-2.0 sources, with the source named in the fixture's README.
 - Contact anyone outside this repository, or open issues or PRs in other repositories.
@@ -103,6 +105,8 @@ field, or a URL and section.
     tool's only network call, and its tests use recorded responses on a local server.
 - `tests/`: `unittest`, with fixtures in `tests/fixtures/`.
 - `skills/dwc-dp/vocabularies/`: the pinned GBIF vocabularies and `mapping.json`.
-- `tools/pin_schemas.py` and `tools/pin_vocabularies.py`: copy the schemas from a tdwg/dwc commit,
-  and the GBIF vocabularies.
+- `skills/dwc-dp/crosswalks/`: the pinned Movebank attributes and the Movebank-to-DwC-DP crosswalk.
+- `tools/pin_schemas.py`, `tools/pin_vocabularies.py` and `tools/pin_movebank.py`: copy the schemas
+  from a tdwg/dwc commit, the GBIF vocabularies, and the Movebank attributes from the NERC
+  Vocabulary Server.
 - `BACKLOG.md`: planned work, until it becomes GitHub issues.

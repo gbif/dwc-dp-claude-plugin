@@ -1,0 +1,4598 @@
+{
+ "source": "http://vocab.nerc.ac.uk/collection/MVB/current/",
+ "fetched": "2026-11-24",
+ "attributes": [
+  {
+   "id": "MVB000001",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000001/",
+   "label": "acceleration axes",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000002",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000002/",
+   "label": "acceleration raw x",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000003",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000003/",
+   "label": "acceleration raw y",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000004",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000004/",
+   "label": "acceleration raw z",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000005",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000005/",
+   "label": "acceleration sampling frequency per axis",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000006",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000006/",
+   "label": "acceleration x",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000007",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000007/",
+   "label": "acceleration y",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000008",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000008/",
+   "label": "acceleration z",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000009",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000009/",
+   "label": "accelerations raw",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000010",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000010/",
+   "label": "acknowledgements",
+   "altLabels": [],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000011",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000011/",
+   "label": "algorithm marked outlier",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000012",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000012/",
+   "label": "animal comments",
+   "altLabels": [],
+   "entity": "individual",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000013",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000013/",
+   "label": "animal death comments",
+   "altLabels": [],
+   "entity": "individual",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000014",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000014/",
+   "label": "animal earliest date born",
+   "altLabels": [],
+   "entity": "individual",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000015",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000015/",
+   "label": "animal exact date of birth",
+   "altLabels": [],
+   "entity": "individual",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000016",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000016/",
+   "label": "animal ID",
+   "altLabels": [
+    "individual local identifier"
+   ],
+   "entity": "individual",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000017",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000017/",
+   "label": "animal latest date born",
+   "altLabels": [],
+   "entity": "individual",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000018",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000018/",
+   "label": "animal life stage",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000019",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000019/",
+   "label": "animal mass",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000020",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000020/",
+   "label": "animal nickname",
+   "altLabels": [],
+   "entity": "individual",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000021",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000021/",
+   "label": "animal reproductive condition",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000022",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000022/",
+   "label": "animal ring ID",
+   "altLabels": [],
+   "entity": "individual",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000023",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000023/",
+   "label": "animal sex",
+   "altLabels": [],
+   "entity": "individual",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000024",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000024/",
+   "label": "animal taxon",
+   "altLabels": [
+    "individual taxon canonical name"
+   ],
+   "entity": "individual",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000025",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000025/",
+   "label": "animal taxon detail",
+   "altLabels": [],
+   "entity": "individual",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000026",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000026/",
+   "label": "Argos altitude",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000027",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000027/",
+   "label": "Argos best level",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000028",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000028/",
+   "label": "Argos calcul freq",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000029",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000029/",
+   "label": "Argos error radius",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000030",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000030/",
+   "label": "Argos GDOP",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000031",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000031/",
+   "label": "Argos IQ",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000032",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000032/",
+   "label": "Argos lat1",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000033",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000033/",
+   "label": "Argos lat2",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000034",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000034/",
+   "label": "Argos LC",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000035",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000035/",
+   "label": "Argos lon1",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000036",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000036/",
+   "label": "Argos lon2",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000037",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000037/",
+   "label": "Argos nb mes",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000038",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000038/",
+   "label": "Argos nb mes 120",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000039",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000039/",
+   "label": "Argos NOPC",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000040",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000040/",
+   "label": "Argos orientation",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000041",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000041/",
+   "label": "Argos pass duration",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000042",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000042/",
+   "label": "Argos sat ID",
+   "altLabels": [
+    "Argos satellite ID"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000043",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000043/",
+   "label": "Argos semi major",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000044",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000044/",
+   "label": "Argos semi minor",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000045",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000045/",
+   "label": "Argos sensor 1",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000046",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000046/",
+   "label": "Argos sensor 2",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000047",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000047/",
+   "label": "Argos sensor 3",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000048",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000048/",
+   "label": "Argos sensor 4",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000049",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000049/",
+   "label": "Argos transmission timestamp",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000050",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000050/",
+   "label": "Argos valid location algorithm",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000051",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000051/",
+   "label": "Argos valid location manual",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000052",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000052/",
+   "label": "attachment type",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000053",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000053/",
+   "label": "barometric depth",
+   "altLabels": [
+    "bar barometric depth"
+   ],
+   "entity": "event",
+   "deprecated": true
+  },
+  {
+   "id": "MVB000054",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000054/",
+   "label": "barometric height",
+   "altLabels": [
+    "bar barometric height"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000055",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000055/",
+   "label": "barometric pressure",
+   "altLabels": [
+    "bar barometric pressure"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000056",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000056/",
+   "label": "BAS compensated latitude",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000057",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000057/",
+   "label": "BAS confidence",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000058",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000058/",
+   "label": "BAS fix type",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000059",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000059/",
+   "label": "BAS mid value secs",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000060",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000060/",
+   "label": "BAS stationary latitude",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000061",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000061/",
+   "label": "BAS transition 1",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000062",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000062/",
+   "label": "BAS transition 2",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000063",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000063/",
+   "label": "battery charge percent",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000064",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000064/",
+   "label": "battery charging current",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000065",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000065/",
+   "label": "tag beacon frequency",
+   "altLabels": [
+    "beacon frequency"
+   ],
+   "entity": "tag",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000066",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000066/",
+   "label": "behavior according to",
+   "altLabels": [
+    "behaviour according to"
+   ],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000067",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000067/",
+   "label": "behavioural classification",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000068",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000068/",
+   "label": "citation",
+   "altLabels": [],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000069",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000069/",
+   "label": "comments",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000070",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000070/",
+   "label": "compass heading",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000071",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000071/",
+   "label": "conductivity",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000072",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000072/",
+   "label": "contact person",
+   "altLabels": [
+    "contact person name"
+   ],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000073",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000073/",
+   "label": "data processing software",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000074",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000074/",
+   "label": "deploy off latitude",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000075",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000075/",
+   "label": "deploy off longitude",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000076",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000076/",
+   "label": "deploy off person",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000077",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000077/",
+   "label": "deploy off timestamp",
+   "altLabels": [
+    "deploy off date"
+   ],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000078",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000078/",
+   "label": "deploy on latitude",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000079",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000079/",
+   "label": "deploy on longitude",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000080",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000080/",
+   "label": "deploy on person",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000081",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000081/",
+   "label": "deploy on timestamp",
+   "altLabels": [
+    "deploy on date"
+   ],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000082",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000082/",
+   "label": "deployment comments",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000083",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000083/",
+   "label": "deployment end comments",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000084",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000084/",
+   "label": "deployment end type",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000085",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000085/",
+   "label": "deployment ID",
+   "altLabels": [
+    "deployment local identifier"
+   ],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000086",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000086/",
+   "label": "duty cycle",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000087",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000087/",
+   "label": "eobs acceleration axes",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000088",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000088/",
+   "label": "eobs acceleration sampling frequency per axis",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000089",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000089/",
+   "label": "eobs accelerations raw",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000090",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000090/",
+   "label": "eobs activity",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000091",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000091/",
+   "label": "eobs activity samples",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000092",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000092/",
+   "label": "eobs battery voltage",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000093",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000093/",
+   "label": "eobs fix battery voltage",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000094",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000094/",
+   "label": "eobs horizontal accuracy estimate",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000095",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000095/",
+   "label": "eobs key bin checksum",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000096",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000096/",
+   "label": "eobs speed accuracy estimate",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000097",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000097/",
+   "label": "eobs start timestamp",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000098",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000098/",
+   "label": "eobs status",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000099",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000099/",
+   "label": "eobs temperature",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000100",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000100/",
+   "label": "eobs type of fix",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000101",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000101/",
+   "label": "eobs used time to get fix",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000102",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000102/",
+   "label": "end timestamp",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000103",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000103/",
+   "label": "event ID",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000104",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000104/",
+   "label": "external temperature",
+   "altLabels": [
+    "temperature external"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000105",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000105/",
+   "label": "Flt switch",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000106",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000106/",
+   "label": "geolocator calibration",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000107",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000107/",
+   "label": "geolocator fix type",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000108",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000108/",
+   "label": "geolocator light threshold",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000109",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000109/",
+   "label": "geolocator sensor comments",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000110",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000110/",
+   "label": "geolocator sun elevation angle",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000111",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000111/",
+   "label": "Gt sys week",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000112",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000112/",
+   "label": "Gt tx count",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000113",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000113/",
+   "label": "twilight",
+   "altLabels": [
+    "gls twilight"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000114",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000114/",
+   "label": "activity count",
+   "altLabels": [
+    "GPS activity count"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000115",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000115/",
+   "label": "GPS DOP",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000116",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000116/",
+   "label": "GPS fix type",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000117",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000117/",
+   "label": "GPS fix type raw",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000118",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000118/",
+   "label": "GPS HDOP",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000119",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000119/",
+   "label": "GPS maximum signal strength",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000120",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000120/",
+   "label": "GPS satellite count",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000121",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000121/",
+   "label": "GPS time to fix",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000122",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000122/",
+   "label": "GPS VDOP",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000123",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000123/",
+   "label": "grants used",
+   "altLabels": [],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000124",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000124/",
+   "label": "ground speed",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000125",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000125/",
+   "label": "GSM MCC MNC",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000126",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000126/",
+   "label": "GSM signal strength",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000127",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000127/",
+   "label": "habitat",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000128",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000128/",
+   "label": "habitat according to",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000129",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000129/",
+   "label": "heading",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000130",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000130/",
+   "label": "height above ellipsoid",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000131",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000131/",
+   "label": "height above mean sea level",
+   "altLabels": [
+    "height above msl"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000132",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000132/",
+   "label": "height raw",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000133",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000133/",
+   "label": "import marked outlier",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000134",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000134/",
+   "label": "individual local identifier",
+   "altLabels": [
+    "animal ID"
+   ],
+   "entity": "individual",
+   "deprecated": true
+  },
+  {
+   "id": "MVB000135",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000135/",
+   "label": "individual taxon canonical name",
+   "altLabels": [
+    "animal taxon"
+   ],
+   "entity": "individual",
+   "deprecated": true
+  },
+  {
+   "id": "MVB000136",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000136/",
+   "label": "lat lower",
+   "altLabels": [
+    "latitude lower"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000137",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000137/",
+   "label": "lat upper",
+   "altLabels": [
+    "latitude upper"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000138",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000138/",
+   "label": "license terms",
+   "altLabels": [],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000139",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000139/",
+   "label": "light level",
+   "altLabels": [
+    "gls light level"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000140",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000140/",
+   "label": "study local timestamp",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000141",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000141/",
+   "label": "location accuracy comments",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000142",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000142/",
+   "label": "location error numerical",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000143",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000143/",
+   "label": "location error percentile",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000144",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000144/",
+   "label": "location error text",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000145",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000145/",
+   "label": "location lat",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000146",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000146/",
+   "label": "location long",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000147",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000147/",
+   "label": "long lower",
+   "altLabels": [
+    "longitude lower"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000148",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000148/",
+   "label": "long upper",
+   "altLabels": [
+    "longitude upper"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000149",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000149/",
+   "label": "Lotek CRC status",
+   "altLabels": [
+    "Lot CRC status"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000150",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000150/",
+   "label": "Lotek CRC status text",
+   "altLabels": [
+    "Lot CRC status text"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000151",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000151/",
+   "label": "magnetic field raw x",
+   "altLabels": [
+    "mag magnetic field raw x"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000152",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000152/",
+   "label": "magnetic field raw y",
+   "altLabels": [
+    "mag magnetic field raw y"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000153",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000153/",
+   "label": "magnetic field raw z",
+   "altLabels": [
+    "mag magnetic field raw z"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000154",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000154/",
+   "label": "manipulation comments",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000155",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000155/",
+   "label": "manipulation type",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000156",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000156/",
+   "label": "manually marked outlier",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000157",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000157/",
+   "label": "manually marked valid",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000158",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000158/",
+   "label": "Mw activity count",
+   "altLabels": [
+    "Microwave activity count"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000159",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000159/",
+   "label": "Mw show in KML",
+   "altLabels": [
+    "Microwave show in KML"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000160",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000160/",
+   "label": "migration stage",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000161",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000161/",
+   "label": "migration stage standard",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000162",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000162/",
+   "label": "modelled",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000163",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000163/",
+   "label": "Ornitela transmission protocol",
+   "altLabels": [
+    "orn transmission protocol"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000164",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000164/",
+   "label": "principal investigator",
+   "altLabels": [
+    "principal investigator name"
+   ],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000165",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000165/",
+   "label": "proofed",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000166",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000166/",
+   "label": "raptor workshop behavior",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": true
+  },
+  {
+   "id": "MVB000167",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000167/",
+   "label": "raptor workshop deployment special event",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": true
+  },
+  {
+   "id": "MVB000168",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000168/",
+   "label": "raptor workshop migration state",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": true
+  },
+  {
+   "id": "MVB000169",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000169/",
+   "label": "sampling frequency",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000170",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000170/",
+   "label": "sensor type",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000171",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000171/",
+   "label": "start timestamp",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000172",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000172/",
+   "label": "study ID",
+   "altLabels": [
+    "Movebank ID"
+   ],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000173",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000173/",
+   "label": "study name",
+   "altLabels": [],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000174",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000174/",
+   "label": "study reference location",
+   "altLabels": [],
+   "entity": "study",
+   "deprecated": true
+  },
+  {
+   "id": "MVB000175",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000175/",
+   "label": "study site",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000176",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000176/",
+   "label": "study summary",
+   "altLabels": [
+    "study objective"
+   ],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000177",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000177/",
+   "label": "study timezone",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000178",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000178/",
+   "label": "study specific measurement",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000179",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000179/",
+   "label": "tag comments",
+   "altLabels": [],
+   "entity": "tag",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000180",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000180/",
+   "label": "tag failure comments",
+   "altLabels": [],
+   "entity": "tag",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000181",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000181/",
+   "label": "tag ID",
+   "altLabels": [
+    "tag local identifier"
+   ],
+   "entity": "tag",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000182",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000182/",
+   "label": "tag local identifier",
+   "altLabels": [
+    "tag ID"
+   ],
+   "entity": "tag",
+   "deprecated": true
+  },
+  {
+   "id": "MVB000183",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000183/",
+   "label": "tag manufacturer name",
+   "altLabels": [
+    "manufacturer name"
+   ],
+   "entity": "tag",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000184",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000184/",
+   "label": "tag mass",
+   "altLabels": [
+    "weight"
+   ],
+   "entity": "tag",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000185",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000185/",
+   "label": "tag model",
+   "altLabels": [],
+   "entity": "tag",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000186",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000186/",
+   "label": "tag processing type",
+   "altLabels": [],
+   "entity": "tag",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000187",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000187/",
+   "label": "tag production date",
+   "altLabels": [],
+   "entity": "tag",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000188",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000188/",
+   "label": "tag readout method",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000189",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000189/",
+   "label": "tag serial no",
+   "altLabels": [
+    "serial no"
+   ],
+   "entity": "tag",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000190",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000190/",
+   "label": "tag tech spec",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000191",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000191/",
+   "label": "tag voltage",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000192",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000192/",
+   "label": "TechnoSmart activity",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000193",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000193/",
+   "label": "TechnoSmart signal quality",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000194",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000194/",
+   "label": "temperature max",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000195",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000195/",
+   "label": "temperature min",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000196",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000196/",
+   "label": "tilt angle",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000197",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000197/",
+   "label": "tilt x",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000198",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000198/",
+   "label": "tilt y",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000199",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000199/",
+   "label": "tilt z",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000200",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000200/",
+   "label": "timestamp",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000201",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000201/",
+   "label": "transmission timestamp",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000202",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000202/",
+   "label": "underwater count",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000203",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000203/",
+   "label": "underwater time",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000204",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000204/",
+   "label": "update ts",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000205",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000205/",
+   "label": "UTM easting",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000206",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000206/",
+   "label": "UTM northing",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000207",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000207/",
+   "label": "UTM zone",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000208",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000208/",
+   "label": "vertical error numerical",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000209",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000209/",
+   "label": "visible",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000210",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000210/",
+   "label": "waterbird workshop: behavior",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": true
+  },
+  {
+   "id": "MVB000211",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000211/",
+   "label": "waterbird workshop: deployment special event",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": true
+  },
+  {
+   "id": "MVB000212",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000212/",
+   "label": "waterbird workshop: migration state",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": true
+  },
+  {
+   "id": "MVB000213",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000213/",
+   "label": "wet count",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000214",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000214/",
+   "label": "data decoding software",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000215",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000215/",
+   "label": "geolocator rise",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000216",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000216/",
+   "label": "geolocator twilight3",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000217",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000217/",
+   "label": "I am owner",
+   "altLabels": [],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000218",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000218/",
+   "label": "I can see data",
+   "altLabels": [],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000219",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000219/",
+   "label": "magnetic field axes",
+   "altLabels": [
+    "mag magnetic field axes"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000220",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000220/",
+   "label": "magnetic field sampling frequency per axis",
+   "altLabels": [
+    "mag magnetic field sampling frequency per axies"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000221",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000221/",
+   "label": "magnetic fields raw",
+   "altLabels": [
+    "mag magnetic fields raw"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000222",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000222/",
+   "label": "main location lat",
+   "altLabels": [
+    "study reference location latitude"
+   ],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000223",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000223/",
+   "label": "main location long",
+   "altLabels": [
+    "study reference location longitude"
+   ],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000224",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000224/",
+   "label": "number of deployed locations",
+   "altLabels": [],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000225",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000225/",
+   "label": "number of deployments",
+   "altLabels": [],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000226",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000226/",
+   "label": "number of individuals",
+   "altLabels": [],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000227",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000227/",
+   "label": "number of tags",
+   "altLabels": [],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000228",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000228/",
+   "label": "orientation quaternion raw w",
+   "altLabels": [
+    "quaternion-raw-w"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000229",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000229/",
+   "label": "orientation quaternion raw x",
+   "altLabels": [
+    "quaternion-raw-x"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000230",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000230/",
+   "label": "orientation quaternion raw y",
+   "altLabels": [
+    "quaternion-raw-y"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000231",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000231/",
+   "label": "orientation quaternion raw z",
+   "altLabels": [
+    "quaternion-raw-z"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000232",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000232/",
+   "label": "orientation quaternions raw",
+   "altLabels": [
+    "guaternions-raw"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000233",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000233/",
+   "label": "orientation quaternions sampling frequency",
+   "altLabels": [
+    "quaternions-sampling-frequency"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000234",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000234/",
+   "label": "principal investigator address",
+   "altLabels": [
+    "PI contact details"
+   ],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000235",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000235/",
+   "label": "principal investigator email",
+   "altLabels": [
+    "PI email"
+   ],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000236",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000236/",
+   "label": "principal investigator name",
+   "altLabels": [],
+   "entity": "study",
+   "deprecated": true
+  },
+  {
+   "id": "MVB000237",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000237/",
+   "label": "GPS speed accuracy estimate",
+   "altLabels": [
+    "speed accuracy estimate"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000238",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000238/",
+   "label": "suspend license terms",
+   "altLabels": [],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000239",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000239/",
+   "label": "there are data which I cannot see",
+   "altLabels": [],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000240",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000240/",
+   "label": "timestamp first deployed location",
+   "altLabels": [],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000241",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000241/",
+   "label": "timestamp of last deployed location",
+   "altLabels": [],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000242",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000242/",
+   "label": "twilight excluded",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000243",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000243/",
+   "label": "twilight inserted",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000244",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000244/",
+   "label": "alt project ID",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000245",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000245/",
+   "label": "angular velocities raw",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000246",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000246/",
+   "label": "angular velocity X",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000247",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000247/",
+   "label": "angular velocity Y",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000248",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000248/",
+   "label": "angular velocity Z",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000249",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000249/",
+   "label": "CPU temperature",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000250",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000250/",
+   "label": "go public date",
+   "altLabels": [],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000251",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000251/",
+   "label": "GPS message count",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000252",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000252/",
+   "label": "gyroscope axes",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000253",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000253/",
+   "label": "gyroscope sampling frequency per axis",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000254",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000254/",
+   "label": "I am collaborator",
+   "altLabels": [],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000255",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000255/",
+   "label": "I have download access",
+   "altLabels": [],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000256",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000256/",
+   "label": "internal temperature",
+   "altLabels": [
+    "temperature internal"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000257",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000257/",
+   "label": "license type",
+   "altLabels": [],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000258",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000258/",
+   "label": "magnetic field x",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000259",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000259/",
+   "label": "magnetic field y",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000260",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000260/",
+   "label": "magnetic field z",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000261",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000261/",
+   "label": "mortality status",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000262",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000262/",
+   "label": "number of events",
+   "altLabels": [],
+   "entity": "individual",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000263",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000263/",
+   "label": "pitch",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000264",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000264/",
+   "label": "provider update timestamp",
+   "altLabels": [
+    "provider update ts"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000265",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000265/",
+   "label": "receiver ID",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000266",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000266/",
+   "label": "relative humidity",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000267",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000267/",
+   "label": "roll",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000268",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000268/",
+   "label": "sensor type IDs",
+   "altLabels": [],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000269",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000269/",
+   "label": "solar cell voltage",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000270",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000270/",
+   "label": "solar voltage percent",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000271",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000271/",
+   "label": "study permission",
+   "altLabels": [],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000272",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000272/",
+   "label": "study type",
+   "altLabels": [],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000273",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000273/",
+   "label": "taxon IDs",
+   "altLabels": [],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000274",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000274/",
+   "label": "timestamp end",
+   "altLabels": [],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000275",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000275/",
+   "label": "timestamp start",
+   "altLabels": [],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000276",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000276/",
+   "label": "transmission protocol",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000277",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000277/",
+   "label": "tsn",
+   "altLabels": [],
+   "entity": "taxon",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000278",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000278/",
+   "label": "Argos location algorithm",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000279",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000279/",
+   "label": "Argos nb mes identical",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": true
+  },
+  {
+   "id": "MVB000280",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000280/",
+   "label": "contact person ID",
+   "altLabels": [],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000281",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000281/",
+   "label": "ECG raw",
+   "altLabels": [
+    "heartrate ECG raw"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000282",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000282/",
+   "label": "ECG sampling frequency",
+   "altLabels": [
+    "heartrate ECG sampling frequency"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000283",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000283/",
+   "label": "ECGs raw",
+   "altLabels": [
+    "heartrate ECGs raw"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000284",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000284/",
+   "label": "GPS PDOP",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000285",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000285/",
+   "label": "GPS twilight",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000286",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000286/",
+   "label": "Gt activity count",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": true
+  },
+  {
+   "id": "MVB000287",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000287/",
+   "label": "heart rate",
+   "altLabels": [
+    "heartrate heart rate"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000288",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000288/",
+   "label": "Icarus solar cell current",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000289",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000289/",
+   "label": "is location sensor",
+   "altLabels": [],
+   "entity": "tag_type",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000290",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000290/",
+   "label": "is test",
+   "altLabels": [],
+   "entity": "study",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000291",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000291/",
+   "label": "Lotek fix status",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000292",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000292/",
+   "label": "receiver deployment ID",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000293",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000293/",
+   "label": "receiver detector ID",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000294",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000294/",
+   "label": "RR interval",
+   "altLabels": [
+    "heartrate RR interval"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000295",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000295/",
+   "label": "tag battery voltage",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": true
+  },
+  {
+   "id": "MVB000296",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000296/",
+   "label": "telemetry detection count",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000297",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000297/",
+   "label": "telemetry run ID",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000298",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000298/",
+   "label": "voltage resolution",
+   "altLabels": [
+    "heartrate voltage resolution"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000299",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000299/",
+   "label": "wet",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000300",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000300/",
+   "label": "CTT solar current since last fix",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000301",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000301/",
+   "label": "GMatrix alert",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000302",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000302/",
+   "label": "GMatrix alert message",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000303",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000303/",
+   "label": "GMatrix device type",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000304",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000304/",
+   "label": "GMatrix event",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000305",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000305/",
+   "label": "GMatrix firmware version",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000306",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000306/",
+   "label": "GMatrix GPS event",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000307",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000307/",
+   "label": "GMatrix GPS event text",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000308",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000308/",
+   "label": "GMatrix GPS fix interval",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000309",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000309/",
+   "label": "GMatrix GPS fix interval text",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000310",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000310/",
+   "label": "GMatrix hardware version",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000311",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000311/",
+   "label": "GMatrix is moving",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000312",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000312/",
+   "label": "GMatrix is moving text",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000313",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000313/",
+   "label": "GMatrix last location",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000314",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000314/",
+   "label": "GMatrix last location text",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000315",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000315/",
+   "label": "GMatrix mode",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000316",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000316/",
+   "label": "GMatrix mode text",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000317",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000317/",
+   "label": "GMatrix packet type",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000318",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000318/",
+   "label": "Savannah alarm type",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000319",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000319/",
+   "label": "Savannah record type",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000320",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000320/",
+   "label": "sequence number",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000321",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000321/",
+   "label": "Sigfox computed location radius",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000322",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000322/",
+   "label": "Sigfox computed location source",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000323",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000323/",
+   "label": "Sigfox computed location status",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000324",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000324/",
+   "label": "Sigfox country",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000325",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000325/",
+   "label": "Sigfox device type",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000326",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000326/",
+   "label": "Sigfox duplicates",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000327",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000327/",
+   "label": "Sigfox link quality",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000328",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000328/",
+   "label": "Sigfox LQI",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000329",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000329/",
+   "label": "Sigfox operator",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000330",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000330/",
+   "label": "Sigfox RSSI",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000331",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000331/",
+   "label": "Sigfox tx interval",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000332",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000332/",
+   "label": "Sigfox tx interval text",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000333",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000333/",
+   "label": "accelerations",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000334",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000334/",
+   "label": "activity x",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000335",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000335/",
+   "label": "activity y",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000336",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000336/",
+   "label": "activity z",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000337",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000337/",
+   "label": "alt index ID",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000338",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000338/",
+   "label": "animal birth hatch latitude",
+   "altLabels": [],
+   "entity": "individual",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000339",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000339/",
+   "label": "animal birth hatch longitude",
+   "altLabels": [],
+   "entity": "individual",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000340",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000340/",
+   "label": "animal group ID",
+   "altLabels": [],
+   "entity": "animal",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000341",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000341/",
+   "label": "animal marker ID",
+   "altLabels": [],
+   "entity": "animal",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000342",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000342/",
+   "label": "animal mates",
+   "altLabels": [],
+   "entity": "animal",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000343",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000343/",
+   "label": "animal mortality latitude",
+   "altLabels": [],
+   "entity": "individual",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000344",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000344/",
+   "label": "animal mortality longitude",
+   "altLabels": [],
+   "entity": "individual",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000345",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000345/",
+   "label": "animal mortality type",
+   "altLabels": [],
+   "entity": "animal",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000346",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000346/",
+   "label": "animal offspring",
+   "altLabels": [],
+   "entity": "animal",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000347",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000347/",
+   "label": "animal parents",
+   "altLabels": [],
+   "entity": "animal",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000348",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000348/",
+   "label": "animal siblings",
+   "altLabels": [],
+   "entity": "animal",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000349",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000349/",
+   "label": "capture handling time",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000350",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000350/",
+   "label": "capture latitude",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000351",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000351/",
+   "label": "capture longitude",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000352",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000352/",
+   "label": "capture timestamp",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000353",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000353/",
+   "label": "DBA comments",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000354",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000354/",
+   "label": "deploy off measurements",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000355",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000355/",
+   "label": "deploy off sampling",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000356",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000356/",
+   "label": "deploy on measurements",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000357",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000357/",
+   "label": "deploy on sampling",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000358",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000358/",
+   "label": "event group ID",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000359",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000359/",
+   "label": "georeference protocol",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000360",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000360/",
+   "label": "GPS GDOP",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000361",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000361/",
+   "label": "GPS TDOP",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000362",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000362/",
+   "label": "height above ground level",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000363",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000363/",
+   "label": "individual count",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000364",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000364/",
+   "label": "lat median",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000365",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000365/",
+   "label": "lat sd",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000366",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000366/",
+   "label": "locality",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000367",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000367/",
+   "label": "locality according to",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000368",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000368/",
+   "label": "long median",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000369",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000369/",
+   "label": "long sd",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000370",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000370/",
+   "label": "Lotek eRes",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000371",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000371/",
+   "label": "manipulation status",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000372",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000372/",
+   "label": "observer",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000373",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000373/",
+   "label": "ODBA",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000374",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000374/",
+   "label": "outlier comments",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000375",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000375/",
+   "label": "receiver latitude",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000376",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000376/",
+   "label": "receiver longitude",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000377",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000377/",
+   "label": "Sigfox payload",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000378",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000378/",
+   "label": "speed accuracy",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000379",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000379/",
+   "label": "tag backup voltage",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000380",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000380/",
+   "label": "tag firmware",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000381",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000381/",
+   "label": "Tinyfox last error",
+   "altLabels": [
+    "tinyfox last error"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000382",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000382/",
+   "label": "TinyFox max movement index",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000383",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000383/",
+   "label": "TinyFox sunny index start voltage",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000384",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000384/",
+   "label": "TinyFox sunny index voltage increase",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000385",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000385/",
+   "label": "TinyFox total VeDBA",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000386",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000386/",
+   "label": "TinyFox total VeDBA count",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000387",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000387/",
+   "label": "TinyFox VeDBA burst sum",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000388",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000388/",
+   "label": "track segment ID",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000389",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000389/",
+   "label": "VeDBA",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000390",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000390/",
+   "label": "vertical speed",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000391",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000391/",
+   "label": "WC residual",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000392",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000392/",
+   "label": "zero crossings amplitude",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000393",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000393/",
+   "label": "zero crossings steps",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000394",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000394/",
+   "label": "animal mortality date",
+   "altLabels": [],
+   "entity": "individual",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000395",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000395/",
+   "label": "attachment body part",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000396",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000396/",
+   "label": "attachment comments",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000397",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000397/",
+   "label": "capture method",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000398",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000398/",
+   "label": "deployment image",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000399",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000399/",
+   "label": "dive duration",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000400",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000400/",
+   "label": "error count",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000401",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000401/",
+   "label": "Gundi URN",
+   "altLabels": [
+    "Gundi Gundi urn"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000402",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000402/",
+   "label": "location error 3D",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000403",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000403/",
+   "label": "prox ID",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000404",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000404/",
+   "label": "prox signal strength",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000405",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000405/",
+   "label": "scheduled detachment date",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000406",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000406/",
+   "label": "sensor type ID",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000407",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000407/",
+   "label": "sequence number burst",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000408",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000408/",
+   "label": "tag calibration",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000409",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000409/",
+   "label": "tag mass total",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000410",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000410/",
+   "label": "tag retrieval date",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000411",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000411/",
+   "label": "tag settings",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000412",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000412/",
+   "label": "Vectronics activity mode",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000413",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000413/",
+   "label": "WildFi acc conversion factor",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000414",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000414/",
+   "label": "WildFi gyro conversion factor",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000415",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000415/",
+   "label": "WildFi hall burst",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000416",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000416/",
+   "label": "WildFi last error",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000417",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000417/",
+   "label": "WildFi mag conversion factor",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000418",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000418/",
+   "label": "WildFi prox id burst",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000419",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000419/",
+   "label": "WildFi prox RSSI burst",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000420",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000420/",
+   "label": "WildFi record type",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000421",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000421/",
+   "label": "AWT alarms battery",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000422",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000422/",
+   "label": "AWT alarms cbit",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000423",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000423/",
+   "label": "AWT alarms coverage",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000424",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000424/",
+   "label": "AWT alarms geofence",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000425",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000425/",
+   "label": "AWT alarms memory",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000426",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000426/",
+   "label": "AWT alarms movement",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000427",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000427/",
+   "label": "AWT alarms tamperfoil",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000428",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000428/",
+   "label": "AWT alarms track mode",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000429",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000429/",
+   "label": "AWT log interval",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000430",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000430/",
+   "label": "battery charging voltage",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000431",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000431/",
+   "label": "breed stage",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000432",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000432/",
+   "label": "Druid alert",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000433",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000433/",
+   "label": "Druid data source",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000434",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000434/",
+   "label": "geolocation station count",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000435",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000435/",
+   "label": "GNSS DOP",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000436",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000436/",
+   "label": "GNSS fix type",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000437",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000437/",
+   "label": "GNSS fix type raw",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000438",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000438/",
+   "label": "GNSS HDOP",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000439",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000439/",
+   "label": "GNSS maximum signal strength",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000440",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000440/",
+   "label": "GNSS message count",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000441",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000441/",
+   "label": "GNSS PDOP",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000442",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000442/",
+   "label": "GNSS satellite count",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000443",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000443/",
+   "label": "GNSS time to fix",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000444",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000444/",
+   "label": "GNSS VDOP",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000445",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000445/",
+   "label": "LoRa data rate",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000446",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000446/",
+   "label": "LoRa gateway ID",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000447",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000447/",
+   "label": "LoRa gateway latitude",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000448",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000448/",
+   "label": "LoRa gateway longitude",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000449",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000449/",
+   "label": "LoRa payload",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000450",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000450/",
+   "label": "LoRa port",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000451",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000451/",
+   "label": "LoRa RSSI",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000452",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000452/",
+   "label": "LoRa SNR",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000453",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000453/",
+   "label": "LoRa spreading factor",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000454",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000454/",
+   "label": "LoRa uplink count",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000455",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000455/",
+   "label": "OpenCollar active tracking",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000456",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000456/",
+   "label": "OpenCollar cold retry",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000457",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000457/",
+   "label": "OpenCollar error acc",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000458",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000458/",
+   "label": "OpenCollar error bat",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000459",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000459/",
+   "label": "OpenCollar error ble",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000460",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000460/",
+   "label": "OpenCollar error flash",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000461",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000461/",
+   "label": "OpenCollar error lr",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000462",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000462/",
+   "label": "OpenCollar error lr join",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000463",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000463/",
+   "label": "OpenCollar error ublox",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000464",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000464/",
+   "label": "OpenCollar error ublox fix",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000465",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000465/",
+   "label": "OpenCollar hot retry",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000466",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000466/",
+   "label": "OpenCollar locked",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000467",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000467/",
+   "label": "OpenCollar msg",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000468",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000468/",
+   "label": "OpenCollar payload type",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000469",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000469/",
+   "label": "OpenCollar reset",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000470",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000470/",
+   "label": "OpenCollar uptime",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000471",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000471/",
+   "label": "OpenCollar ver fw major",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000472",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000472/",
+   "label": "OpenCollar ver fw minor",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000473",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000473/",
+   "label": "OpenCollar ver fw type",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000474",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000474/",
+   "label": "GSAT charge mode",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000475",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000475/",
+   "label": "GSAT low power mode",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000476",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000476/",
+   "label": "GSAT orientation",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000477",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000477/",
+   "label": "depth",
+   "altLabels": [
+    "tdr depth"
+   ],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000478",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000478/",
+   "label": "ATLAS varx",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000479",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000479/",
+   "label": "ATLAS vary",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000480",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000480/",
+   "label": "ATLAS varxy",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000481",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000481/",
+   "label": "Lotek deltatime",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000482",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000482/",
+   "label": "format type",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000483",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000483/",
+   "label": "Sensolus fix type",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000484",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000484/",
+   "label": "Sensolus location source",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000485",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000485/",
+   "label": "Sigfox format character",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000486",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000486/",
+   "label": "Sigfox sensor data raw",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000487",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000487/",
+   "label": "Tinyfox activity percent last 24h",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000488",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000488/",
+   "label": "Tinyfox error happened",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000489",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000489/",
+   "label": "Tinyfox memory full",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000490",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000490/",
+   "label": "Tinyfox pressure min last 24h",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000491",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000491/",
+   "label": "Tinyfox software version",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000492",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000492/",
+   "label": "Tinyfox tag activation",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000493",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000493/",
+   "label": "Tinyfox temperature max last 24h",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000494",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000494/",
+   "label": "Tinyfox temperature min last 24h",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000495",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000495/",
+   "label": "Tinyfox VeDBA 00h ago",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000496",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000496/",
+   "label": "Tinyfox VeDBA 01h ago",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000497",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000497/",
+   "label": "Tinyfox VeDBA 02h ago",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000498",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000498/",
+   "label": "Tinyfox VeDBA 03h ago",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000499",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000499/",
+   "label": "Tinyfox VeDBA 04h ago",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000500",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000500/",
+   "label": "Tinyfox VeDBA 05h ago",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000501",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000501/",
+   "label": "Tinyfox VeDBA 06h ago",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000502",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000502/",
+   "label": "Tinyfox VeDBA 07h ago",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000503",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000503/",
+   "label": "Tinyfox VeDBA 08h ago",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000504",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000504/",
+   "label": "Tinyfox VeDBA 09h ago",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000505",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000505/",
+   "label": "Tinyfox VeDBA 10h ago",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000506",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000506/",
+   "label": "Tinyfox VeDBA 11h ago",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000507",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000507/",
+   "label": "Tinyfox VeDBA 12h ago",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000508",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000508/",
+   "label": "Tinyfox VeDBA 13h ago",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000509",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000509/",
+   "label": "Tinyfox VeDBA 14h ago",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000510",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000510/",
+   "label": "Tinyfox VeDBA 15h ago",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000511",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000511/",
+   "label": "Tinyfox VeDBA 16h ago",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000512",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000512/",
+   "label": "Tinyfox VeDBA 17h ago",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000513",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000513/",
+   "label": "Tinyfox VeDBA 18h ago",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000514",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000514/",
+   "label": "Tinyfox VeDBA 19h ago",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000515",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000515/",
+   "label": "Tinyfox VeDBA 20h ago",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000516",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000516/",
+   "label": "Tinyfox VeDBA 21h ago",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000517",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000517/",
+   "label": "Tinyfox VeDBA 22h ago",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000518",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000518/",
+   "label": "Tinyfox VeDBA 23h ago",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000519",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000519/",
+   "label": "animal birth hatch year",
+   "altLabels": [],
+   "entity": "individual",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000520",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000520/",
+   "label": "animal age",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000521",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000521/",
+   "label": "animal age analytical",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000522",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000522/",
+   "label": "animal age comments",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000523",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000523/",
+   "label": "animal length",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000524",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000524/",
+   "label": "animal life stage exact",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000525",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000525/",
+   "label": "animal status",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000526",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000526/",
+   "label": "animal status date",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000527",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000527/",
+   "label": "body condition",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000528",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000528/",
+   "label": "capture health monitoring",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000529",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000529/",
+   "label": "capture order",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000530",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000530/",
+   "label": "chase start timestamp",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000531",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000531/",
+   "label": "chase time",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000532",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000532/",
+   "label": "deployment jurisdiction",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000533",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000533/",
+   "label": "deployment marker id",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000534",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000534/",
+   "label": "deployment waypoint",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000535",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000535/",
+   "label": "handling behavior",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000536",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000536/",
+   "label": "handling start timestamp",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000537",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000537/",
+   "label": "hindfoot length",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000538",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000538/",
+   "label": "sampling blood",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000539",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000539/",
+   "label": "sampling feces",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000540",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000540/",
+   "label": "sampling hair",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000541",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000541/",
+   "label": "sampling mucosal swab",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000542",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000542/",
+   "label": "sampling parasites",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000543",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000543/",
+   "label": "tag beacon design frequency",
+   "altLabels": [],
+   "entity": "tag",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000544",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000544/",
+   "label": "tag funder",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000545",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000545/",
+   "label": "tag imei",
+   "altLabels": [],
+   "entity": "tag",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000546",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000546/",
+   "label": "tag owner",
+   "altLabels": [],
+   "entity": "tag",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000547",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000547/",
+   "label": "tag status",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000548",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000548/",
+   "label": "tag status date",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000549",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000549/",
+   "label": "with offspring",
+   "altLabels": [],
+   "entity": "deployment",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000550",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000550/",
+   "label": "barometric pressure min",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000551",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000551/",
+   "label": "firmware",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000552",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000552/",
+   "label": "firmware config",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000553",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000553/",
+   "label": "last error",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000554",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000554/",
+   "label": "sigfox message type",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000555",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000555/",
+   "label": "temperature average",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000556",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000556/",
+   "label": "temperature min text",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000557",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000557/",
+   "label": "VeDBA average",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  },
+  {
+   "id": "MVB000558",
+   "iri": "http://vocab.nerc.ac.uk/collection/MVB/current/MVB000558/",
+   "label": "VeDBA count",
+   "altLabels": [],
+   "entity": "event",
+   "deprecated": false
+  }
+ ]
+}

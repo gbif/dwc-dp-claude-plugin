@@ -607,6 +607,42 @@ def normalise(name):
     return re.sub(r"[^0-9a-z]", "", name.lower())
 
 
+CROSSWALK_DIR = os.path.join(HERE, "..", "crosswalks")
+MOVEBANK_ENTITY_HOME = {
+    "event": "an assertion about the location (occurrence-assertion or event-assertion)",
+    "individual": "organism-assertion", "animal": "organism-assertion",
+    "deployment": "event-assertion on the deployment event",
+    "tag": "the tag's agent (agentRemarks), or event-assertion on the deployment",
+    "study": "the package's metadata", "taxon": "identification",
+}
+
+
+def movebank_attributes():
+    """{normalised Movebank attribute name: attribute}, from the pinned MVB collection, with the
+    hand-written DwC-DP crosswalk as 'to' and 'note'. Current attributes win over deprecated ones
+    with the same name."""
+    if not hasattr(movebank_attributes, "cache"):
+        with open(os.path.join(CROSSWALK_DIR, "movebank-attributes.json"), encoding="utf-8") as fh:
+            attrs = json.load(fh)["attributes"]
+        with open(os.path.join(CROSSWALK_DIR, "movebank.json"), encoding="utf-8") as fh:
+            crosswalk = json.load(fh)["attributes"]
+        index = {}
+        for a in sorted(attrs, key=lambda a: a["deprecated"], reverse=True):
+            a = dict(a, **{k: v for k, v in crosswalk.get(a["id"], {}).items() if k in ("to", "note")})
+            for name in [a["label"]] + a["altLabels"]:
+                index[normalise(name)] = a
+        movebank_attributes.cache = index
+    return movebank_attributes.cache
+
+
+def movebank_note(a):
+    head = f"Movebank {a['label']} ({a['id']}, {a.get('entity') or 'entity not stated'}): "
+    if "to" in a:
+        to = ", ".join(a["to"])
+        return head + "; ".join(x for x in (to, a.get("note")) if x)
+    return head + "no crosswalk entry; " + MOVEBANK_ENTITY_HOME.get(a.get("entity"), "find-term, or an assertion")
+
+
 # Darwin Core terms whose values name other organisms, and words in column names that often do:
 # an interaction or relationship between organisms, not a measurement (references/interactions.md).
 ASSOCIATION_TERMS = {"associatedTaxa", "associatedOccurrences", "associatedOrganisms"}
@@ -645,8 +681,13 @@ def cmd_suggest(args):
     known_terms = {}
     if "src_dwca_terms" in db_tables(con):
         known_terms = dict(con.execute("SELECT column_name, term FROM src_dwca_terms WHERE source_table = ? AND term IS NOT NULL", [src]).fetchall())
+    # A Movebank export: most columns are Movebank attributes (references/recipes/tracking.md).
+    columns = db_columns(con, src)
+    movebank = {c: movebank_attributes()[normalise(c)] for c in columns if normalise(c) in movebank_attributes()}
+    if known_terms or len(movebank) < 3 or len(movebank) < len(columns) / 2:
+        movebank = {}
     rows = []
-    for col in db_columns(con, src):
+    for col in columns:
         C = q(col)
         values = con.execute(f"SELECT DISTINCT CAST({C} AS VARCHAR) FROM {q(src)} WHERE {C} IS NOT NULL AND trim(CAST({C} AS VARCHAR)) <> '' LIMIT 3").fetchall()
         filled = count(con, f"SELECT count(*) FROM {q(src)} WHERE {C} IS NOT NULL AND trim(CAST({C} AS VARCHAR)) <> ''")
@@ -669,6 +710,8 @@ def cmd_suggest(args):
                 note = "(empty)"
             else:
                 note = f"no DwC-DP field is a version of {term.rsplit('/', 1)[-1]}; see references/recipes/dwca.md"
+        elif col in movebank:
+            note = movebank_note(movebank[col])
         elif hits:
             note = ", ".join(hits[:4]) + (f" and {len(hits) - 4} more" if len(hits) > 4 else "")
         elif maybe and filled:
@@ -686,6 +729,10 @@ def cmd_suggest(args):
     print(table_text(rows, ["column", "values", "DwC-DP field"], last=130))
     if target and f"{target}-assertion" not in schemas():
         print(f"\n{target} has no assertion table. A measurement about it needs another home; ask the data holder.")
+    if movebank:
+        print(f"\nThis looks like a Movebank export ({len(movebank)} of {len(columns)} columns are Movebank attributes): "
+              "see references/recipes/tracking.md. Each attribute's definition is at "
+              "http://vocab.nerc.ac.uk/collection/MVB/current/<id>/.")
     print("\nA match by name is a suggestion, not a decision: check it with describe --field. For the others, "
           "try find-term with other words first. A column whose values name another organism (a host, a prey, a "
           "plant visited or grown on) is an interaction: see references/interactions.md. Measurements and facts: "

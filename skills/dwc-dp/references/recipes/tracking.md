@@ -82,6 +82,11 @@ recorded for the start.
 
 ## Movebank attributes and where they go
 
+`dwcdp.py suggest` recognises a Movebank export. When most of a table's columns are Movebank
+attributes, it names each one with its id and entity, and gives its DwC-DP field from the crosswalk
+in `crosswalks/movebank.json`. An attribute that isn't in the crosswalk gets the table for its
+entity. The table below is the same crosswalk:
+
 | Movebank attribute (entity) | DwC-DP |
 |---|---|
 | `event-id` (event) | `event.eventID` of the location event, and its `event_pk` |
