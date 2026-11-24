@@ -8,6 +8,7 @@ The data are organisms seen, heard, photographed or recorded, without specimens 
 - **interactions:** a visitor on a flower, a predator with its prey, a parasite on its host. They are
   often unnamed: a host column, or `associatedTaxa`. `../interactions.md` covers how to spot and
   build them;
+- **tracking:** animals with GPS, Argos or other tags have their own recipe, `tracking.md`;
 - **camera traps:** deployments, images and the observations classified from them, often already
   as a Camtrap DP package (https://camtrap-dp.tdwg.org).
 

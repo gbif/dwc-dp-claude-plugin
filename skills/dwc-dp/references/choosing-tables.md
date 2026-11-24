@@ -15,7 +15,7 @@ data holder (and, if it stays open, for the maintainers).
 | Are names given to organisms or specimens, perhaps more than once, by named people? | `identification` and `identification-taxon`. For several people or roles, `identification-agent-role` |
 | Was DNA sequenced (eDNA, metabarcoding, barcoding)? | `nucleotide-analysis`, `nucleotide-sequence`, `molecular-protocol`; usually `material` for the sample |
 | Does a record name a second organism: a host, a prey, a flower visited, a tree it grew on, `associatedTaxa`? Even when they don't call it an interaction | `organism-interaction`, linking two `occurrence` rows; the partner gets an occurrence and an identification. See `interactions.md` |
-| Is the same individual recorded several times (tags, rings, named animals)? | `organism`, with `occurrence.organism_fk` |
+| Is the same individual recorded several times (tags, rings, named animals)? | `organism`, with `occurrence.organism_fk`; for tracking tags and Movebank data see `recipes/tracking.md` |
 | Are there images, sound or video? | `media`, and `occurrence-media`, `material-media`, `event-media` and so on for what they show |
 | Are there measurements or facts with no DwC-DP field, such as water temperature, pH, body length, sample volume or trap height? | the `*-assertion` table of the thing they describe (`event-assertion`, `material-assertion`, `occurrence-assertion`, ...); see `assertions.md` |
 | Are people or organisations named, and do they want them identified (ORCID, ROR) or credited by role? | `agent`, `agent-identifier`, and the `*-agent-role` tables |

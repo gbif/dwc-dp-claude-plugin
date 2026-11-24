@@ -414,6 +414,38 @@ class PaleoRecipe(Base):
         self.assertEqual(q("SELECT geologicalMaterialNames FROM geological_material"), "chalk | calcite | quartz")
 
 
+class TrackingRecipe(Base):
+    """The worked example of references/recipes/tracking.md validates, packages and checks."""
+
+    def test_argos_whales_from_movebank(self):
+        src = os.path.join(FIXTURES, "tracking-argos")
+        for f in ("locations.csv", "reference-data.csv", "mapping.sql"):
+            shutil.copy(os.path.join(src, f), self.dir)
+        self.ok("init", "event", "organism", "identification", "organism-assertion", "occurrence", "agent",
+                "event-agent-role", "event-assertion")
+        self.ok("load", "locations.csv")
+        self.ok("load", "reference-data.csv", "--as", "reference")
+        self.ok("run", "mapping.sql")
+        out = self.ok("validate")
+        self.assertNotIn("Must be fixed", out)
+        self.assertIn("'Calf → Juvenile'", out)
+        self.ok("package", "out", "--name", "humpback-tracking")
+        self.assertNotIn("Must be fixed", self.ok("check", "out"))
+        q = lambda sql: self.ok("sql", sql).split("\n")[2].strip()
+        # raw fixes only, without the outliers; every occurrence belongs to its whale
+        self.assertEqual(q("SELECT count(*) FROM occurrence"), "48")
+        self.assertEqual(q("SELECT count(*) FROM occurrence WHERE organism_fk IS NULL"), "0")
+        self.assertEqual(q("SELECT count(*) FROM event e JOIN src_locations l ON l.\"event-id\" = e.event_pk "
+                           "WHERE l.modelled = 'true' OR l.visible = 'false'"), "0")
+        self.assertEqual(q("SELECT string_agg(DISTINCT coalesce(CAST(coordinateUncertaintyInMeters AS INT), 0) || '=' || georeferenceRemarks[-1:], ',' "
+                           "ORDER BY coalesce(CAST(coordinateUncertaintyInMeters AS INT), 0) || '=' || georeferenceRemarks[-1:]) FROM event WHERE georeferenceRemarks IS NOT NULL"),
+                         "0=0,0=A,0=B,1500=1,250=3,500=2")
+        self.assertEqual(q("SELECT count(*) FROM identification"), "3")
+        self.assertEqual(q("SELECT lifeStage FROM occurrence WHERE organism_fk = '98109' AND lifeStage IS NOT NULL"), "Calf")
+        self.assertEqual(q("SELECT count(*) FROM event e JOIN event d ON d.event_pk = e.parentEvent_fk "
+                           "WHERE e.eventDate LIKE '%Z' AND d.eventType <> 'Sensor'"), "0")
+
+
 class DwcaRecipe(Base):
     """The worked examples of references/recipes/dwca.md validate, package and check."""
 
