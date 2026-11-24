@@ -187,6 +187,7 @@ Each piece has its own number in `parts.csv`.
   - The example puts it on the determination that carries the name. Ask which their type
     information belongs to.
   - GBIF reads it with its TypeStatus vocabulary; `vocab TypeStatus` lists the concepts.
+- **Fossils, subfossils, and specimens with an age or stratigraphy:** see `paleo.md`.
 - **Institution and collection codes.** Use the codes they publish under; never fill them in from
   memory. If the export lacks them, ask.
 - **`institutionID` and `collectionID`.** The schema's notes recommend "a globally unique and

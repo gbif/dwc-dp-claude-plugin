@@ -391,6 +391,29 @@ class PaleoRecipe(Base):
         self.assertEqual(q("SELECT count(*) FROM nucleotide_analysis WHERE readCount > processedTotalReadCount"), "0")
 
 
+    def test_fossils_without_dna(self):
+        src = os.path.join(FIXTURES, "specimens-fossils")
+        for f in ("specimens.csv", "dates.csv", "rocks.csv", "mapping.sql"):
+            shutil.copy(os.path.join(src, f), self.dir)
+        self.ok("init", "event", "occurrence", "material", "identification", "geological-context",
+                "material-geological-context", "protocol", "geological-material", "chronometric-age")
+        for f in ("specimens.csv", "dates.csv", "rocks.csv"):
+            self.ok("load", f)
+        self.ok("run", "mapping.sql")
+        self.assertIn("No problems found", self.ok("validate"))
+        self.ok("package", "out", "--name", "fossils")
+        self.assertIn("No problems found", self.ok("check", "out"))
+        q = lambda sql: self.ok("sql", sql).split("\n")[2].strip()
+        self.assertEqual(q("SELECT string_agg(materialEntity_fk, ',' ORDER BY materialEntity_fk) FROM material_geological_context"),
+                         "FOS-3,FOS-4,ROCK-1")
+        self.assertEqual(q("SELECT earliestAgeOrLowestStage FROM geological_context"), "Maastrichtian")
+        self.assertEqual(q("SELECT count(*) FROM chronometric_age WHERE event_fk = 'EXC-2019-3' "
+                           "AND CAST(earliestChronometricAge AS INT) > CAST(latestChronometricAge AS INT)"), "2")
+        self.assertEqual(q("SELECT coalesce(materialDated_fk, '-') || '/' || coalesce(materialDatedRelationship, '-') "
+                           "FROM chronometric_age WHERE chronometricAge_pk = 'AAR-102'"), "-/same layer")
+        self.assertEqual(q("SELECT geologicalMaterialNames FROM geological_material"), "chalk | calcite | quartz")
+
+
 class DwcaRecipe(Base):
     """The worked examples of references/recipes/dwca.md validate, package and check."""
 

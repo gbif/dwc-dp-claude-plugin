@@ -1,0 +1,3 @@
+labNumber,method,datedMaterial,datedCatalogNumber,relation,c14Age,c14Error,calOldest,calYoungest,curve,fieldNumber
+AAR-101,AMS radiocarbon,bone collagen,FOS-1,,10450,60,12530,12100,IntCal20,EXC-2019-3
+AAR-102,AMS radiocarbon,charcoal from layer 3,,same layer,10380,55,12420,12060,IntCal20,EXC-2019-3
