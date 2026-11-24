@@ -188,8 +188,9 @@ Each piece has its own number in `parts.csv`.
     information belongs to.
   - GBIF reads it with its TypeStatus vocabulary; `vocab TypeStatus` lists the concepts.
 - **Fossils, subfossils, and specimens with an age or stratigraphy:** see `paleo.md`.
-- **Institution and collection codes.** Use the codes they publish under; never fill them in from
-  memory. If the export lacks them, ask.
+- **Institution and collection codes.** Always ask which institution and collection hold the
+  material, and whether another institution owns it (SKILL.md, Stage 3). Use the codes they publish
+  under; never fill them in from memory. If the export lacks them, ask.
 - **`institutionID` and `collectionID`.** The schema's notes recommend "a globally unique and
   resolvable identifier from a collections registry", such as ROR or GRSciColl
   (https://scientific-collections.gbif.org/). `grscicoll` looks codes up there:

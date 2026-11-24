@@ -157,6 +157,8 @@ apply.
   soil cores), it is material collected during the survey's event:
   - `hasMaterialSamples` and `materialSampleTypes` on the survey say so, and `hasVouchers` and
     `voucherInstitutions` say whether specimens were kept and where;
+  - ask which institution and collection hold the catches and vouchers, for `institutionCode`,
+    `collectionCode` and their IDs on the material (SKILL.md, Stage 3);
   - specimens sorted out of a bulk sample are part of it, or derived from it. That is their
     choice, as in `specimens.md`;
   - DNA from it follows `edna.md`.

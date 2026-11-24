@@ -11,7 +11,7 @@ data holder (and, if it stays open, for the maintainers).
 | Did the visits sit inside something larger: a project, an expedition, a transect, a trap deployment? | more `event` rows, linked by `parentEvent_fk` |
 | Was it a planned survey, with a method and a list of what was looked for, so that "not found" means something? | `survey` (with `event_fk`), `survey-target` and `survey-target-descriptor`, `survey-survey-target` |
 | Do they record absences, or counts of zero? | `occurrence` rows with `occurrenceStatus`. A survey makes them interpretable |
-| Was physical material kept: specimens, tissue, soil or water samples, extracts? | `material` (with `collectionEvent_fk`). For subsamples, `derivedFromMaterialEntity_fk` |
+| Was physical material kept: specimens, tissue, soil or water samples, extracts? | `material` (with `collectionEvent_fk`). For subsamples, `derivedFromMaterialEntity_fk`. Then ask which institution and collection hold it (SKILL.md, Stage 3) |
 | Are names given to organisms or specimens, perhaps more than once, by named people? | `identification` and `identification-taxon`. For several people or roles, `identification-agent-role` |
 | Was DNA sequenced (eDNA, metabarcoding, barcoding)? | `nucleotide-analysis`, `nucleotide-sequence`, `molecular-protocol`; usually `material` for the sample |
 | Does a record name a second organism: a host, a prey, a flower visited, a tree it grew on, `associatedTaxa`? Even when they don't call it an interaction | `organism-interaction`, linking two `occurrence` rows; the partner gets an occurrence and an identification. See `interactions.md` |

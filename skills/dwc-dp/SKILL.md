@@ -57,6 +57,11 @@ someone new, give each idea once in plain words, using their own data.
 - **Names go in `identification`.** One identification per name, of the material or based on the
   occurrence, media or sequence it was made from. When a record has an identification, its own
   name fields (`scientificName`, `identifiedBy`, ...) stay empty.
+- **Material: always ask about the collection.** Whenever their data get a `material` table, ask
+  whether the material is held in a collection, and if so which institution and which collection,
+  and whether another institution owns it. Ask even when their files have no such columns, as for
+  eDNA samples, trap catches or cores. Ask before mapping it, and write down the answer: a "no"
+  leaves those fields empty. See "Institution and collection" in Stage 3.
 - **Use only DwC-DP fields.** A column of theirs that has no field names another organism (an
   interaction, see `references/interactions.md`), goes in an assertion table if one fits, or stays
   out, with their agreement. Never add custom columns to a DwC-DP table. See
@@ -134,9 +139,24 @@ For each table they'll use, settle:
 
 Show them the result for a few records before mapping everything.
 
-For material in a collection, `institutionID` and `collectionID` should be registry identifiers.
-With their agreement, `grscicoll` looks their codes up in GRSciColl; see
-`references/recipes/specimens.md`.
+### Institution and collection
+
+When `material` is among their tables, ask, every time and before mapping it:
+
+1. Is the material, or any of it, held in a collection now? For example specimens in a museum,
+   samples in a biobank, extracts in a lab's freezer collection, cores in a core repository.
+2. If so, which institution has it in its care, and which collection? The codes they publish under
+   go in `institutionCode` and `collectionCode`, as they give them; never fill them in from memory.
+3. Does another institution own it? That goes in `ownerInstitutionCode` and `ownerInstitutionID`.
+4. Does it differ between their records, for example specimens in a museum and extracts in a lab?
+   Then the fields differ by row.
+
+For the identifiers, `institutionID` and `collectionID` should come from a registry. With their
+agreement, `grscicoll` looks their codes up in GRSciColl and shows every identifier it holds; they
+choose. See `references/recipes/specimens.md`.
+
+If none of it is in a collection, the fields stay empty. Say so in `mapping.sql`, so the answer
+isn't asked again. `init` reminds you of this question when it creates `material`.
 
 ## Stage 4: Map
 

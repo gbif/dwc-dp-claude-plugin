@@ -138,7 +138,9 @@ taxonomy table. Load those with `--as` so their table names start with a letter 
   - the analyses point to the material that was amplified, usually the extract, and one extract
     can feed several markers;
   - kept material carries its preservation (`preparations`), where it is (`disposition`, and
-    `institutionCode`, `collectionCode` and `catalogNumber` when it is in a collection);
+    `institutionCode`, `collectionCode` and `catalogNumber` when it is in a collection). Ask
+    whether the samples or extracts are in a collection, such as a biobank or a lab's freezer
+    collection, and whose (SKILL.md, Stage 3). Sample sheets rarely say;
   - material that no longer exists is `used up`.
 
   A kept sample is what lets someone re-analyse it later, so it is worth recording even when the

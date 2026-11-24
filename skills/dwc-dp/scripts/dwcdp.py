@@ -418,6 +418,10 @@ def cmd_init(args):
     if missing:
         print(f"\nThese tables can be pointed to from the ones above, and are not in the database: {', '.join(missing)}.\n"
               "Add them only if the data have something for them.")
+    if "material" in names:
+        print("\nmaterial: ask the data holder whether the material is held in a collection, and if so which\n"
+              "institution and collection (institutionCode, collectionCode, and their IDs; grscicoll can look\n"
+              "the codes up), and whether another institution owns it. Ask even if their files don't say.")
 
 
 def cmd_load(args):

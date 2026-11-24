@@ -31,6 +31,10 @@ IDs), a table of dates from the dating lab, and the paper or report that describ
 
 For sedaDNA, add the eDNA tables (`edna.md`).
 
+As for all material, ask which institution and collection hold the specimens, samples and cores,
+such as a museum or a core repository, and whether another institution owns them (SKILL.md,
+Stage 3).
+
 ## Ages belong to an event
 
 `chronometric-age.event_fk` is required, and the table has no link to the material an age applies

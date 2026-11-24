@@ -85,6 +85,12 @@ class Database(Base):
         out = self.ok("status")
         self.assertEqual(out.count("DwC-DP"), 81)
 
+    def test_init_asks_about_the_collection_of_material(self):
+        self.assertNotIn("held in a collection", self.ok("init", "event", "occurrence"))
+        out = self.ok("init", "event", "material")
+        self.assertIn("held in a collection", out)
+        self.assertIn("grscicoll", out)
+
     def test_toy_survey_validates_packages_and_checks(self):
         self.toy()
         # The toy keeps its names on the occurrence, so the only finding is the advice to use
