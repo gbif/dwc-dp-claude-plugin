@@ -11,6 +11,8 @@ sequence. The files usually are:
   table and the sequences;
 - the methods: primers, PCR, sequencing, pipeline, reference databases.
 
+Sediment cores and other dated material (sedaDNA) also need `paleo.md`.
+
 A study often uses several markers (assays) on the same samples, for example 12S for fish and COI
 for invertebrates. DwC-DP holds them all in one package.
 

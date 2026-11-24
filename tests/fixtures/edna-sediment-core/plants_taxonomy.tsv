@@ -1,0 +1,7 @@
+id	DNA_sequence	scientificName	taxonRank	order	family	genus	species	identificationRemarks
+plants_00001	ATCCTATTTTTCGAAAACAAACAAAGGTTCATAAAGACAGAATAAGAATACAAAAG	Saliceae	tribe	Malpighiales	Salicaceae			100.0% identity to 3260_CMP_0687 (arctborbryo_gh)
+plants_00002	ATCCTGTTTTATGAAAACAAACAAGGGTTTCAGAAAGCGCGAATAAAAAGG	Dryas	genus	Rosales	Rosaceae	Dryas		100.0% identity to 3178_CMP_0675 (arctborbryo_gh)
+plants_00013	ATCCTGTTTTCCGAAAACAAATAAAACAAATTGAAGGGTTCATAAAGCGAGACTAAAAAG	Alnus alnobetula	species	Fagales	Betulaceae	Alnus	Alnus alnobetula	100.0% identity to 2213_CMP_0528 (arctborbryo_gh)
+plants_00017	ATCCTGTTTTCCGAAAACAAATAAAACAAATTTAAGGGTTCATAAAGTGAGAATAAAAAAG	Betula	genus	Fagales	Betulaceae	Betula		100.0% identity to 2214_CMP_0529 (arctborbryo_gh)
+plants_00020	ATCCTATTTTTCGAAAACAAACAAAAAAACAAACAAAGGTTCATAAAGACAGAATAAGAATACAAAAG	Populus	genus	Malpighiales	Salicaceae	Populus		100.0% identity to EC_3257_CMP_1281 (arctborbryo_gh)
+plants_00026	CTCCTGCTTTCCAAAAAGGAAGAATAAAAAAG	Bistorta vivipara	species	Caryophyllales	Polygonaceae	Bistorta	Bistorta vivipara	100.0% identity to GQ244644_1709 (arctborbryo_gh)

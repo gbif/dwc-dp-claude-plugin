@@ -1,0 +1,3 @@
+marker	target_gene	pcr_primer_name_forward	pcr_primer_name_reverse	pcr_primer_reference	otu_db	seq_meth
+fungi	ITS1	ITS67	5.8S	Seeber et al. 2022, doi:10.1002/edn3.315	UNITE (Nilsson et al. 2019)	Illumina MiSeq, 2x250 bp
+plants	trnL	trnL g	trnL h	Taberlet et al. 2007, doi:10.1093/nar/gkl938	ArctBorBryo: curated Arctic and Boreal vascular plant and bryophyte reference libraries (Sønstebø et al. 2010; Willerslev et al. 2014; Soininen et al. 2015)	Illumina NextSeq 500, 2x150 bp

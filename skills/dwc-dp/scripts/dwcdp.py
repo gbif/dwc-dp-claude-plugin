@@ -1077,7 +1077,7 @@ def summary_tree(names, rows, links):
     def walk(n, prefix, last, depth):
         branch = "" if depth == 0 else ("└── " if last else "├── ")
         own = sorted((l for l in links[n] if l[2] == parent[n]), key=lambda l: -l[3])[:1]
-        head = f"{n}  {rows[n]:,} rows" + (f"  {link_text(*own[0], n)}" if own else "")
+        head = f"{n}  {rows[n]:,} row{'' if rows[n] == 1 else 's'}" + (f"  {link_text(*own[0], n)}" if own else "")
         lines.append(prefix + branch + head)
         inner = prefix + ("" if depth == 0 else ("    " if last else "│   "))
         for l in links[n]:

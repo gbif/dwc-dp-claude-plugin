@@ -9,6 +9,7 @@ One file per kind of dataset. Each is written from an issue, with a worked examp
 | `specimens.md` | specimens and collections: material, parts and derived material, determinations | `specimens-beetles/`, `specimens-mammal-parts/` |
 | `observations.md` | observations, interactions and camera traps (Camtrap DP) | `observations-pollinators/`, `observations-camtrap/` |
 | `edna.md` | eDNA and metabarcoding: several markers, kept samples, filters and extracts | `edna-two-markers/` |
+| `paleo.md` | cores, dated material and geological time: ages, age-depth models, epochs, depth in core, sedaDNA | `edna-sediment-core/` |
 | `dwca.md` | Darwin Core Archives: Occurrence and Event cores, MeasurementOrFact, Multimedia, DNA derived data, `associatedTaxa` | `dwca-occurrence-core/`, `dwca-associated-taxa/`, `dwca-event-core/`, `dwca-dna-derived/` |
 
 Interactions between organisms turn up in every kind of dataset, often unnamed: a host, a prey, the

@@ -358,6 +358,39 @@ class DarwinCoreArchive(Base):
         self.assertIn("coreid, measurementType, measurementValue, measurementUnit", out)
 
 
+class PaleoRecipe(Base):
+    """The worked example of references/recipes/paleo.md validates, packages and checks."""
+
+    def test_sediment_core(self):
+        src = os.path.join(FIXTURES, "edna-sediment-core")
+        files = sorted(f for f in os.listdir(src) if f.endswith(".tsv"))
+        for f in files + ["mapping.sql"]:
+            shutil.copy(os.path.join(src, f), self.dir)
+        self.ok("init", "event", "material", "material-assertion", "bibliographic-resource", "protocol",
+                "protocol-reference", "chronometric-age", "geological-context", "material-geological-context",
+                "molecular-protocol", "molecular-protocol-reference", "nucleotide-sequence", "nucleotide-analysis",
+                "identification")
+        for f in files:
+            self.ok("load", f)
+        self.ok("run", "mapping.sql")
+        self.assertIn("No problems found", self.ok("validate"))
+        self.ok("package", "out", "--name", "lama-sedadna")
+        self.assertIn("No problems found", self.ok("check", "out"))
+        q = lambda sql: self.ok("sql", sql).split("\n")[2].strip()
+        # the slice depth from the trnL IDs agrees with the depth in the ITS1 IDs of run APMG-17
+        self.assertEqual(q("SELECT count(*) FROM src_fungi_samples s JOIN material m ON m.materialEntityID = s.materialSampleID "
+                           "JOIN material_assertion a ON a.materialEntity_fk = m.derivedFromMaterialEntity_fk "
+                           "WHERE s.sequencingRun = 'APMG-17' AND s.id NOT LIKE '%Lama_' || a.assertionValue || '_%'"), "0")
+        self.assertEqual(q("SELECT assertionValue FROM material_assertion WHERE materialEntity_fk = 'PG1341:1820-1821'"), "1820-1821")
+        self.assertEqual(q("SELECT string_agg(left(g.geologicalContext_fk, 1) || c.earliestChronometricAge, ',' ORDER BY CAST(c.earliestChronometricAge AS INT)) "
+                           "FROM chronometric_age c JOIN material_geological_context g ON g.materialEntity_fk = c.materialDated_fk"),
+                         "H3023,H9740,P14142,P23002")
+        self.assertEqual(q("SELECT count(*) FROM chronometric_age c JOIN material m ON m.materialEntity_pk = c.materialDated_fk "
+                           "WHERE c.event_fk <> m.collectionEvent_fk"), "0")
+        self.assertEqual(q("SELECT count(DISTINCT molecularProtocol_fk) FROM nucleotide_analysis WHERE materialEntity_fk = 'ELS110'"), "2")
+        self.assertEqual(q("SELECT count(*) FROM nucleotide_analysis WHERE readCount > processedTotalReadCount"), "0")
+
+
 class DwcaRecipe(Base):
     """The worked examples of references/recipes/dwca.md validate, package and check."""
 
