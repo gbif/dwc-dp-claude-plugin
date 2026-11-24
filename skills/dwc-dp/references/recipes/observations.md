@@ -75,37 +75,52 @@ flying), three photos, and who took them.
 
 ### Camera traps from Camtrap DP: `tests/fixtures/observations-camtrap/`
 
-The three Camtrap DP tables, made up:
-- two deployments;
-- five images, one of them not public;
-- four event-level observations: a roe deer identified by a person, a fox by a machine, one blank
-  and one person.
+The example dataset of Camtrap DP 1.0.2, unchanged: a sample of INBO's MICA muskrat and coypu
+camera traps (data CC0, images CC BY 4.0). It has:
+- four deployments;
+- 423 images, 60 of them not public;
+- 549 observations at two levels: 36 classify a whole sequence of images (`observationLevel`
+  `event`) and 513 a single image (`media`). 22 were made by a machine model.
 
-1. **Choose what to publish:** event-level animal observations (`observationLevel` `event`,
-   `observationType` `animal`). Blank sequences report nothing. Sequences with people stay out
-   for privacy, with their images.
+1. **Choose what to publish.**
+   - **One level only.** Camtrap DP can classify the same animals per sequence and per image.
+     Publishing both counts them twice. The example publishes the event-level observations and
+     uses the media-level ones only to link images to sequences. A package with only media-level
+     observations publishes those.
+   - **Only animals.** Blank, unknown, unclassified, vehicle and human observations report no
+     organism.
+   - **People's privacy.** Images of people (here the non-public ones) stay out, as do the images of
+     sequences that aren't published.
+   - All three are the data holder's choices.
 2. **Deployments:** an event each, with:
-   - from `deploymentStart` to `deploymentEnd` as `eventDate`;
-   - the location, with `geodeticDatum` `EPSG:4326`, because Camtrap DP gives coordinates in WGS84;
+   - `eventDate` from `deploymentStart` to `deploymentEnd`;
+   - the location, with `geodeticDatum` `EPSG:4326` (Camtrap DP gives coordinates in WGS84) and
+     `coordinateUncertainty` in metres;
    - `eventCategory` `context` and `eventType` `Sensor`, GBIF's concept whose labels include
-     "Deployment".
-3. **Camera set-up:** camera model, height and bait as `event-assertion` rows. The person who set
-   up the camera goes in `agent` and `event-agent-role` (role `setupBy`, Camtrap DP's name).
-4. **Sequences:** an event each, within its deployment (`parentEvent_fk`), from the first to the
+     "Deployment";
+   - `deploymentComments` as `eventRemarks`.
+3. **Cameras and people:**
+   - Each camera is an `agent` with `agentType` `camera` (a schema example) and the role
+     `recorded by` in its deployment, as a tracking tag is in `tracking.md`.
+   - Whoever set the camera up is an agent with the role `setupBy`, when named. One is anonymized
+     in the data (`anonymized:3eb30aa`) and stays as written.
+4. **Camera set-up:** delay, height, depth, tilt, heading, detection distance, bait, feature type,
+   groups and tags are `event-assertion` rows, with the units Camtrap DP defines for them (s, m,
+   degrees).
+5. **Sequences:** an event each, within its deployment (`parentEvent_fk`), from the first to the
    last image (`eventStart`/`eventEnd`), with `eventCategory` `occurrence`.
-5. **Observations:** an occurrence each, with:
-   - count, life stage, sex and behaviour;
-   - an `identification` based on it, with the scientific name, `classifiedBy` as `identifiedBy`
-     and `classificationTimestamp` as `dateIdentified`;
-   - classification method and probability as `occurrence-assertion` rows.
-6. **Images:** the public images of the published sequences go in `media`, linked to their
-   sequence with `event-media`.
-   - An image belongs to a sequence when it was taken by the same deployment between the
-     sequence's start and end, compared as times (different time zone offsets).
-   - Camtrap DP describes an event as "comprising a collection of media files", without a field
-     linking them, so confirm this rule with the data holder.
-
-`validate` and `check` pass on both.
+6. **Observations:** an occurrence each, with the count, life stage, sex, behaviour and comments.
+   - The name is an `identification` based on the occurrence, with `classifiedBy` as
+     `identifiedBy` (a person, or the model's name) and `classificationTimestamp` as
+     `dateIdentified`.
+   - `taxonID`, `taxonRank` and the English vernacular name come from the package's `taxonomic`
+     list in `datapackage.json`, which `read_json` reads directly.
+   - Classification method and probability are `occurrence-assertion` rows.
+7. **Images:** the public images of the published sequences go in `media`, with the package's media
+   licence. They are linked to their sequence with `event-media`, using the media-level
+   observations. Without media-level observations, link an image to the sequence of the same
+   deployment whose `eventStart` to `eventEnd` includes its timestamp. Compare the times as
+   `TIMESTAMPTZ`, not as text, since offsets differ (`+02:00` against `Z`).
 
 ## Choices the data holder makes
 
@@ -154,6 +169,8 @@ The three Camtrap DP tables, made up:
   aloud: "O2 (Bombus lapidarius) visited flower of O1 (Knautia arvensis)".
 - **An interaction pointing to an observation that isn't published,** such as a flower photographed
   by someone else: the link fails in `validate`. Use the external identifier fields instead.
+- **The same animals counted twice:** Camtrap DP observations at both `event` and `media` level
+  become two occurrences for one animal. Publish one level.
 - **Images of people, or private files,** published by accident: filter on Camtrap DP's
   `observationType` and `filePublic` first, as the example does.
 - **Times compared as text:** sequences and images from deployments with different time zone

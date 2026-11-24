@@ -7,7 +7,7 @@ One file per kind of dataset. Each is written from an issue, with a worked examp
 |---|---|---|
 | `survey.md` | surveys and sampling events: visits, counts, targets, absences, material kept | `survey-point-counts/`, `survey-malaise-bulk/` |
 | `specimens.md` | specimens and collections: material, parts and derived material, determinations | `specimens-beetles/`, `specimens-mammal-parts/` |
-| `observations.md` | observations, interactions and camera traps (Camtrap DP) | `observations-pollinators/`, `observations-camtrap/` |
+| `observations.md` | observations, interactions and camera traps (Camtrap DP, with its 1.0.2 example) | `observations-pollinators/`, `observations-camtrap/` |
 | `edna.md` | eDNA and metabarcoding: several markers, kept samples, filters and extracts | `edna-two-markers/` |
 | `tracking.md` | tracked individuals: GPS, Argos and other tags, Movebank studies | `tracking-argos/` |
 | `paleo.md` | dated material and geological time, with or without DNA: fossils, subfossils, archaeological finds, cores; ages, stratigraphy, geological material | `specimens-fossils/`, `edna-sediment-core/` |

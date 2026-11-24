@@ -290,16 +290,24 @@ class ObservationsRecipe(Base):
                            "JOIN occurrence r ON r.occurrence_pk = i.relatedOccurrence_fk WHERE s.event_fk <> r.event_fk OR i.event_fk <> s.event_fk"), "0")
 
     def test_camera_traps_from_camtrap_dp(self):
+        shutil.copy(os.path.join(FIXTURES, "observations-camtrap", "datapackage.json"), self.dir)
         q = self.build("observations-camtrap", ["deployments.csv", "media.csv", "observations.csv"],
-                       ["event", "event-assertion", "agent", "event-agent-role", "occurrence", "occurrence-assertion", "media", "event-media",
-                        "identification"],
-                       "camtrap-2025")
-        self.assertEqual(q("SELECT string_agg(scientificName, '|' ORDER BY scientificName) FROM identification"), "Capreolus capreolus|Vulpes vulpes")
-        self.assertEqual(q("SELECT identifiedBy FROM identification WHERE occurrence_fk = 'OB2'"), "Model X v1")
-        self.assertEqual(q("SELECT count(*) FROM media WHERE mediaID IN ('M4', 'M5')"), "0")
-        self.assertEqual(q("SELECT string_agg(media_fk, '|' ORDER BY media_fk) FROM event_media WHERE event_fk = 'E1'"), "M1|M2")
-        self.assertEqual(q("SELECT assertionValue FROM occurrence_assertion WHERE assertionID = 'OB2:classificationProbability'"), "0.93")
-
+                       ["event", "event-assertion", "agent", "event-agent-role", "occurrence", "occurrence-assertion", "media",
+                        "event-media", "identification"],
+                       "camtrap-example")
+        # event-level animal observations only: the media-level ones would count the same animals again
+        self.assertEqual(q("SELECT count(*) FROM occurrence"), "29")
+        self.assertEqual(q("SELECT count(*) FROM occurrence o JOIN src_observations s ON s.observationID = o.occurrence_pk "
+                           "WHERE s.observationLevel <> 'event' OR s.observationType <> 'animal'"), "0")
+        self.assertEqual(q("SELECT count(*) FROM event WHERE eventType = 'Sensor'"), "4")
+        # no image of a person, and only images of published sequences
+        self.assertEqual(q("SELECT count(*) FROM media m JOIN src_media s ON s.mediaID = m.media_pk WHERE s.filePublic <> 'true'"), "0")
+        self.assertEqual(q("SELECT count(*) FROM event_media em LEFT JOIN occurrence o ON o.event_fk = em.event_fk WHERE o.occurrence_pk IS NULL"), "0")
+        self.assertEqual(q("SELECT taxonID FROM identification WHERE scientificName = 'Vulpes vulpes'"),
+                         "https://www.checklistbank.org/dataset/COL2023/taxon/5BSG3")
+        self.assertEqual(q("SELECT identifiedBy FROM identification i JOIN occurrence_assertion a ON a.occurrence_fk = i.occurrence_fk "
+                           "WHERE a.assertionValue = 'machine' LIMIT 1"), "Western Europe species model Version 1")
+        self.assertEqual(q("SELECT count(*) FROM event_agent_role WHERE agentRole = 'recorded by'"), "4")
 
 class EdnaRecipe(Base):
     """The worked example of references/recipes/edna.md validates, packages and checks."""
