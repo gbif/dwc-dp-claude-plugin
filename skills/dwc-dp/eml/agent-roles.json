@@ -1,0 +1,89 @@
+{
+  "vocabulary": "http://rs.gbif.org/vocabulary/gbif/agentRole",
+  "title": "EML Agent Role Vocabulary",
+  "source": "https://raw.githubusercontent.com/gbif/rs.gbif.org/09b54849788fae2063a28b97274532b15e77022d/vocabulary/gbif/agent_role.xml",
+  "copied": "2026-11-25",
+  "note": "Identifiers, URIs and English titles only: the source repository states no licence.",
+  "roles": [
+    {
+      "role": "author",
+      "uri": "http://rs.gbif.org/vocabulary/gbif/agentRole/author",
+      "title": "Author"
+    },
+    {
+      "role": "contentProvider",
+      "uri": "http://rs.gbif.org/vocabulary/gbif/agentRole/contentProvider",
+      "title": "Content Provider"
+    },
+    {
+      "role": "custodianSteward",
+      "uri": "http://rs.gbif.org/vocabulary/gbif/agentRole/custodianSteward",
+      "title": "Custodian Steward"
+    },
+    {
+      "role": "distributor",
+      "uri": "http://rs.gbif.org/vocabulary/gbif/agentRole/distributor",
+      "title": "Distributor"
+    },
+    {
+      "role": "editor",
+      "uri": "http://rs.gbif.org/vocabulary/gbif/agentRole/editor",
+      "title": "Editor"
+    },
+    {
+      "role": "metadataProvider",
+      "uri": "http://rs.gbif.org/vocabulary/gbif/agentRole/metadataProvider",
+      "title": "Metadata Provider"
+    },
+    {
+      "role": "originator",
+      "uri": "http://rs.gbif.org/vocabulary/gbif/agentRole/originator",
+      "title": "Originator"
+    },
+    {
+      "role": "owner",
+      "uri": "http://rs.gbif.org/vocabulary/gbif/agentRole/owner",
+      "title": "Owner"
+    },
+    {
+      "role": "pointOfContact",
+      "uri": "http://rs.gbif.org/vocabulary/gbif/agentRole/pointOfContact",
+      "title": "Point Of Contact"
+    },
+    {
+      "role": "principalInvestigator",
+      "uri": "http://rs.gbif.org/vocabulary/gbif/agentRole/principalInvestigator",
+      "title": "Principal Investigator"
+    },
+    {
+      "role": "processor",
+      "uri": "http://rs.gbif.org/vocabulary/gbif/agentRole/processor",
+      "title": "Processor"
+    },
+    {
+      "role": "publisher",
+      "uri": "http://rs.gbif.org/vocabulary/gbif/agentRole/publisher",
+      "title": "Publisher"
+    },
+    {
+      "role": "user",
+      "uri": "http://rs.gbif.org/vocabulary/gbif/agentRole/user",
+      "title": "User"
+    },
+    {
+      "role": "programmer",
+      "uri": "http://rs.gbif.org/vocabulary/gbif/agentRole/programmer",
+      "title": "Programmer"
+    },
+    {
+      "role": "curator",
+      "uri": "http://rs.gbif.org/vocabulary/gbif/agentRole/curator",
+      "title": "Curator"
+    },
+    {
+      "role": "reviewer",
+      "uri": "http://rs.gbif.org/vocabulary/gbif/agentRole/reviewer",
+      "title": "Reviewer"
+    }
+  ]
+}

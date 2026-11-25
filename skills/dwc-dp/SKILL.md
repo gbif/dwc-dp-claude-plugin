@@ -66,10 +66,28 @@ someone new, give each idea once in plain words, using their own data.
   interaction, see `references/interactions.md`), goes in an assertion table if one fits, or stays
   out, with their agreement. Never add custom columns to a DwC-DP table. See
   `references/assertions.md`.
+- **Compare sources that say the same thing.** When two files, or a file and a label or paper,
+  give the same fact for a record (where, when, whether a sample was taken, which OTUs or samples
+  exist), compare them with `sql` before using either, and show them the differences. Disagreement
+  usually means a wrong join, a typo or a placeholder, and only they can say which. See Stage 1 and
+  Stage 4.
+- **Nothing from memory goes in the package.** References, DOIs, primer names and sequences,
+  protocol citations, funder identifiers, ORCIDs: take them from their documents or from them. If
+  you know one from memory, say so, mark it as unchecked, and use it only once they have checked
+  it.
 - **Nothing leaves their machine.** Don't upload, post or email their data, or contact anyone on
   their behalf. Terms and vocabularies are in the copies bundled with this skill (`describe`,
-  `find-term`, `vocab`); look nothing up on the web unless they agree. The one lookup the tool
-  makes, `grscicoll`, sends only institution and collection codes, and only after they agree.
+  `find-term`, `vocab`). Anything that uses the network needs their agreement first, each kind
+  once, with what it sends said plainly:
+
+  | Lookup | What it sends | Note |
+  |---|---|---|
+  | `grscicoll` | institution and collection codes | the tool's only network call |
+  | installing software (`pip install`, DuckDB extensions) | nothing of theirs | it changes their machine; use what is installed when you can |
+  | reading documentation or vocabularies on the web | nothing of theirs | say where an answer came from |
+  | place lookups (reverse geocoding, gazetteers) | their coordinates or place names | locations are their data and can be sensitive, such as nests or rare plants. Follow the service's usage policy, and keep the results in a file in their folder |
+  | people lookups (ORCID, staff pages) | people's names | personal data. Better to ask them for the ORCIDs. A name can match several people: they confirm each match |
+
 - **The goal is a valid package.** This skill ends when `check` passes on their package.
   Publishing it is a separate step outside this skill.
 
@@ -100,6 +118,17 @@ terms. Its `eml.xml` is the first source for Stage 6. The archive's columns alre
 Core names, but a DwC-DP table is not one archive file: the core usually splits into several
 tables (for example the event of each occurrence). `suggest` matches the archive's columns by
 term, and `references/recipes/dwca.md` covers the rest.
+
+Look at the values, not only the columns:
+- **Placeholders.** For each column, ask what an empty cell means, and what a `0`, `-999`, `NA`,
+  `unknown` or default date means. Lab and field templates are often prefilled: a dry mass of 0 can
+  mean "not weighed", not 0 mg. Count each column's most common values with `sql`. A value repeated
+  far more often than the rest is worth asking about. A placeholder stays out of the package.
+- **Sets that should match.** When files list the same things, measure how far they overlap:
+  samples in the field sheet and in the lab sheet, OTUs in the read table, the sequences and the
+  taxonomy, records marked "not done" that have data anyway. Show the counts (in both, only in one,
+  only in the other) and ask which set to publish. Totals such as `processedTotalReadCount` depend
+  on the answer.
 
 For each source table, `suggest <table>` lists its columns with the DwC-DP fields they could be.
 Read a few values of each column with no field, and sort it:
@@ -182,6 +211,14 @@ agreed tables. Write `mapping.sql`, one `INSERT ... SELECT` per table from the `
 starting with `DELETE FROM` for each table so the file can be rerun. Fill one table at a time, `run`
 the file, and show them a few rows with `sql` before moving on.
 
+Check every join between their files:
+- **Count the rows** before and after. A join that adds rows (a key that isn't unique on one side)
+  or loses them (keys that don't match) is reported to them, with examples, before it goes in.
+- **A key that looks obvious can be wrong.** A route number that is 1 or 2 per volunteer, or a
+  sample code reused in another year, joins without an error and gives wrong places.
+- **When another source gives the same fact,** such as coordinates on a label, compare the result
+  with it. Show them the records that differ by more than they would expect.
+
 Keep values as they are. Convert only formats a field requires: dates to ISO 8601, and decimal
 commas to points in numeric fields. Say each conversion. In ISO 8601 a date and a time are joined
 by `T`, not a space, and both go in `eventDate`, as in the schema's examples (`2009-02-20T08:40Z`,
@@ -209,9 +246,17 @@ package.
 Read `references/package.md`. `metadata-template` writes an empty `metadata.json`. Fill it in with
 them:
 - **The essentials:** title, description, creators, contacts and licence.
-- **Optional:** keywords, methods, language, and a description of where.
+- **People with other roles:** `associatedParties`, each with a role from GBIF's agent role
+  vocabulary, such as `principalInvestigator`, `originator`, `processor` or `distributor`.
+  `references/package.md` lists them all, and `package` refuses any other role.
+- **Optional:**
+  - keywords, methods, language, and a description of where;
+  - the taxa covered;
+  - the project, with its personnel, funding and awards;
+  - other identifiers of the dataset.
 
-Draft from their documents and confirm each value; never choose a licence for them. `package` writes
+Draft from their documents and confirm each value; never choose a licence for them, and never
+give a person a role they didn't give. `package` writes
 it both as `eml.xml` and in `datapackage.json`, and computes the coverage from the events.
 
 ## Stage 7: Package

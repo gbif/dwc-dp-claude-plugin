@@ -68,9 +68,10 @@ field, or a URL and section.
 
 ## Never
 
-- Edit the vendored schemas or vocabularies, or `crosswalks/movebank-attributes.json`. Move to a new
-  pin only with `tools/pin_schemas.py`, `tools/pin_vocabularies.py` or `tools/pin_movebank.py`, in
-  its own PR. `crosswalks/movebank.json` is hand-written: keep it in step with
+- Edit the vendored schemas or vocabularies, `crosswalks/movebank-attributes.json` or
+  `eml/agent-roles.json`. Move to a new pin only with `tools/pin_schemas.py`,
+  `tools/pin_vocabularies.py`, `tools/pin_movebank.py` or `tools/pin_agent_roles.py`, in its own
+  PR. `crosswalks/movebank.json` is hand-written: keep it in step with
   `references/recipes/tracking.md`.
 - Commit data without a clear open licence, or any data from `gbif/model-material`. Fixtures are
   small, synthetic or cut from Apache-2.0 sources, with the source named in the fixture's README.
@@ -106,7 +107,10 @@ field, or a URL and section.
 - `tests/`: `unittest`, with fixtures in `tests/fixtures/`.
 - `skills/dwc-dp/vocabularies/`: the pinned GBIF vocabularies and `mapping.json`.
 - `skills/dwc-dp/crosswalks/`: the pinned Movebank attributes and the Movebank-to-DwC-DP crosswalk.
-- `tools/pin_schemas.py`, `tools/pin_vocabularies.py` and `tools/pin_movebank.py`: copy the schemas
-  from a tdwg/dwc commit, the GBIF vocabularies, and the Movebank attributes from the NERC
-  Vocabulary Server.
+- `skills/dwc-dp/eml/agent-roles.json`: GBIF's EML agent role vocabulary, for the roles in
+  `metadata.json`. Identifiers, URIs and English titles only: its repository states no licence.
+- `tools/pin_schemas.py`, `tools/pin_vocabularies.py`, `tools/pin_movebank.py` and
+  `tools/pin_agent_roles.py`: copy the schemas from a tdwg/dwc commit, the GBIF vocabularies, the
+  Movebank attributes from the NERC Vocabulary Server, and the agent roles from a gbif/rs.gbif.org
+  commit.
 - `BACKLOG.md`: planned work, until it becomes GitHub issues.

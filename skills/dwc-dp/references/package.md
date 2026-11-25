@@ -106,12 +106,27 @@ Those are what an EML dataset requires.
 | `creators` | the people or organisations who made the dataset: `givenName`, `surName`, `organization`, `email`, `orcid` | EML `creator`; descriptor `contributors` with role `author` |
 | `contacts` | whom to ask about it, the same keys | EML `contact`; descriptor `contributors` with role `maintainer` |
 | `metadataProviders` | who wrote the metadata, if different | EML `metadataProvider` |
+| `associatedParties` | other people or organisations, the same keys plus `role` (below) | EML `associatedParty`; descriptor `contributors` with role `contributor` |
+| `alternateIdentifiers` | other identifiers of the dataset, a list | EML `alternateIdentifier` |
+| `taxonomicCoverage` | `description` in words, and `taxa`: each with `name`, and `rank` and `commonName` if given | EML `taxonomicCoverage` |
+| `project` | `title`, `identifier`, `description`, `funding` in words, `personnel` (people with a `role`, at least one), and `awards` (each with `funderName` and `title`, and `funderIdentifier`, `awardNumber` and `awardUrl` if given) | EML `project`, with the identifier as its `id` |
 | `keywords` | a list | EML `keywordSet`; descriptor `keywords` |
 | `language` | the language of the data, as they state it | EML `language` |
 | `homepage` | a web page about the dataset | descriptor `homepage` |
 | `methods` | a list of method steps | EML `methods` |
 | `coverage.geographicDescription` | where, in words | EML `geographicCoverage`, with the bounding box from the events |
 | `id`, `version` | a DOI or other identifier, and the dataset's version | EML `alternateIdentifier`; descriptor `id`, `version` |
+
+**Roles** of associated parties and project personnel come from GBIF's EML agent role vocabulary
+(http://rs.gbif.org/vocabulary/gbif/agentRole, pinned in `eml/agent-roles.json`): `author`,
+`contentProvider`, `custodianSteward`, `distributor`, `editor`, `metadataProvider`, `originator`,
+`owner`, `pointOfContact`, `principalInvestigator`, `processor`, `publisher`, `user`, `programmer`,
+`curator` and `reviewer`. `package` refuses other values, and `check` warns about them in an
+`eml.xml` written elsewhere. Their words for a role ("PI", "lab technician") are theirs to match to
+one of these.
+
+The taxa covered are theirs to state. Counting names in `identification` with `sql` can help them
+draft the list, but they choose what goes in.
 
 The coverage is computed from the data: the bounding box from the events' coordinates and the date
 range from their `eventDate`s. `package` prints it; show it to the data holder. EML requires a

@@ -1500,12 +1500,43 @@ METADATA_TEMPLATE = {
     "creators": [{"givenName": "", "surName": "", "organization": "", "email": "", "orcid": ""}],
     "contacts": [{"givenName": "", "surName": "", "organization": "", "email": "", "orcid": ""}],
     "metadataProviders": [],
+    "associatedParties": [{"givenName": "", "surName": "", "organization": "", "email": "", "orcid": "", "role": ""}],
+    "alternateIdentifiers": [],
     "keywords": [],
     "language": "",
     "homepage": "",
     "methods": [],
     "coverage": {"geographicDescription": ""},
+    "taxonomicCoverage": {"description": "", "taxa": [{"rank": "", "name": "", "commonName": ""}]},
+    "project": {"title": "", "identifier": "", "description": "", "funding": "",
+                "personnel": [{"givenName": "", "surName": "", "organization": "", "email": "", "orcid": "", "role": ""}],
+                "awards": [{"funderName": "", "funderIdentifier": "", "awardNumber": "", "title": "", "awardUrl": ""}]},
 }
+
+EML_DIR = os.path.join(HERE, "..", "eml")
+
+
+def agent_roles():
+    """{role: title} from GBIF's EML agent role vocabulary (the pinned copy)."""
+    with open(os.path.join(EML_DIR, "agent-roles.json"), encoding="utf-8") as fh:
+        return {r["role"]: r["title"] for r in json.load(fh)["roles"]}
+
+
+def filled(value):
+    """A value without the template's empty strings, lists and objects; None if nothing is left."""
+    if isinstance(value, dict):
+        out = {k: v for k, v in ((k, filled(v)) for k, v in value.items()) if v not in (None, "", [], {})}
+        return out or None
+    if isinstance(value, list):
+        out = [v for v in (filled(x) for x in value) if v not in (None, "", [], {})]
+        return out or None
+    if isinstance(value, str):
+        return value.strip() or None
+    return value
+
+
+def is_party(p):
+    return any((p.get(k) or "").strip() for k in ("surName", "organization"))
 
 
 def read_metadata(path):
@@ -1522,7 +1553,38 @@ def read_metadata(path):
         if not people:
             problems.append(f"{role} needs at least one person (with surName) or organization")
         md[role] = people
-    md["metadataProviders"] = [p for p in md.get("metadataProviders") or [] if any((p.get(k) or "").strip() for k in ("surName", "organization"))]
+    md["metadataProviders"] = [p for p in md.get("metadataProviders") or [] if is_party(p)]
+    roles = agent_roles()
+
+    def role_problems(people, where):
+        for p in people:
+            r = (p.get("role") or "").strip()
+            if not r:
+                problems.append(f"{where}: {person_name(p)} has no role")
+            elif r not in roles:
+                problems.append(f"{where}: {person_name(p)} has the role {r!r}, which is not in GBIF's agent role vocabulary "
+                                f"({', '.join(roles)})")
+
+    md["associatedParties"] = [p for p in md.get("associatedParties") or [] if is_party(p)]
+    role_problems(md["associatedParties"], "associatedParties")
+    md["alternateIdentifiers"] = filled(md.get("alternateIdentifiers")) or []
+    tax = filled(md.get("taxonomicCoverage")) or {}
+    for t in tax.get("taxa") or []:
+        if not t.get("name"):
+            problems.append(f"taxonomicCoverage: a taxon has no name ({t})")
+    md["taxonomicCoverage"] = tax
+    project = filled(md.get("project")) or {}
+    if project:
+        if not project.get("title"):
+            problems.append("project needs a title")
+        project["personnel"] = [p for p in project.get("personnel") or [] if is_party(p)]
+        if not project["personnel"]:
+            problems.append("project needs at least one person or organization in personnel, with a role (EML requires one)")
+        role_problems(project["personnel"], "project personnel")
+        for a in project.get("awards") or []:
+            if not (a.get("funderName") and a.get("title")):
+                problems.append(f"project awards: each needs funderName and title (EML requires both): {a}")
+    md["project"] = project
     lic = md.get("license")
     if isinstance(lic, str) and lic not in LICENSES:
         problems.append(f"license {lic!r} is not one of {', '.join(LICENSES)}; give another as {{\"name\", \"path\", \"title\"}}")
@@ -1581,8 +1643,8 @@ def eml_xml(md, cov, package_id):
             e.text = text
         return e
 
-    def party(tag, p):
-        e = sub(ds, tag)
+    def party(tag, p, parent=None):
+        e = sub(ds if parent is None else parent, tag)
         if (p.get("surName") or "").strip():
             n = sub(e, "individualName")
             if (p.get("givenName") or "").strip():
@@ -1594,14 +1656,22 @@ def eml_xml(md, cov, package_id):
             sub(e, "electronicMailAddress", p["email"].strip())
         if (p.get("orcid") or "").strip():
             sub(e, "userId", p["orcid"].strip(), directory="https://orcid.org/")
+        if (p.get("role") or "").strip() and tag in ("associatedParty", "personnel"):
+            sub(e, "role", p["role"].strip())
+        return e
 
     if md.get("id"):
         sub(ds, "alternateIdentifier", md["id"])
+    for i in md.get("alternateIdentifiers") or []:
+        if i != md.get("id"):
+            sub(ds, "alternateIdentifier", i)
     sub(ds, "title", md["title"].strip())
     for p in md["creators"]:
         party("creator", p)
     for p in md["metadataProviders"]:
         party("metadataProvider", p)
+    for p in md.get("associatedParties") or []:
+        party("associatedParty", p)
     sub(ds, "pubDate", datetime.date.today().isoformat())
     if (md.get("language") or "").strip():
         sub(ds, "language", md["language"].strip())
@@ -1628,7 +1698,8 @@ def eml_xml(md, cov, package_id):
         if lic.get("name"):
             sub(ld, "identifier", lic["name"])
     geo_desc = ((md.get("coverage") or {}).get("geographicDescription") or "").strip()
-    if (geo_desc and "north" in cov) or "begin" in cov:
+    tax = md.get("taxonomicCoverage") or {}
+    if (geo_desc and "north" in cov) or "begin" in cov or tax.get("taxa"):
         c = sub(ds, "coverage")
         if geo_desc and "north" in cov:
             g = sub(c, "geographicCoverage")
@@ -1641,12 +1712,45 @@ def eml_xml(md, cov, package_id):
             rd = sub(t, "rangeOfDates")
             sub(sub(rd, "beginDate"), "calendarDate", cov["begin"])
             sub(sub(rd, "endDate"), "calendarDate", cov["end"])
+        if tax.get("taxa"):
+            tc = sub(c, "taxonomicCoverage")
+            if tax.get("description"):
+                sub(tc, "generalTaxonomicCoverage", tax["description"])
+            for t in tax["taxa"]:
+                cl = sub(tc, "taxonomicClassification")
+                if t.get("rank"):
+                    sub(cl, "taxonRankName", t["rank"])
+                sub(cl, "taxonRankValue", t["name"])
+                if t.get("commonName"):
+                    sub(cl, "commonName", t["commonName"])
     for p in md["contacts"]:
         party("contact", p)
     if md.get("methods"):
         m = sub(ds, "methods")
         for step in md["methods"]:
             sub(sub(sub(m, "methodStep"), "description"), "para", step)
+    project = md.get("project") or {}
+    if project:
+        pr = sub(ds, "project", **({"id": project["identifier"]} if project.get("identifier") else {}))
+        sub(pr, "title", project["title"])
+        for p in project["personnel"]:
+            party("personnel", p, pr)
+        if project.get("description"):
+            a = sub(pr, "abstract")
+            for para in [x for x in project["description"].split("\n\n") if x.strip()]:
+                sub(a, "para", para.strip())
+        if project.get("funding"):
+            sub(sub(pr, "funding"), "para", project["funding"])
+        for aw in project.get("awards") or []:
+            e = sub(pr, "award")
+            sub(e, "funderName", aw["funderName"])
+            if aw.get("funderIdentifier"):
+                sub(e, "funderIdentifier", aw["funderIdentifier"])
+            if aw.get("awardNumber"):
+                sub(e, "awardNumber", aw["awardNumber"])
+            sub(e, "title", aw["title"])
+            if aw.get("awardUrl"):
+                sub(e, "awardUrl", aw["awardUrl"])
     if hasattr(ET, "indent"):
         ET.indent(root)
     return '<?xml version="1.0" encoding="UTF-8"?>\n' + ET.tostring(root, encoding="unicode") + "\n"
@@ -1661,7 +1765,7 @@ def descriptor_metadata(md):
     if lic:
         out["licenses"] = [lic]
     contributors = []
-    for role, people in (("author", md["creators"]), ("maintainer", md["contacts"])):
+    for role, people in (("author", md["creators"]), ("maintainer", md["contacts"]), ("contributor", md.get("associatedParties") or [])):
         for p in people:
             c = {"title": person_name(p), "role": role}
             if (p.get("email") or "").strip():
@@ -1957,6 +2061,10 @@ def check_eml(root, report):
         report.warning("eml.xml", "has no title.", code="EML_MISSING_TITLE")
     if "creator" not in found or not "".join(found["creator"].itertext()).strip():
         report.warning("eml.xml", "has no creator.", code="EML_MISSING_CREATOR")
+    roles = agent_roles()
+    bad = sorted({(el.text or "").strip() for el in tree.iter() if local(el) == "role"} - set(roles))
+    if bad:
+        report.warning("eml.xml", f"has roles that are not in GBIF's agent role vocabulary ({', '.join(roles)}).", bad)
     report.info("eml.xml", "was not checked against the EML 2.2.0 schema; GBIF's analyser does that.")
 
 

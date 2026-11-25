@@ -818,6 +818,71 @@ class Metadata(Base):
         self.ok("metadata-template")
         self.assertIn("exists", self.fails("metadata-template"))
 
+    FULL = {
+        "associatedParties": [{"givenName": "Bo", "surName": "Lund", "role": "principalInvestigator"},
+                              {"organization": "Lab X", "role": "processor"}],
+        "alternateIdentifiers": ["https://doi.org/10.1234/toy"],
+        "taxonomicCoverage": {"description": "Birds", "taxa": [{"rank": "class", "name": "Aves", "commonName": "birds"}]},
+        "project": {"title": "Toy project", "identifier": "TOY-1", "description": "Counting birds.", "funding": "A grant.",
+                    "personnel": [{"givenName": "Bo", "surName": "Lund", "role": "principalInvestigator"}],
+                    "awards": [{"funderName": "A Foundation", "awardNumber": "42", "title": "Birds"}]},
+    }
+
+    def test_associated_parties_project_and_taxonomic_coverage(self):
+        import xml.etree.ElementTree as ET
+        self.toy()
+        self.write(dict(self.METADATA, **self.FULL))
+        self.ok("package", "out", "--name", "toy", "--metadata", "metadata.json")
+        ds = ET.parse(os.path.join(self.dir, "out", "eml.xml")).getroot().find("dataset")
+        # The order of EML 2.2.0's dataset: associatedParty after creator, project after contact.
+        self.assertEqual([e.tag for e in ds],
+                         ["alternateIdentifier", "title", "creator", "associatedParty", "associatedParty", "pubDate",
+                          "abstract", "keywordSet", "intellectualRights", "licensed", "coverage", "contact", "project"])
+        self.assertEqual([e.text for e in ds.findall("associatedParty/role")], ["principalInvestigator", "processor"])
+        self.assertEqual(ds.find("coverage/taxonomicCoverage/taxonomicClassification/taxonRankValue").text, "Aves")
+        self.assertEqual(ds.find("project").get("id"), "TOY-1")
+        self.assertEqual([e.tag for e in ds.find("project")], ["title", "personnel", "abstract", "funding", "award"])
+        self.assertEqual(ds.find("project/personnel/role").text, "principalInvestigator")
+        self.assertEqual([e.tag for e in ds.find("project/award")], ["funderName", "awardNumber", "title"])
+        with open(os.path.join(self.dir, "out", "datapackage.json")) as fh:
+            self.assertIn(("Lab X", "contributor"), [(c["title"], c["role"]) for c in json.load(fh)["contributors"]])
+        self.assertNotIn("agent role", self.ok("check", "out"))
+
+    def test_roles_come_from_gbifs_vocabulary(self):
+        self.toy()
+        md = dict(self.METADATA, **self.FULL)
+        md["associatedParties"] = [{"surName": "Lund", "role": "PI"}, {"surName": "Holm"}]
+        md["project"] = {"title": "Toy project"}
+        self.write(md)
+        out = self.fails("package", "out", "--metadata", "metadata.json")
+        self.assertIn("Lund has the role 'PI', which is not in GBIF's agent role vocabulary", out)
+        self.assertIn("Holm has no role", out)
+        self.assertIn("project needs at least one person", out)
+
+    def test_an_empty_template_adds_nothing(self):
+        import xml.etree.ElementTree as ET
+        self.toy()
+        self.ok("metadata-template")
+        with open(os.path.join(self.dir, "metadata.json")) as fh:
+            md = json.load(fh)
+        md.update({k: v for k, v in self.METADATA.items()})
+        self.write(md)
+        self.ok("package", "out", "--name", "toy", "--metadata", "metadata.json")
+        ds = ET.parse(os.path.join(self.dir, "out", "eml.xml")).getroot().find("dataset")
+        for tag in ("associatedParty", "project", "alternateIdentifier", "coverage/taxonomicCoverage"):
+            self.assertIsNone(ds.find(tag), tag)
+
+    def test_check_reports_roles_outside_the_vocabulary(self):
+        self.toy()
+        self.write(dict(self.METADATA, **self.FULL))
+        self.ok("package", "out", "--name", "toy", "--metadata", "metadata.json")
+        path = os.path.join(self.dir, "out", "eml.xml")
+        with open(path) as fh:
+            eml = fh.read()
+        with open(path, "w") as fh:
+            fh.write(eml.replace("<role>processor</role>", "<role>lab</role>"))
+        self.assertIn("roles that are not in GBIF's agent role vocabulary", self.ok("check", "out"))
+
 
 class IdentificationPlacement(Base):
     def test_a_name_repeated_on_an_identified_occurrence_is_reported(self):
