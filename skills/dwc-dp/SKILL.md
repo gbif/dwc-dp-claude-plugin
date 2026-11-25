@@ -79,6 +79,21 @@ List their files. For each file, record the columns, the number of rows, what on
 visit? a specimen? a photo?), and which columns repeat across rows. `load` each one into the
 working database and look at it with `sql`.
 
+What `load` does and says:
+- **Encoding:** a text file that isn't UTF-8 is refused. The message shows the first line it can't
+  read as Latin-1 and as Windows-1252 (cp1252). Ask which their software writes, or which reading
+  shows their letters right, then load it with `--encoding`. Don't pick one yourself.
+- **Wide tables,** with one column per OTU, species or sample: `--unpivot <id columns>` keeps those
+  columns and turns every other column into a row, named with `--into` (for example
+  `--into otu,reads`). Empty cells are left out, zeros kept, and it says how many of each.
+- **Empty values become NULL.** Test them with `IS NULL`; `= ''` finds nothing.
+- **One column** whose values contain commas or semicolons: each line may be wrapped in quotes, or
+  the separator is another one. Look at the file's first lines and tell them.
+
+`sql` runs one query, or a script with `--file`. Both are read-only, but `CREATE TEMP VIEW`,
+`TEMP TABLE` and `TEMP MACRO` work within one call. A column or alias that is a SQL keyword
+(`name`, `positional`, `numeric`) has to be in double quotes; the error says so.
+
 A Darwin Core Archive (a `.zip` with `meta.xml`) goes in with `load-dwca`, which stages the core
 and each extension as `src_dwca_<row type>` tables, with columns named after their Darwin Core
 terms. Its `eml.xml` is the first source for Stage 6. The archive's columns already have Darwin
@@ -108,7 +123,9 @@ to tables, and the recipe in `references/recipes/` for their kind of data, when 
 Explain the model with their own records. For example: "each row of your `samples.xlsx` is a visit
 to a trap on a date, which DwC-DP calls an event. The species counted on that visit are
 occurrences that point to the event". Show the result as a diagram: `init` the tables, then
-`diagram` gives Mermaid text. Agree on the table list before any mapping.
+`diagram` gives Mermaid text with each table's keys and links. Once there are rows, `summary` shows
+the structure with counts, in plain text. Agree on the table list before any mapping. A table that
+turns out to have nothing in it is left out of the package; `drop` removes it from the database.
 
 For every column without a field, settle with them:
 - whether it is a dedicated field after all (`find-term`);
@@ -166,7 +183,9 @@ starting with `DELETE FROM` for each table so the file can be rerun. Fill one ta
 the file, and show them a few rows with `sql` before moving on.
 
 Keep values as they are. Convert only formats a field requires: dates to ISO 8601, and decimal
-commas to points in numeric fields. Say each conversion. When a value doesn't fit a field, ask;
+commas to points in numeric fields. Say each conversion. In ISO 8601 a date and a time are joined
+by `T`, not a space, and both go in `eventDate`, as in the schema's examples (`2009-02-20T08:40Z`,
+`2018-06-02T12:40/13:05` for an interval within a day). When a value doesn't fit a field, ask;
 don't drop or reshape it on your own.
 
 GBIF reads some fields with its vocabularies, for example `occurrenceStatus`, `lifeStage`, `sex`
@@ -214,7 +233,9 @@ block: the command's own output may be folded away in their terminal. It holds:
 Walk them through it with their own records: "each of your 1.3 million finds is an occurrence, under
 the event of its date and place". Then tell them they can ask questions about the result in their
 own words, such as how many records per year or which names are most common. Answer those with
-`sql` against the working database. It is read-only, so nothing in the package changes.
+`sql` against the working database. It is read-only, so nothing in the package changes. For a
+question that needs several steps, write a script with temporary views and run it with
+`sql --file`.
 
 This is where the skill ends. Publishing the package is not part of it.
 

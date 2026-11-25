@@ -15,10 +15,11 @@ DELETE FROM event;
 -- together, so a flower and its visitor share an event. eventCategory 'occurrence' (agreed).
 -- The notebook doesn't say which geodetic datum the coordinates use, so it is 'not recorded', as the
 -- schema's notes for geodeticDatum say.
-INSERT INTO event (event_pk, eventID, eventCategory, eventDate, eventTime, locality,
+-- The date and time go together in eventDate, as ISO 8601 writes them.
+INSERT INTO event (event_pk, eventID, eventCategory, eventDate, locality,
                    decimalLatitude, decimalLongitude, geodeticDatum, recordedBy)
 SELECT DISTINCT place || ' ' || date || 'T' || time, place || ' ' || date || 'T' || time, 'occurrence',
-       date, time, place, CAST(lat AS DOUBLE), CAST(lon AS DOUBLE), 'not recorded', observer
+       date || 'T' || time, place, CAST(lat AS DOUBLE), CAST(lon AS DOUBLE), 'not recorded', observer
 FROM src_observations;
 
 -- One occurrence per row of the notebook.

@@ -98,7 +98,7 @@ field, or a URL and section.
   - `recipes/`, one file per kind of dataset (see `recipes/README.md`).
 - `skills/dwc-dp/scripts/dwcdp.py`: the CLI, with these commands:
   - `tables`, `describe`, `find-term`, `order` and `vocab` read the schemas and vocabularies;
-  - `init`, `load`, `load-dwca`, `suggest`, `run`, `sql`, `status`, `validate`, `diagram`,
+  - `init`, `drop`, `load`, `load-dwca`, `suggest`, `run`, `sql`, `status`, `validate`, `diagram`,
     `metadata-template`, `package` and `summary` work on the working DuckDB;
   - `check` tests a package on disk;
   - `grscicoll` looks institution and collection codes up in GBIF's GRSciColl API. It is the

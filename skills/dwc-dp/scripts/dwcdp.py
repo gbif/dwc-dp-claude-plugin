@@ -424,6 +424,21 @@ def cmd_init(args):
               "the codes up), and whether another institution owns it. Ask even if their files don't say.")
 
 
+def cmd_drop(args):
+    con = connect(args.db)
+    present = dwc_tables_in(con)
+    for t in args.tables:
+        n = schema(t)["name"]
+        if n not in present:
+            print(f"not there  {db_name(n)}")
+        elif present[n]:
+            sys.exit(f"{db_name(n)} has {present[n]} {'row' if present[n] == 1 else 'rows'}. Only empty tables are dropped; "
+                     "remove its INSERT from mapping.sql and run it first.")
+        else:
+            con.execute(f"DROP TABLE {q(db_name(n))}")
+            print(f"dropped    {db_name(n)}")
+
+
 def cmd_load(args):
     path = os.path.abspath(args.file)
     if not os.path.exists(path):
@@ -434,13 +449,24 @@ def cmd_load(args):
     if ext == "gz":
         ext = os.path.splitext(path[:-3])[1].lower().lstrip(".")
     con = connect(args.db)
-    if ext in ("csv", "tsv", "txt", "tab"):
+    text = ext in ("csv", "tsv", "txt", "tab")
+    if args.encoding and not text:
+        sys.exit("--encoding is for text files (CSV, TSV, TXT).")
+    if args.unpivot and ext == "json":
+        sys.exit("--unpivot is for tables: CSV, TSV, TXT, XLSX or Parquet.")
+    tmp = None
+    if text:
+        enc = (args.encoding or "utf-8").lower().replace("_", "-")
+        if enc in ("utf-8", "utf8", "utf-8-sig"):
+            not_utf8(path)
+        else:
+            tmp = transcode(path, args.encoding)
         opts = ["header = true", "all_varchar = true", "sample_size = -1"]
         if args.sep:
             opts.append(f"delim = {lit(args.sep.encode().decode('unicode_escape'))}")
         elif ext in ("tsv", "tab"):
             opts.append("delim = '\\t'")
-        src = f"read_csv({lit(path)}, {', '.join(opts)})"
+        src = f"read_csv({lit(tmp or path)}, {', '.join(opts)})"
     elif ext in ("xlsx",):
         src = f"read_xlsx({lit(path)}, all_varchar = true{', sheet = ' + lit(args.sheet) if args.sheet else ''})"
     elif ext == "parquet":
@@ -450,13 +476,98 @@ def cmd_load(args):
     else:
         sys.exit(f"Don't know how to read .{ext}. Save it as CSV or TSV and load that.")
     try:
-        con.execute(f"CREATE OR REPLACE TABLE {q(table)} AS SELECT * FROM {src}")
+        if args.unpivot:
+            unpivot(con, table, src, args)
+        else:
+            con.execute(f"CREATE OR REPLACE TABLE {q(table)} AS SELECT * FROM {src}")
     except Exception as e:
         hint = " Reading .xlsx needs DuckDB's excel extension; if it can't be installed, save the sheet as CSV." if ext == "xlsx" else ""
         sys.exit(f"Could not read {args.file}: {e}{hint}")
+    finally:
+        if tmp:
+            os.unlink(tmp)
     n = count(con, f"SELECT count(*) FROM {q(table)}")
     cols = db_columns(con, table)
     print(f"Loaded {n} rows, {len(cols)} columns, as {table}.\nColumns: {', '.join(cols)}")
+    if text:
+        print("Empty values are NULL: test them with IS NULL, not = ''.")
+    if len(cols) == 1:
+        values = [cols[0]] + [v for (v,) in con.execute(f"SELECT {q(cols[0])} FROM {q(table)} WHERE {q(cols[0])} IS NOT NULL LIMIT 50").fetchall()]
+        seps = [c for c in (",", ";", "\t", "|") if sum(c in v for v in values) * 2 > len(values)]
+        if seps:
+            shown = "a tab" if seps[0] == "\t" else repr(seps[0])
+            print(f"Worth checking: there is only one column, and its values contain {shown}. Each whole line may be wrapped in "
+                  "quotes, or the separator may be another one (--sep). Look at the first lines of the file.")
+
+
+def not_utf8(path):
+    """Stop, with what the file looks like in the likely single-byte encodings, if it isn't UTF-8."""
+    import codecs
+    import gzip
+    opener = gzip.open if path.lower().endswith(".gz") else open
+    dec = codecs.getincrementaldecoder("utf-8")()
+    with opener(path, "rb") as fh:
+        head = fh.read(4)
+        fh.seek(0)
+        if head[:2] in (b"\xff\xfe", b"\xfe\xff"):
+            sys.exit(f"{os.path.basename(path)} is UTF-16 (it starts with a UTF-16 byte order mark). Load it with --encoding utf-16.")
+        line = 0
+        for raw in fh:
+            line += 1
+            try:
+                dec.decode(raw)
+            except UnicodeDecodeError:
+                shown = "\n".join(f"  as {e:<12} {raw.decode(e, 'replace').rstrip()[:100]}" for e in ("latin-1", "cp1252"))
+                c1 = any(0x80 <= b <= 0x9f for b in raw)
+                sys.exit(f"{os.path.basename(path)} is not UTF-8: line {line} has bytes UTF-8 can't read. That line is\n{shown}\n"
+                         f"Ask the data holder which encoding their software saved it in, or check which reading shows their "
+                         f"letters right, and load it with --encoding (for example --encoding latin-1).\n"
+                         + ("The line has bytes 0x80-0x9F, which latin-1 reads as control characters and cp1252 as letters and "
+                            "punctuation such as € and quotes." if c1 else ""))
+
+
+def transcode(path, encoding):
+    """A UTF-8 copy of a text file in another encoding, in the system's temporary folder; the caller
+    removes it."""
+    import codecs
+    import gzip
+    import tempfile
+    try:
+        codecs.lookup(encoding)
+    except LookupError:
+        sys.exit(f"Unknown encoding {encoding!r}. Examples: latin-1, cp1252, utf-16, mac-roman.")
+    opener = gzip.open if path.lower().endswith(".gz") else open
+    fd, tmp = tempfile.mkstemp(suffix=".csv", prefix="dwcdp-")
+    try:
+        with opener(path, "rt", encoding=encoding, newline="") as src, os.fdopen(fd, "w", encoding="utf-8", newline="") as out:
+            shutil.copyfileobj(src, out)
+    except UnicodeDecodeError as e:
+        os.unlink(tmp)
+        sys.exit(f"{os.path.basename(path)} can't be read as {encoding}: {e}")
+    return tmp
+
+
+def unpivot(con, table, src, args):
+    """A wide table (one column per OTU, species or sample) as long rows: the id columns, the name of
+    the other column, and its value. Empty cells are left out."""
+    ids = [c.strip() for c in args.unpivot.split(",") if c.strip()]
+    into = [c.strip() for c in args.into.split(",")]
+    if len(into) != 2:
+        sys.exit("--into takes two names: for the column name and for its value, for example --into otu,reads")
+    cols = [d[0] for d in con.execute(f"SELECT * FROM {src} LIMIT 0").description]
+    missing = [c for c in ids if c not in cols]
+    if missing:
+        sys.exit(f"No column {', '.join(missing)} to keep. The columns start: {', '.join(cols[:10])}")
+    clash = [c for c in into if c in ids]
+    if clash:
+        sys.exit(f"--into {', '.join(clash)} is also an id column; choose other names.")
+    wide = count(con, f"SELECT count(*) FROM {src}")
+    con.execute(f"CREATE OR REPLACE TABLE {q(table)} AS UNPIVOT (SELECT * FROM {src}) "
+                f"ON COLUMNS(* EXCLUDE ({', '.join(q(c) for c in ids)})) INTO NAME {q(into[0])} VALUE {q(into[1])}")
+    long = count(con, f"SELECT count(*) FROM {q(table)}")
+    other = len(cols) - len(ids)
+    print(f"Unpivoted {wide} rows by {other} columns: {long} cells with a value became rows; "
+          f"{wide * other - long} empty cells were left out. Zeros are kept.")
 
 
 def dwca_text(value, default):
@@ -586,7 +697,7 @@ def cmd_run(args):
             con.execute("ROLLBACK")
         except Exception:
             pass
-        sys.exit(f"{args.sql} failed, and nothing was changed: {e}")
+        sys.exit(f"{args.sql} failed, and nothing was changed: {e}{sql_hint(con, e)}")
     after = dwc_tables_in(con)
     rows = [[t, before.get(t, "-"), n] for t, n in after.items()]
     print(f"Ran {args.sql}.")
@@ -594,17 +705,49 @@ def cmd_run(args):
         print(table_text(rows, ["table", "rows before", "rows after"]))
 
 
+def sql_hint(con, e):
+    """A hint for the DuckDB errors that cost most round trips: a keyword used as a name, and writing
+    on the read-only connection of sql."""
+    msg = str(e)
+    if "read-only mode" in msg:
+        return "\nsql can't change the database. CREATE TEMP VIEW, TEMP TABLE and TEMP MACRO work, and last until it ends."
+    m = re.search(r'syntax error at or near "([^"]+)"', msg)
+    if m:
+        kind = con.execute("SELECT keyword_category FROM duckdb_keywords() WHERE keyword_name = ?", [m.group(1).lower()]).fetchone()
+        if kind:
+            return (f"\n{m.group(1)} is a SQL keyword in DuckDB. As a column name or alias, write it in double quotes "
+                    f"(\"{m.group(1)}\"), or put AS before the alias.")
+    if "Parser Error" in msg:
+        return "\nIf a column name or alias is a SQL keyword (such as name, positional or numeric), write it in double quotes."
+    return ""
+
+
 def cmd_sql(args):
+    if bool(args.query) == bool(args.file):
+        sys.exit("Give a query, or --file with a script.")
+    if args.file:
+        with open(args.file, encoding="utf-8") as fh:
+            script = fh.read()
+    else:
+        script = args.query
     con = connect(args.db, read_only=True)
     try:
-        cur = con.execute(args.query)
+        statements = con.extract_statements(script)
     except Exception as e:
-        sys.exit(str(e))
-    if cur.description is None:
-        return
-    header = [d[0] for d in cur.description]
-    rows = cur.fetchmany(args.limit)
-    print(table_text(rows, header))
+        sys.exit(str(e) + sql_hint(con, e))
+    shown = 0
+    for i, st in enumerate(statements, 1):
+        try:
+            cur = con.execute(st)
+        except Exception as e:
+            where = f"Statement {i} of {len(statements)} failed: " if len(statements) > 1 else ""
+            sys.exit(where + str(e) + sql_hint(con, e))
+        if cur.description is None or str(st.type).split(".")[-1] in ("CREATE", "DROP", "SET", "VARIABLE_SET", "INSERT", "UPDATE", "DELETE"):
+            continue
+        if shown:
+            print()
+        print(table_text(cur.fetchmany(args.limit), [d[0] for d in cur.description]))
+        shown += 1
 
 
 def normalise(name):
@@ -940,7 +1083,7 @@ def check_tables(con, present, report, descriptor_checked=False):
         s = schemas()[name]
         fm = field_map(s)
         if rows == 0:
-            report.warning(name, "has no rows. Leave it out, or fill it.")
+            report.info(name, f"has no rows. package leaves it out; 'dwcdp.py drop {name}' removes it from the working database.")
             continue
         T = q(table)
         for f in s["fields"]:
@@ -1015,8 +1158,114 @@ def check_tables(con, present, report, descriptor_checked=False):
                     report.error(name, f"{n} {'row points' if n == 1 else 'rows point'} to itself in {fname}.", field=fname)
 
         check_vocabularies(con, name, table, cols, report)
+        check_dates(con, name, table, cols, report)
+        check_listed_values(con, name, table, cols, report)
 
     check_identification_placement(con, present, report)
+
+
+ISO_ZONE = r"(Z|[+-]\d{2}(:?\d{2})?)?"
+ISO_TIME = r"\d{2}(:\d{2}(:\d{2}(\.\d+)?)?)?" + ISO_ZONE
+ISO_DATE = r"\d{4}(-\d{2}(-\d{2})?|-\d{3})?(T" + ISO_TIME + r")?"
+ISO_DURATION = r"P(?=\d|T\d)(\d+Y)?(\d+M)?(\d+W)?(\d+D)?(T(\d+H)?(\d+M)?(\d+(\.\d+)?S)?)?"
+
+
+def iso_problem(value, kind="date"):
+    """Why a date (or a time of day, kind 'time') is not ISO 8601 as the schema's notes recommend:
+    'space', 'order' (an interval that ends before it starts), 'format', or None. An interval's end
+    may leave out what it shares with its start, as in the schema's example 2007-11-13/15."""
+    v = str(value).strip()
+    one = ISO_TIME if kind == "time" else ISO_DATE
+    parts = v.split("/")
+    if len(parts) > 2:
+        return "format"
+    if kind == "date" and re.fullmatch(r"\d{4}-\d{2}-\d{2} \d{2}:\d{2}.*", parts[0]):
+        return "space"
+    start = parts[0]
+    if not (re.fullmatch(one, start) or re.fullmatch(ISO_DURATION, start)):
+        return "format"
+    if len(parts) == 1:
+        return None
+    end = parts[1]
+    if re.fullmatch(ISO_DURATION, end) or re.fullmatch(ISO_DURATION, start):
+        return None
+    if kind == "date" and "T" in start and re.fullmatch(ISO_TIME, end):
+        end = start.split("T")[0] + "T" + end
+    elif kind == "date" and "T" not in start and "T" not in end and len(end) < len(start):
+        end = start[:len(start) - len(end)] + end
+    if not re.fullmatch(one, end):
+        return "space" if kind == "date" and " " in end else "format"
+    def zone(t):
+        return re.search(ISO_ZONE + "$", t).group(0) if kind == "time" or "T" in t else ""
+    zs, ze = zone(start), zone(end)
+    if zs != ze:
+        return None
+    a, b = start[:len(start) - len(zs)], end[:len(end) - len(ze)]
+    n = min(len(a), len(b))
+    return "order" if b[:n] < a[:n] else None
+
+
+def iso_fields(name):
+    """{field: 'date' or 'time'} for the fields whose notes recommend ISO 8601."""
+    out = {}
+    for f in schemas()[name]["fields"]:
+        if "ISO 8601" in (f.get("notes") or "") and f.get("type", "string") == "string":
+            out[f["name"]] = "time" if "time of day" in f["notes"] else "date"
+    return out
+
+
+def check_dates(con, name, table, cols, report):
+    for fname, kind in iso_fields(name).items():
+        if fname not in cols:
+            continue
+        found = {"space": [], "order": [], "format": []}
+        for (v,) in con.execute(f"SELECT DISTINCT CAST({q(fname)} AS VARCHAR) FROM {q(table)} WHERE {q(fname)} IS NOT NULL").fetchall():
+            why = iso_problem(v, kind)
+            if why:
+                found[why].append(v)
+        what = "time" if kind == "time" else "date"
+        if found["space"]:
+            report.warning(name, f"{len(found['space'])} distinct {fname} {'value has' if len(found['space']) == 1 else 'values have'} a space "
+                                 "between date and time. ISO 8601, which the schema recommends, puts a T there (2018-06-02T12:40).",
+                           sorted(found["space"]), fname)
+        if found["order"]:
+            report.warning(name, f"{len(found['order'])} distinct {fname} {'interval ends' if len(found['order']) == 1 else 'intervals end'} "
+                                 f"before {'it starts' if len(found['order']) == 1 else 'they start'}.", sorted(found["order"]), fname)
+        if found["format"]:
+            report.warning(name, f"{len(found['format'])} distinct {fname} {'value is' if len(found['format']) == 1 else 'values are'} "
+                                 f"not an ISO 8601 {what}, which the schema recommends.", sorted(found["format"]), fname)
+    if name == "event" and {"eventDate", "eventTime"} <= set(cols):
+        n = count(con, f"SELECT count(*) FROM {q(table)} WHERE eventTime IS NOT NULL AND eventDate IS NOT NULL "
+                       "AND NOT contains(CAST(eventDate AS VARCHAR), 'T')")
+        if n:
+            report.info(name, f"{have(n)} a time in eventTime and only a date in eventDate. eventDate can hold both, as in "
+                              "the schema's examples (2009-02-20T08:40Z, 2007-03-01T13:00:00Z/2008-05-11T15:30:00Z).", field="eventTime")
+
+
+def listed_values(field):
+    """The values a field's notes name as the only ones, e.g. includeOrExclude: include, exclude."""
+    m = re.search(r"controlled vocabulary consisting of ((?:'[^']+'(?:, | and | or )?)+) only", field.get("notes") or "")
+    return re.findall(r"'([^']+)'", m.group(1)) if m else None
+
+
+def check_listed_values(con, name, table, cols, report):
+    for f in schemas()[name]["fields"]:
+        fname = f["name"]
+        if fname not in cols:
+            continue
+        F = q(fname)
+        allowed = listed_values(f)
+        if allowed:
+            bad = [v for (v,) in con.execute(f"SELECT DISTINCT CAST({F} AS VARCHAR) FROM {q(table)} WHERE {F} IS NOT NULL ORDER BY 1").fetchall()
+                   if v not in allowed]
+            if bad:
+                report.warning(name, f"{fname} has values other than {' and '.join(allowed)}, the only ones its notes recommend.", bad, fname)
+        elif "controlled vocabulary" in (f.get("notes") or "") and not fname.endswith("IRI") and f.get("type", "string") == "string":
+            groups = con.execute(f"SELECT string_agg(v, ' / ' ORDER BY v) FROM (SELECT DISTINCT CAST({F} AS VARCHAR) AS v FROM {q(table)} "
+                                 f"WHERE {F} IS NOT NULL) GROUP BY lower(v) HAVING count(*) > 1 ORDER BY 1").fetchall()
+            if groups:
+                report.warning(name, f"{fname} has values that differ only in capitals. Its notes recommend a controlled "
+                                     "vocabulary; use one spelling.", [g for (g,) in groups], fname)
 
 
 GENERIC_FIELDS = {"feedbackURL", "informationWithheld", "dataGeneralizations"}
@@ -1076,15 +1325,20 @@ def cmd_validate(args):
 def cmd_diagram(args):
     con = connect(args.db, read_only=True)
     present = dwc_tables_in(con)
-    names = list(present) if args.all else [t for t, n in present.items() if n]
+    # Right after init nothing has rows yet: then draw the tables as the schemas define them.
+    names = list(present) if args.all or not any(present.values()) else [t for t, n in present.items() if n]
     if args.tables:
         names = [schema(t)["name"] for t in args.tables]
     lines = ["erDiagram"]
     used_by = {}
     for n in names:
         s = schema(n)
-        cols = db_columns(con, db_name(n)) if db_name(n) in db_tables(con) else [f["name"] for f in s["fields"]]
-        used = [c for c in cols if c in field_map(s) and (db_name(n) not in db_tables(con) or count(con, f"SELECT count(*) FROM {q(db_name(n))} WHERE {q(c)} IS NOT NULL"))]
+        if present.get(n):
+            cols = db_columns(con, db_name(n))
+            used = [c for c in cols if c in field_map(s) and count(con, f"SELECT count(*) FROM {q(db_name(n))} WHERE {q(c)} IS NOT NULL")]
+        else:
+            fk = {f for f, _, t, _ in keys(s, "foreignKeys") if t in names}
+            used = [f["name"] for f in s["fields"] if f["name"] == s.get("primaryKey") or f["name"] in fk]
         used_by[n] = set(used)
         fk_fields = {f for f, _, _, _ in keys(s, "foreignKeys")}
         lines.append(f"  {db_name(n)} {{")
@@ -1481,6 +1735,9 @@ def cmd_package(args):
             "schema": resource_schema(s, used),
         })
         print(f"{path}: {rows} {'row' if rows == 1 else 'rows'}, {len(used)} fields")
+    empty = [n for n, r in dwc_tables_in(con).items() if not r]
+    if empty:
+        print(f"Left out, with no rows: {', '.join(empty)}.")
     descriptor = {"profile": PROFILE_URL}
     if md:
         for key in ("id", "title", "version"):
@@ -1789,11 +2046,17 @@ def main():
     s = sub.add_parser("init", help="create DwC-DP tables in the database")
     s.add_argument("tables", nargs="+")
     s.set_defaults(func=cmd_init)
-    s = sub.add_parser("load", help="stage a source file as a src_ table (all values as text)")
+    s = sub.add_parser("drop", help="remove empty DwC-DP tables from the database")
+    s.add_argument("tables", nargs="+")
+    s.set_defaults(func=cmd_drop)
+    s = sub.add_parser("load", help="stage a source file as a src_ table (all values as text; empty values become NULL)")
     s.add_argument("file")
     s.add_argument("--as", dest="as_name", help="table name (src_ is added)")
     s.add_argument("--sep", help="column separator, e.g. ';' or '\\t'")
     s.add_argument("--sheet", help="sheet of an .xlsx file")
+    s.add_argument("--encoding", help="the text file's encoding if it isn't UTF-8, e.g. latin-1, cp1252, utf-16")
+    s.add_argument("--unpivot", metavar="ID[,ID]", help="a wide table: keep these columns, and turn every other column into rows")
+    s.add_argument("--into", default="column,value", metavar="NAME,VALUE", help="with --unpivot: the names of the two new columns (default column,value)")
     s.set_defaults(func=cmd_load)
     s = sub.add_parser("load-dwca", help="stage a Darwin Core Archive's core and extensions as src_dwca_ tables")
     s.add_argument("archive", help="the archive (.zip) or its unzipped folder")
@@ -1801,8 +2064,9 @@ def main():
     s = sub.add_parser("run", help="run a SQL file in one transaction")
     s.add_argument("sql")
     s.set_defaults(func=cmd_run)
-    s = sub.add_parser("sql", help="run one read-only query and print the result")
-    s.add_argument("query")
+    s = sub.add_parser("sql", help="run read-only queries and print the results; TEMP views, tables and macros are allowed")
+    s.add_argument("query", nargs="?")
+    s.add_argument("--file", help="a .sql script: each statement is run, and each result printed")
     s.add_argument("--limit", type=int, default=20)
     s.set_defaults(func=cmd_sql)
     sub.add_parser("status", help="tables in the database and their rows").set_defaults(func=cmd_status)

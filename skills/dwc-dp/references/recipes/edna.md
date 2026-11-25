@@ -87,7 +87,9 @@ taxonomy table. Load those with `--as` so their table names start with a letter 
    - the reference database in `otu_db`, and the volume extracted in `samp_vol_we_dna_ext`.
 4. **Sequences:** every ASV of both markers.
 5. **Analyses:**
-   - turn each OTU table into one row per ASV and sample (`UNPIVOT`), with the marker as a column;
+   - turn each OTU table into one row per ASV and sample, with the marker as a column. Either load
+     it long (`load 12S_otu_table.tsv --as otu_12s --unpivot asv --into sample,reads`), or use
+     `UNPIVOT` in SQL. A table with hundreds of columns is easier the first way;
    - point each to the sample's extract (`materialEntity_fk`); both markers used the same one;
    - keep the rows with reads;
    - set `processedTotalReadCount` to the sum over the sample and marker

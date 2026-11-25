@@ -18,10 +18,11 @@ SELECT 'PC2025', 'PC2025', 'context', 'Project', min(date) || '/' || max(date),
        'Point counts, made up for testing.'
 FROM src_visits;
 
--- One event per visit, with the place taken from its site.
-INSERT INTO event (event_pk, eventID, parentEvent_fk, eventCategory, eventType, eventDate, eventTime,
+-- One event per visit, with the place taken from its site. The date and its start time go together
+-- in eventDate, as ISO 8601 writes them.
+INSERT INTO event (event_pk, eventID, parentEvent_fk, eventCategory, eventType, eventDate,
                    locality, habitat, decimalLatitude, decimalLongitude, recordedBy)
-SELECT v.visit, v.visit, 'PC2025', 'survey', 'SiteVisit', v.date, v.start,
+SELECT v.visit, v.visit, 'PC2025', 'survey', 'SiteVisit', v.date || 'T' || v.start,
        v.site, s.habitat, CAST(s.lat AS DOUBLE), CAST(s.lon AS DOUBLE), v.observer
 FROM src_visits v JOIN src_sites s ON s.site = v.site;
 

@@ -507,7 +507,7 @@ class AllTables(Base):
     SKIP = {("identification", f) for f in ("materialEntity_fk", "media_fk", "nucleotideSequence_fk",
                                             "nucleotideAnalysis_fk", "organism_fk")}
     SKIP |= {("material", "identifiedBy_fk"), ("occurrence", "identifiedBy_fk")}
-    VALUES = {("occurrence", "occurrenceStatus"): "'detected'"}
+    VALUES = {("occurrence", "occurrenceStatus"): "'detected'", ("survey-target-descriptor", "includeOrExclude"): "'include'"}
 
     def mapping(self):
         sys.path.insert(0, os.path.dirname(SCRIPT))
@@ -1047,6 +1047,114 @@ class Check(Base):
         out = self.fails("check", "out")
         self.assertIn("could not be read as CSV", out)
         self.assertNotIn("Traceback", out)
+
+
+class DataChecks(Base):
+    """Checks that come from a real test run (Insektmobilen, 2026-11-25): values the schemas
+    accept as text but whose notes recommend a form."""
+
+    def setUp(self):
+        super().setUp()
+        self.ok("init", "event", "survey", "survey-target", "survey-target-descriptor", "identification", "material")
+
+    def sql_file(self, text):
+        path = os.path.join(self.dir, "data.sql")
+        with open(path, "w") as fh:
+            fh.write(text)
+        return self.ok("run", "data.sql")
+
+    def test_iso_dates(self):
+        self.sql_file("""
+            INSERT INTO event (event_pk, eventDate, eventTime) VALUES
+              ('ok', '2007-11-13/15', NULL),
+              ('ok2', '2018-06-02T12:40/13:05', NULL),
+              ('space', '2018-06-02 12:40:00/2018-06-02 13:05:00', NULL),
+              ('back', '2018-06-02T14:41/14:28', NULL),
+              ('danish', '02-06-2018', NULL),
+              ('time', '2018-06-02', '12:40');
+            UPDATE event SET eventCategory = 'survey';""")
+        out = self.ok("validate")
+        self.assertIn("a space between date and time", out)
+        self.assertIn("'2018-06-02T14:41/14:28'", out)
+        self.assertIn("not an ISO 8601 date", out)
+        self.assertIn("'02-06-2018'", out)
+        self.assertIn("1 row has a time in eventTime and only a date in eventDate", out)
+        self.assertNotIn("'2007-11-13/15'", out)
+        self.assertNotIn("'2018-06-02T12:40/13:05'", out)
+
+    def test_values_the_notes_list_and_capitals(self):
+        self.sql_file("""
+            INSERT INTO survey_target (surveyTarget_pk, isSurveyTargetFullyReported) VALUES ('t', true);
+            INSERT INTO survey_target_descriptor (surveyTarget_fk, surveyTargetType, surveyTargetValue, includeOrExclude)
+              VALUES ('t', 'taxon', 'Insecta', 'true'), ('t', 'taxon', 'Lepidoptera', 'exclude');
+            INSERT INTO material (materialEntity_pk) VALUES ('m');
+            INSERT INTO identification (identification_pk, materialEntity_fk, scientificName, taxonRank) VALUES
+              ('i1', 'm', 'Diptera', 'Order'), ('i2', 'm', 'Hymenoptera', 'order'), ('i3', 'm', 'Apis mellifera', 'species');""")
+        out = self.ok("validate")
+        self.assertIn("includeOrExclude has values other than include and exclude", out)
+        self.assertIn("'true'", out)
+        self.assertIn("taxonRank has values that differ only in capitals", out)
+        self.assertIn("'Order / order'", out)
+
+    def test_diagram_after_init_shows_the_links(self):
+        out = self.ok("diagram")
+        self.assertIn("event_pk PK", out)
+        self.assertIn('survey }o--o| event : "has context"', out)
+
+    def test_empty_tables_are_information_and_can_be_dropped(self):
+        self.sql_file("INSERT INTO event (event_pk, eventCategory, eventDate) VALUES ('e', 'survey', '2020-05-01');")
+        out = self.ok("validate")
+        self.assertIn("For information", out)
+        self.assertNotIn("Worth checking", out)
+        self.assertIn("dwcdp.py drop survey", out)
+        self.assertIn("dropped    survey", self.ok("drop", "survey"))
+        self.assertIn("Only empty tables", self.fails("drop", "event"))
+        self.assertIn("Left out, with no rows", self.ok("package", "out", "--name", "t"))
+
+
+class Loading(Base):
+    def write(self, name, data):
+        with open(os.path.join(self.dir, name), "wb") as fh:
+            fh.write(data)
+
+    def test_utf8_with_bom(self):
+        self.write("bom.csv", b"\xef\xbb\xbfsite,date\nA,\n")
+        self.assertIn("Columns: site, date", self.ok("load", "bom.csv"))
+        self.assertIn("1", self.ok("sql", "SELECT count(*) FROM src_bom WHERE date IS NULL"))
+
+    def test_other_encodings_are_named_not_guessed(self):
+        self.write("dk.csv", b"rute;sted\n1;S\xf8nderborg\n")
+        out = self.fails("load", "dk.csv")
+        self.assertIn("is not UTF-8", out)
+        self.assertIn("as latin-1      1;Sønderborg", out)
+        self.ok("load", "dk.csv", "--encoding", "latin-1")
+        self.assertIn("Sønderborg", self.ok("sql", "SELECT sted FROM src_dk"))
+        self.assertIn("Unknown encoding", self.fails("load", "dk.csv", "--encoding", "danish"))
+
+    def test_unpivot_a_wide_table(self):
+        self.write("otus.csv", b"sample,OTU1,OTU2,OTU3\nS1,5,,0\nS2,,7,1\n")
+        out = self.ok("load", "otus.csv", "--unpivot", "sample", "--into", "otu,reads")
+        self.assertIn("4 cells with a value became rows; 2 empty cells were left out", out)
+        rows = self.ok("sql", "SELECT sample || ':' || otu || ':' || reads AS r FROM src_otus ORDER BY 1")
+        self.assertEqual(rows.split()[2:], ["S1:OTU1:5", "S1:OTU3:0", "S2:OTU2:7", "S2:OTU3:1"])
+
+    def test_lines_wrapped_in_quotes_are_flagged(self):
+        self.write("blast.csv", b'"qseqid,pident,sseqid"\n"otu1,98.5,BOLD:A"\n')
+        self.assertIn("Each whole line may be wrapped in quotes", self.ok("load", "blast.csv"))
+
+    def test_sql_file_with_temporary_views(self):
+        self.write("otus.csv", b"sample,reads\nS1,5\nS2,7\nS2,1\n")
+        self.ok("load", "otus.csv")
+        self.write("q.sql", b"CREATE TEMP VIEW v AS SELECT sample, sum(CAST(reads AS INT)) AS n FROM src_otus GROUP BY 1;\n"
+                            b"CREATE TEMP MACRO twice(x) AS x * 2;\nSELECT sample, twice(n) AS \"positional\" FROM v ORDER BY 1;\n")
+        out = self.ok("sql", "--file", "q.sql")
+        self.assertEqual(out.split(), ["sample", "positional", "------", "----------", "S1", "10", "S2", "16"])
+        self.assertIn("TEMP VIEW", self.fails("sql", "CREATE TABLE x (a INT)"))
+
+    def test_keyword_hint(self):
+        self.write("otus.csv", b"sample,reads\nS1,5\n")
+        self.ok("load", "otus.csv")
+        self.assertIn('write it in double quotes ("positional")', self.fails("sql", "SELECT reads positional FROM src_otus"))
 
 
 if __name__ == "__main__":
