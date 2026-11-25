@@ -9,6 +9,7 @@ DELETE FROM event_assertion;
 DELETE FROM material_agent_role;
 DELETE FROM agent;
 DELETE FROM identification;
+DELETE FROM occurrence;
 DELETE FROM nucleotide_analysis;
 DELETE FROM nucleotide_sequence;
 DELETE FROM molecular_protocol;
@@ -124,3 +125,46 @@ INSERT INTO material_assertion (assertionID, materialEntity_fk, verbatimAssertio
 SELECT extract || ':DNA concentration', extract, 'dna_ng_ul', 'DNA concentration', dna_ng_ul, 'ng/µl'
 FROM src_extracts
 WHERE dna_ng_ul IS NOT NULL;
+
+-- Occurrences for GBIF (SKILL.md, "Occurrences for GBIF"; edna.md). GBIF currently indexes records
+-- through occurrences, so the data holder agreed to derive them from the analyses:
+--   * one occurrence per sampling event and name, from both markers together;
+--   * no quantity: reads from two markers are two libraries, so they aren't added up;
+--   * left out, by the filters below: names of contaminants, and the field blank. The blank shares
+--     its event with S1, so without the filter its reads would become occurrences at Kalø Vig.
+-- The left-out names stay in identification and nucleotide-sequence; only the occurrences leave
+-- them out.
+CREATE OR REPLACE TEMP TABLE excluded_names (name, reason) AS
+VALUES ('Homo sapiens', 'human DNA, contamination'),
+       ('Hominidae', 'human DNA, contamination');
+
+CREATE OR REPLACE TEMP TABLE excluded_material AS
+SELECT x.extract AS materialEntity_pk, 'field blank' AS reason
+FROM src_samples s JOIN src_filters f ON f.sample = s.sample JOIN src_extracts x ON x.filter = f.filter
+WHERE s.type = 'field blank';
+
+CREATE OR REPLACE TEMP TABLE detections AS
+SELECT a.event_fk, i.scientificName, i.taxonRank, i.kingdom, i.phylum, i.class, i."order", i.family, i.genus,
+       a.nucleotideSequence_fk
+FROM nucleotide_analysis a
+JOIN identification i ON i.nucleotideSequence_fk = a.nucleotideSequence_fk
+WHERE a.materialEntity_fk NOT IN (SELECT materialEntity_pk FROM excluded_material)
+  AND NOT EXISTS (SELECT 1 FROM excluded_names x
+                  WHERE x.name IN (i.scientificName, i.genus, i.family, i."order", i.class, i.phylum, i.kingdom));
+
+INSERT INTO occurrence (occurrence_pk, occurrenceID, event_fk, occurrenceStatus)
+SELECT DISTINCT event_fk || ':' || scientificName, event_fk || ':' || scientificName, event_fk, 'detected'
+FROM detections;
+
+-- The name, for GBIF to read: an identification based on the occurrence, copied from the
+-- identifications of its sequences.
+INSERT INTO identification (identification_pk, identificationID, occurrence_fk, identificationType,
+                            isAcceptedIdentification, identificationRemarks, scientificName, taxonRank,
+                            kingdom, phylum, class, "order", family, genus)
+SELECT 'id:' || event_fk || ':' || scientificName, 'id:' || event_fk || ':' || scientificName,
+       event_fk || ':' || scientificName, 'nucleotideAnalysis', true,
+       'From the identification of sequence ' || string_agg(DISTINCT nucleotideSequence_fk, ', ' ORDER BY nucleotideSequence_fk),
+       scientificName, any_value(taxonRank), any_value(kingdom), any_value(phylum), any_value(class),
+       any_value("order"), any_value(family), any_value(genus)
+FROM detections
+GROUP BY event_fk, scientificName;

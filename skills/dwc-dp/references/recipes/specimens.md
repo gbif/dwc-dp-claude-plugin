@@ -65,7 +65,9 @@ four specimens (one a lot of five), five determinations (one superseded, one wit
    specimen and `materialEntityCategory` `tissue`. Who took it and when is a `material-agent-role`
    row (role `sampled by`, date in `agentRoleDate`).
 5. **Determinations:**
-   - one identification per row, of the specimen (`materialEntity_fk`);
+   - one identification per row, of the specimen (`materialEntity_fk`). It also points to the
+     specimen's occurrence (`occurrence_fk`), because GBIF takes an occurrence's name from its
+     accepted identification (SKILL.md, Stage 7);
    - `isAcceptedIdentification` from their "current" column;
    - the name as written in `verbatimIdentification`, and the name without the author in
      `scientificName`, with `scientificNameAuthorship`;
@@ -223,8 +225,10 @@ Each piece has its own number in `parts.csv`.
   `scientificName` is "not including authorship". Ask before splitting, and keep the original in
   `verbatimIdentification`.
 - **An identification both of a material and based on an occurrence:** allowed by the schema
-  (*of a* and *based on* are different links). `validate` warns only when one identification is
-  based on more than one kind of evidence.
+  (*of a* and *based on* are different links), and what the examples do, so that GBIF finds the
+  name. `validate` warns only when one identification is based on more than one kind of evidence.
+- **An occurrence without an accepted identification pointing to it,** or with several: GBIF
+  indexes it without a name. `validate` warns.
 - **Type status values outside GBIF's vocabulary,** such as `type` or `typus`: `validate` warns.
 
 ## Sources

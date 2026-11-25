@@ -39,13 +39,14 @@ SELECT occurrenceID, occurrenceID, institutionCode, catalogNumber, preparations,
 FROM src_dwca_occurrence
 WHERE basisOfRecord = 'PreservedSpecimen';
 
--- The name, with its higher ranks: kingdom and family exist only in identification. Of the
--- specimen for specimens, based on the occurrence for observations.
+-- The name, with its higher ranks: kingdom and family exist only in identification. Based on the
+-- occurrence, which GBIF reads it from (SKILL.md, "Occurrences for GBIF"), and for specimens also of
+-- the specimen.
 INSERT INTO identification (identification_pk, identificationID, materialEntity_fk, occurrence_fk,
                             isAcceptedIdentification, scientificName, taxonRank, kingdom, family)
 SELECT occurrenceID || ':id', occurrenceID || ':id',
        CASE WHEN basisOfRecord = 'PreservedSpecimen' THEN occurrenceID END,
-       CASE WHEN basisOfRecord <> 'PreservedSpecimen' THEN occurrenceID END,
+       occurrenceID,
        true, scientificName, nullif(taxonRank, ''), nullif(kingdom, ''), nullif(family, '')
 FROM src_dwca_occurrence;
 

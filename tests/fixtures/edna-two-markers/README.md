@@ -10,6 +10,9 @@ Made up for testing: an eDNA study with two markers on the same samples.
 - `12S_otu_table.tsv`, `COI_otu_table.tsv`: reads per ASV and sample, one table per marker. The
   columns are the sample codes; the extract amplified is the sample's in `extracts.csv`.
 - `12S_taxonomy.tsv`, `COI_taxonomy.tsv`: each ASV's sequence and assigned taxonomy. One 12S ASV
-  is assigned only to family.
+  is assigned only to family, and one is human, found in a sample and in the blank.
 
 Sequences, read counts and reference database versions are invented.
+
+The mapping ends with occurrences derived from the analyses, without the blank and without human
+DNA, for GBIF's indexing.

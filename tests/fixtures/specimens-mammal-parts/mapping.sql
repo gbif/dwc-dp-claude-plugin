@@ -61,3 +61,10 @@ INSERT INTO identification (identification_pk, identificationID, materialEntity_
                             isAcceptedIdentification, scientificName, taxonRank)
 SELECT catalogNumber || ':id', catalogNumber || ':id', catalogNumber, true, species, 'species'
 FROM src_specimens;
+
+-- GBIF takes an occurrence's name from the accepted identification that points to it (SKILL.md,
+-- "Occurrences for GBIF"), so the identification of each specimen also points to the occurrence it
+-- is evidence for.
+UPDATE identification SET occurrence_fk = m.evidenceForOccurrence_fk
+FROM material m
+WHERE identification.materialEntity_fk = m.materialEntity_pk AND m.evidenceForOccurrence_fk IS NOT NULL;

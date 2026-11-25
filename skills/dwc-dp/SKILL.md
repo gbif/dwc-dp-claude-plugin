@@ -31,7 +31,9 @@ Before any command, tell the data holder, in your own words:
   4. **Map**: a SQL file that fills the tables from their files, one table at a time.
   5. **Validate**: checks of the result, and fixing what they find, with them.
   6. **Describe**: the dataset's title, people, licence and description.
-  7. **Package**: the tables and `datapackage.json`, written to a folder.
+  7. **Occurrences for GBIF**: whether to add occurrences derived from the other tables, which GBIF
+     currently needs to index the data.
+  8. **Package**: the tables and `datapackage.json`, written to a folder.
 - that only they can answer some questions, and you'll ask them to confirm what you find in their
   files;
 - that everything stays on their machine. Nothing is uploaded or sent anywhere by this skill.
@@ -264,7 +266,41 @@ Draft from their documents and confirm each value; never choose a licence for th
 give a person a role they didn't give. `package` writes
 it both as `eml.xml` and in `datapackage.json`, and computes the coverage from the events.
 
-## Stage 7: Package
+## Stage 7: Occurrences for GBIF
+
+GBIF is at an early stage of indexing DwC-DP, and it currently indexes records through the
+`occurrence` table (the maintainers, 2026-11-25). An occurrence is the record, linking an event to
+the name of what was found. Data whose results are elsewhere, such as the identifications of
+sequences, need occurrences to be indexed as records. Tell them this, and ask whether to add occurrences. It is their
+choice: the package is valid without them.
+
+When they want them, settle with them:
+- **What one occurrence is:** usually one name at one event, for example one taxon in one water
+  sample. With several markers, the eDNA recipe has the choices.
+- **Which records give occurrences.** Offer filters, and use only the ones they agree to:
+  - names to leave out, such as *Homo sapiens* or Hominidae in eDNA, which are contamination in
+    most studies, or pets and livestock;
+  - controls and blanks;
+  - identifications below a rank or confidence, such as weak matches;
+  - a minimum number of reads, or of detections.
+
+  Show how many occurrences each filter removes, and the names it removes. The filtered records
+  stay in the other tables (`identification`, `nucleotide-sequence` and so on). Only the
+  occurrences leave them out.
+- **The name.** GBIF takes an occurrence's name from the one identification that points to it
+  (`occurrence_fk`) with `isAcceptedIdentification` true (gbif/pipelines, the DwC-DP mapping). For
+  a specimen, add `occurrence_fk` to the identification of the material. For a name made from
+  something else, such as a sequence, add an identification based on the occurrence. Copy the name,
+  and say in `identificationRemarks` where it came from. `validate` warns about an occurrence that
+  has no accepted identification, or several.
+- **What else it carries:** `occurrenceStatus` `detected`, and a quantity only if they want one,
+  such as the reads with `organismQuantityType` `DNA sequence reads`.
+
+Write it as its own part of `mapping.sql`, with the filters as a list at the top that they can read
+and change, and run `validate` again. The recipes show how for their kind of data: `edna.md`,
+"Occurrences for GBIF".
+
+## Stage 8: Package
 
 `package <folder> --name <name> --metadata metadata.json` checks again, then writes one CSV per table and a `datapackage.json`
 whose field descriptions are copied from the DwC-DP schemas. Agree on the name with them first
@@ -301,7 +337,7 @@ This is where the skill ends. Publishing the package is not part of it.
   sources, rights or media beyond what the recipe uses.
 - `references/georeferencing.md`: when places are shapes (routes, transects, polygons), UTM or
   other projected coordinates, or have no coordinates.
-- `references/package.md`: in Stages 6 and 7.
+- `references/package.md`: in Stages 6 and 8.
 
 ## Feedback
 

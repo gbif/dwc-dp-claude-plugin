@@ -90,3 +90,10 @@ SELECT d.labNumber, d.labNumber, d.fieldNumber, d.c14Age || ' ± ' || d.c14Error
        d.calOldest, 'cal yr BP', d.calYoungest, 'cal yr BP',
        d.datedMaterial, nullif(d.datedCatalogNumber, ''), nullif(d.relation, '')
 FROM src_dates d;
+
+-- GBIF takes an occurrence's name from the accepted identification that points to it (SKILL.md,
+-- "Occurrences for GBIF"), so the identification of each specimen also points to the occurrence it
+-- is evidence for.
+UPDATE identification SET occurrence_fk = m.evidenceForOccurrence_fk
+FROM material m
+WHERE identification.materialEntity_fk = m.materialEntity_pk AND m.evidenceForOccurrence_fk IS NOT NULL;

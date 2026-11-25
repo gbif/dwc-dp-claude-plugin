@@ -88,3 +88,10 @@ INSERT INTO material_assertion (assertionID, materialEntity_fk, verbatimAssertio
 SELECT catalogNumber || ':elytron length', catalogNumber, 'elytra_length_mm', 'elytron length', elytra_length_mm, 'mm'
 FROM src_specimens
 WHERE elytra_length_mm IS NOT NULL;
+
+-- GBIF takes an occurrence's name from the accepted identification that points to it (SKILL.md,
+-- "Occurrences for GBIF"), so the identification of each specimen also points to the occurrence it
+-- is evidence for.
+UPDATE identification SET occurrence_fk = m.evidenceForOccurrence_fk
+FROM material m
+WHERE identification.materialEntity_fk = m.materialEntity_pk AND m.evidenceForOccurrence_fk IS NOT NULL;

@@ -85,6 +85,11 @@ class Database(Base):
         out = self.ok("status")
         self.assertEqual(out.count("DwC-DP"), 81)
 
+    def test_commands_write_nothing_to_stderr(self):
+        for args in (("init", "event"), ("sql", "SELECT 1"), ("validate",)):
+            r = run(*args, cwd=self.dir)
+            self.assertEqual(r.stderr, "", args)
+
     def test_init_asks_about_the_collection_of_material(self):
         self.assertNotIn("held in a collection", self.ok("init", "event", "occurrence"))
         out = self.ok("init", "event", "material")
@@ -360,7 +365,7 @@ class EdnaRecipe(Base):
         for f in os.listdir(src):
             shutil.copy(os.path.join(src, f), self.dir)
         self.ok("init", "event", "material", "molecular-protocol", "nucleotide-sequence", "nucleotide-analysis", "identification",
-                "event-assertion", "material-assertion", "agent", "material-agent-role")
+                "event-assertion", "material-assertion", "agent", "material-agent-role", "occurrence")
         for f in ("samples.csv", "filters.csv", "extracts.csv", "markers.csv"):
             self.ok("load", f)
         for f, name in (("12S_otu_table.tsv", "otu_12s"), ("12S_taxonomy.tsv", "taxonomy_12s"),
@@ -383,6 +388,17 @@ class EdnaRecipe(Base):
         self.assertEqual(q("SELECT assertionUnit FROM material_assertion WHERE materialEntity_fk = 'S1-X'"), "ng/µl")
         self.assertEqual(q("SELECT count(*) FROM material_agent_role WHERE agentRole = 'extracted by' AND agentRoleDate = '2025-08-20'"), "3")
         self.assertEqual(q("SELECT scientificName || '/' || taxonRank FROM identification WHERE nucleotideSequence_fk = '12S_a3'"), "Clupeidae/family")
+        # Occurrences for GBIF: one per event and name, without the blank's reads or human DNA, each
+        # with one accepted identification based on it.
+        occ = self.ok("sql", "SELECT occurrence_pk FROM occurrence ORDER BY 1").split("\n")[2:]
+        self.assertEqual([o.strip() for o in occ if o.strip()],
+                         ["Ebeltoft Vig 2025-08-12:Amphibalanus improvisus", "Ebeltoft Vig 2025-08-12:Clupeidae",
+                          "Ebeltoft Vig 2025-08-12:Gadus morhua", "Ebeltoft Vig 2025-08-12:Mytilus edulis",
+                          "Kalø Vig 2025-08-12:Gadus morhua", "Kalø Vig 2025-08-12:Mytilus edulis",
+                          "Kalø Vig 2025-08-12:Platichthys flesus"])
+        self.assertEqual(q("SELECT count(*) FROM identification WHERE scientificName = 'Homo sapiens'"), "1")
+        self.assertEqual(q("SELECT count(*) FROM nucleotide_analysis WHERE nucleotideSequence_fk = '12S_a4'"), "2")
+        self.assertEqual(q("SELECT count(*) FROM identification WHERE occurrence_fk IS NOT NULL AND isAcceptedIdentification"), "7")
         self.ok("package", "out", "--name", "edna-two-markers-2025")
         self.assertIn("No problems found", self.ok("check", "out"))
 
@@ -544,7 +560,7 @@ class AllTables(Base):
     SKIP = {("identification", f) for f in ("materialEntity_fk", "media_fk", "nucleotideSequence_fk",
                                             "nucleotideAnalysis_fk", "organism_fk")}
     SKIP |= {("material", "identifiedBy_fk"), ("occurrence", "identifiedBy_fk")}
-    VALUES = {("occurrence", "occurrenceStatus"): "'detected'", ("survey-target-descriptor", "includeOrExclude"): "'include'"}
+    VALUES = {("occurrence", "occurrenceStatus"): "'detected'", ("identification", "isAcceptedIdentification"): "true", ("survey-target-descriptor", "includeOrExclude"): "'include'"}
 
     def mapping(self):
         sys.path.insert(0, os.path.dirname(SCRIPT))
@@ -885,6 +901,14 @@ class Metadata(Base):
             self.assertIn(("Lab X", "contributor"), [(c["title"], c["role"]) for c in json.load(fh)["contributors"]])
         self.assertNotIn("agent role", self.ok("check", "out"))
 
+    def test_package_without_occurrences_says_gbif_needs_them(self):
+        self.ok("init", "event", "nucleotide-sequence", "identification")
+        with open(os.path.join(self.dir, "m.sql"), "w") as fh:
+            fh.write("INSERT INTO nucleotide_sequence (nucleotideSequence_pk, sequence) VALUES ('s1', 'ACGT');"
+                     "INSERT INTO identification (identification_pk, nucleotideSequence_fk, scientificName) VALUES ('i1', 's1', 'Gadus morhua');")
+        self.ok("run", "m.sql")
+        self.assertIn("No occurrences: GBIF currently indexes", self.ok("package", "out", "--name", "t"))
+
     def test_roles_come_from_gbifs_vocabulary(self):
         self.toy()
         md = dict(self.METADATA, **self.FULL)
@@ -926,8 +950,8 @@ class IdentificationPlacement(Base):
         self.toy()
         self.ok("init", "identification")
         with open(os.path.join(self.dir, "ids.sql"), "w") as fh:
-            fh.write("INSERT INTO identification (identification_pk, occurrence_fk, scientificName) "
-                     "SELECT occurrence_pk || ':id', occurrence_pk, scientificName FROM occurrence;")
+            fh.write("INSERT INTO identification (identification_pk, occurrence_fk, isAcceptedIdentification, scientificName) "
+                     "SELECT occurrence_pk || ':id', occurrence_pk, true, scientificName FROM occurrence;")
         self.ok("run", "ids.sql")
         out = self.ok("validate")
         self.assertIn("3 rows have identification fields (scientificName) and also an identification", out)
@@ -935,6 +959,23 @@ class IdentificationPlacement(Base):
             fh.write("UPDATE occurrence SET scientificName = NULL;")
         self.ok("run", "clear.sql")
         self.assertIn("No problems found", self.ok("validate"))
+
+
+class OccurrenceNames(Base):
+    def test_occurrences_need_exactly_one_accepted_identification(self):
+        self.toy()
+        self.ok("init", "identification")
+        out = self.ok("validate")
+        self.assertIn("3 of 3 rows have no accepted identification pointing to it", out)
+        with open(os.path.join(self.dir, "ids.sql"), "w") as fh:
+            fh.write("UPDATE occurrence SET scientificName = NULL;"
+                     "INSERT INTO identification (identification_pk, occurrence_fk, isAcceptedIdentification, scientificName) "
+                     "SELECT occurrence_pk || ':' || n, occurrence_pk, true, 'Taxon ' || n FROM occurrence, range(2) t(n) "
+                     "WHERE occurrence_pk = (SELECT min(occurrence_pk) FROM occurrence);")
+        self.ok("run", "ids.sql")
+        out = self.ok("validate")
+        self.assertIn("2 of 3 rows have no accepted identification", out)
+        self.assertIn("1 occurrence has more than one accepted identification", out)
 
 
 class Vocabularies(Base):

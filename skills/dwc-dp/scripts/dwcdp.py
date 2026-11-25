@@ -371,7 +371,10 @@ def utm_to_latlon(zone, hemisphere, easting, northing):
 
 
 def register_geo_functions(con):
-    from duckdb.typing import DOUBLE, INTEGER, VARCHAR
+    try:
+        from duckdb.sqltypes import DOUBLE, INTEGER, VARCHAR
+    except ImportError:
+        from duckdb.typing import DOUBLE, INTEGER, VARCHAR
 
     def guard(fn):
         """fn with its name in its errors. DuckDB counts the parameters, so the wrapper keeps them."""
@@ -1359,6 +1362,35 @@ def check_tables(con, present, report, descriptor_checked=False):
         check_listed_values(con, name, table, cols, report)
 
     check_identification_placement(con, present, report)
+    check_occurrence_names(con, present, report)
+
+
+def check_occurrence_names(con, present, report):
+    """GBIF's indexing of DwC-DP (gbif/pipelines, dwcdp mapping, OccurrenceEnrichment) takes an
+    occurrence's name from the one identification that points to it with occurrence_fk and has
+    isAcceptedIdentification true. With none, or several, the occurrence is indexed without one."""
+    occ = present.get("occurrence")
+    if not occ or not occ[2]:
+        return
+    ident = present.get("identification")
+    accepted = ("SELECT occurrence_fk, count(*) AS n FROM {t} WHERE occurrence_fk IS NOT NULL AND isAcceptedIdentification "
+                "GROUP BY 1").format(t=q(ident[0])) if ident and ident[2] and {"occurrence_fk", "isAcceptedIdentification"} <= set(ident[1]) else None
+    pk = q(schemas()["occurrence"]["primaryKey"])
+    if accepted:
+        none = count(con, f"SELECT count(*) FROM {q(occ[0])} o WHERE o.{pk} NOT IN (SELECT occurrence_fk FROM ({accepted}))")
+        several = count(con, f"SELECT count(*) FROM ({accepted}) WHERE n > 1")
+        ex_none = examples(con, f"SELECT o.{pk} FROM {q(occ[0])} o WHERE o.{pk} NOT IN (SELECT occurrence_fk FROM ({accepted})) ORDER BY 1")
+        ex_several = examples(con, f"SELECT occurrence_fk FROM ({accepted}) WHERE n > 1 ORDER BY 1")
+    else:
+        none, several, ex_none, ex_several = occ[2], 0, examples(con, f"SELECT {pk} FROM {q(occ[0])} ORDER BY 1"), []
+    why = ("GBIF's indexing takes an occurrence's name from the one identification that points to it (occurrence_fk) "
+           "with isAcceptedIdentification true.")
+    if none:
+        report.warning("occurrence", f"{have(none, occ[2])} no accepted identification pointing to it. {why} "
+                                     "Add occurrence_fk and isAcceptedIdentification to the identification it has, or give it one.", ex_none)
+    if several:
+        report.warning("occurrence", f"{several} {'occurrence has' if several == 1 else 'occurrences have'} more than one accepted "
+                                     f"identification. {why} Mark one.", ex_several)
 
 
 ISO_ZONE = r"(Z|[+-]\d{2}(:?\d{2})?)?"
@@ -2039,6 +2071,9 @@ def cmd_package(args):
     empty = [n for n, r in dwc_tables_in(con).items() if not r]
     if empty:
         print(f"Left out, with no rows: {', '.join(empty)}.")
+    if "identification" in present and "occurrence" not in present:
+        print("No occurrences: GBIF currently indexes DwC-DP records through the occurrence table. They can be derived "
+              "from the identifications, with filters the data holder agrees to (SKILL.md, Stage 7).")
     descriptor = {"profile": PROFILE_URL}
     if md:
         for key in ("id", "title", "version"):

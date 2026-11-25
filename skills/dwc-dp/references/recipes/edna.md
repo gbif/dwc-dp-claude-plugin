@@ -174,6 +174,49 @@ without an order:
   with no match get none, and the human sequence stays out;
 - the mollusc is named at class, because its classification has no order.
 
+## Occurrences for GBIF
+
+The analyses and identifications carry the result, and the package is valid without occurrences.
+But GBIF is at an early stage of indexing DwC-DP, and currently indexes records through the
+`occurrence` table (the maintainers, 2026-11-25). So at the end, ask whether to derive occurrences
+from the analyses (SKILL.md, Stage 7). The conceptual model says inferred occurrences should come
+with quality control or confidence measures, which is what the filters are for.
+
+**What one occurrence is.** Usually one name at one sampling event. With several markers, ask:
+- one occurrence supported by both markers, as in the example;
+- or one per marker.
+
+Reads from two markers are two libraries, so a summed read count says little. Leave out the
+quantity, or keep one per marker.
+
+**Filters.** Agree on each, and put them at the top of the occurrence part of `mapping.sql` as lists
+they can read:
+- **names that are contamination,** such as *Homo sapiens* or Hominidae, and pets or livestock.
+  Match the list against every rank of the identification, so that `Hominidae` also catches a
+  sequence named only to family;
+- **controls and blanks.** A blank often shares its event with a real sample, as in the example, so
+  filter by the material, not the event;
+- **weak names,** such as those below a rank or a match type (see "Names from a sequence matching
+  tool");
+- **too few reads,** if they use a threshold.
+
+Show how many occurrences each filter removes, and which names. Everything left out stays in
+`identification`, `nucleotide-sequence` and `nucleotide-analysis`: only the occurrences leave it out.
+
+**The name.** GBIF takes an occurrence's name from the one identification pointing to it
+(`occurrence_fk`) with `isAcceptedIdentification` true (gbif/pipelines, `OccurrenceEnrichment`). The
+identifications of the sequences can't do this: one sequence is found at many events. So give each
+occurrence an identification based on it:
+- copy the name and its ranks;
+- set `identificationType` to `nucleotideAnalysis`;
+- in `identificationRemarks`, say which sequences it came from.
+
+The example ends with this part: `tests/fixtures/edna-two-markers/`.
+- Its filters leave out human DNA and the field blank. The blank shares its event with sample S1,
+  so without the filter its Clupeidae reads would become an occurrence at Kalø Vig.
+- The result is seven occurrences, each with one accepted identification. The human sequence and
+  its identification are still in the package.
+
 ## Choices the data holder makes
 
 - **What `processedTotalReadCount` holds.**
@@ -227,12 +270,8 @@ without an order:
   reference databases, can be two protocols. Ask. Check which samples went into each run with
   `sql` before naming the protocols: a run can hold samples from several years or sites, so name a
   protocol after its run, not after the samples it seems to belong to.
-- **Occurrences.**
-  - Not needed: the analyses and identifications carry the result.
-  - If they want occurrences, they are inferred from the analyses. The conceptual model says these
-    should come with quality control or confidence measures.
-  - The decision for several markers: when both markers detect the same taxon in a sample, write
-    one occurrence supported by both, or one per marker.
+- **Occurrences.** The package is valid without them, but GBIF currently needs them to index the
+  data. See "Occurrences for GBIF" below.
 - **Identifications.** One per sequence, as in the example. Add more when a sequence was assigned
   with more than one database or method, with `isAcceptedIdentification` for the one they stand
   by.

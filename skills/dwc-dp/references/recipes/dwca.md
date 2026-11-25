@@ -64,7 +64,8 @@ also holds the specimen and its name. Split it:
    needs an answer (SKILL.md, Stage 3). For `institutionID` and `collectionID`, `grscicoll` can
    propose registry identifiers from the codes (`specimens.md`).
 4. **Identifications:**
-   - one per row, *of* the material for specimens and *based on* the occurrence for observations;
+   - one per row, *based on* the occurrence, which is where GBIF reads the name from, and for
+     specimens also *of* the material;
    - the name and its higher ranks go here, the only table with them;
    - an Identification History extension gives one identification per row, with
      `isAcceptedIdentification` marking the core's current one;
