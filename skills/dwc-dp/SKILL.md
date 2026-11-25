@@ -106,7 +106,8 @@ What `load` does and says:
   `--into otu,reads`). Empty cells are left out, zeros kept, and it says how many of each.
 - **Empty values become NULL.** Test them with `IS NULL`; `= ''` finds nothing.
 - **One column** whose values contain commas or semicolons: each line may be wrapped in quotes, or
-  the separator is another one. Look at the file's first lines and tell them.
+  the separator is another one. Look at the file's first lines. Lines wrapped in quotes load with
+  `--unwrap`; another separator with `--sep`.
 
 `sql` runs one query, or a script with `--file`. Both are read-only, but `CREATE TEMP VIEW`,
 `TEMP TABLE` and `TEMP MACRO` work within one call. A column or alias that is a SQL keyword
@@ -211,6 +212,10 @@ agreed tables. Write `mapping.sql`, one `INSERT ... SELECT` per table from the `
 starting with `DELETE FROM` for each table so the file can be rerun. Fill one table at a time, `run`
 the file, and show them a few rows with `sql` before moving on.
 
+Places given as routes or polygons, or in UTM: `run` and `sql` have functions for a shape's center
+and radius and for UTM to latitude and longitude. See `references/georeferencing.md`; how a point
+and its uncertainty are made is theirs to agree.
+
 Check every join between their files:
 - **Count the rows** before and after. A join that adds rows (a key that isn't unique on one side)
   or loses them (keys that don't match) is reported to them, with examples, before it goes in.
@@ -294,6 +299,8 @@ This is where the skill ends. Publishing the package is not part of it.
 - `references/assertions.md`: when a column has no DwC-DP field and names no organism.
 - `references/side-tables.md`: when a record has roles, extra identifiers, references, protocols,
   sources, rights or media beyond what the recipe uses.
+- `references/georeferencing.md`: when places are shapes (routes, transects, polygons), UTM or
+  other projected coordinates, or have no coordinates.
 - `references/package.md`: in Stages 6 and 7.
 
 ## Feedback

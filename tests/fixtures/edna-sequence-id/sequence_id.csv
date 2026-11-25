@@ -1,0 +1,8 @@
+"occurrenceId,""marker"",""identity"",""bitScore"",""expectValue"",""matchType"",""scientificName"",""classification"",""sequence"""
+"asv1,""COI"",""100"",""291"",""1.2e-77"",""BLAST_EXACT_MATCH"",""BOLD:AAA0001"",""Animalia_Arthropoda_Insecta_Diptera_Syrphidae_Episyrphus_Episyrphus balteatus"",""ACTTTATATTTTATTTTTGGAGCTTGAGCTGGAATAGTAGGAAC"""
+"asv2,""COI"",""99.6"",""287"",""2.1e-76"",""BLAST_AMBIGUOUS_MATCH"",""BOLD:AAB0002"",""Animalia_Arthropoda_Insecta_Hymenoptera_Apidae_Bombus_Bombus terrestris"",""ACTTTATATTTTATTTTTGGTATTTGAGCAGGAATAATTGGAAC"""
+"asv3,""COI"",""98.1"",""280"",""3.0e-74"",""BLAST_CLOSE_MATCH"",""BOLD:AAC0003"",""Animalia_Arthropoda_Insecta_Lepidoptera_Noctuidae_Agrotis"",""ACATTATATTTTATTTTTGGAATTTGAGCAGGAATAGTAGGAAC"""
+"asv4,""COI"",""88.2"",""240"",""4.4e-62"",""BLAST_WEAK_MATCH"",""BOLD:AAD0004"",""Animalia_Mollusca_Gastropoda_Planorbidae_Gyraulus"",""ACTCTTTATTTAATTTTAGGTATTTGATCTGGATTAGTAGGTAC"""
+"asv5,""COI"",""79.4"",""190"",""2.0e-47"",""BLAST_WEAK_MATCH"",""BOLD:AAE0005"",""Animalia_Porifera_Demospongiae_Spongillidae"",""ACTATTTTATTTAATTTTTGGAGCTTTTGCTGGATTAGTAGGAAC"""
+"asv6,""COI"",""100"",""291"",""1.2e-77"",""BLAST_EXACT_MATCH"",""BOLD:AAF0006"",""Animalia_Chordata_Mammalia_Primates_Hominidae_Homo_Homo sapiens"",""ACCCTATACCTATTATTCGGCGCATGAGCTGGAGTCCTAGGCAC"""
+"asv7,""COI"","""","""","""",""BLAST_NO_MATCH"","""","""",""ACGTTAGCATTAGGCTTAGCCTAGGATTAGCCATTAGGCATTAG"""

@@ -1,6 +1,7 @@
 -- A Malaise trap survey (made up) whose catches are kept, sorted for vouchers and metabarcoded.
--- Load first: catches.csv, vouchers.csv, extracts.csv, marker.csv, otu_table.tsv and taxonomy.tsv
--- as src_catches, src_vouchers, src_extracts, src_marker, src_otu_table and src_taxonomy.
+-- Load first: catches.csv, vouchers.csv, sorting.csv, extracts.csv, marker.csv, otu_table.tsv and
+-- taxonomy.tsv as src_catches, src_vouchers, src_sorting, src_extracts, src_marker, src_otu_table
+-- and src_taxonomy.
 -- The choices marked "agreed" are the data holder's; see references/recipes/survey.md.
 
 DELETE FROM material_agent_role;
@@ -57,6 +58,28 @@ INSERT INTO identification (identification_pk, identificationID, materialEntity_
                             scientificName, taxonRank, identifiedBy)
 SELECT voucher || ':id', voucher || ':id', voucher, true, species, 'species', determiner
 FROM src_vouchers;
+
+-- The size fractions and the taxon groups counted in them. Agreed:
+--   * a fraction is part of its catch (isPartOfMaterialEntity_fk): the catch was sieved, not used up;
+--   * each counted group is material too, part of its fraction, with the count in objectQuantity
+--     (numbers and the words few, some, many as written; the schema's examples include 'many') and
+--     'individuals' in objectQuantityType;
+--   * its name is an identification of that material, at the rank the sorter used;
+--   * no occurrences are made from the counts: the groups are not single taxa observed at an event.
+INSERT INTO material (materialEntity_pk, materialEntityID, isPartOfMaterialEntity_fk, materialDescription)
+SELECT DISTINCT catch || ':' || fraction, catch || ':' || fraction, catch, fraction || ' size fraction'
+FROM src_sorting;
+
+INSERT INTO material (materialEntity_pk, materialEntityID, isPartOfMaterialEntity_fk, objectQuantity, objectQuantityType)
+SELECT catch || ':' || fraction || ':' || taxon, catch || ':' || fraction || ':' || taxon, catch || ':' || fraction,
+       count, 'individuals'
+FROM src_sorting;
+
+INSERT INTO identification (identification_pk, identificationID, materialEntity_fk, isAcceptedIdentification,
+                            scientificName, taxonRank, identifiedBy)
+SELECT catch || ':' || fraction || ':' || taxon || ':id', catch || ':' || fraction || ':' || taxon || ':id',
+       catch || ':' || fraction || ':' || taxon, true, taxon, rank, sorted_by
+FROM src_sorting;
 
 -- The DNA extract made from each catch's ethanol, derived from the catch.
 INSERT INTO material (materialEntity_pk, materialEntityID, derivedFromMaterialEntity_fk, materialEntityCategory,

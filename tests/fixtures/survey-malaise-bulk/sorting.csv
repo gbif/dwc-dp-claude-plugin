@@ -1,0 +1,7 @@
+catch,fraction,taxon,rank,count,sorted_by
+C1,large,Hymenoptera,order,12,Bo Holm
+C1,large,Diptera,order,many,Bo Holm
+C1,small,Diptera,order,many,Bo Holm
+C1,small,Collembola,class,few,Bo Holm
+C2,large,Lepidoptera,order,3,Bo Holm
+C2,small,Diptera,order,some,Bo Holm

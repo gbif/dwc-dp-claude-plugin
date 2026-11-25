@@ -94,13 +94,16 @@ field, or a URL and section.
 
 - `skills/dwc-dp/SKILL.md`: the workflow and rules for Claude.
 - `skills/dwc-dp/references/`:
-  - `concepts.md`, `choosing-tables.md`, `interactions.md`, `assertions.md` and `side-tables.md`;
+  - `concepts.md`, `choosing-tables.md`, `interactions.md`, `assertions.md`, `side-tables.md` and
+    `georeferencing.md`;
   - `package.md`;
   - `recipes/`, one file per kind of dataset (see `recipes/README.md`).
 - `skills/dwc-dp/scripts/dwcdp.py`: the CLI, with these commands:
   - `tables`, `describe`, `find-term`, `order` and `vocab` read the schemas and vocabularies;
   - `init`, `drop`, `load`, `load-dwca`, `suggest`, `run`, `sql`, `status`, `validate`, `diagram`,
     `metadata-template`, `package` and `summary` work on the working DuckDB;
+  - `run` and `sql` also have SQL functions for georeferencing: `wkt_center_lat`/`_lon`,
+    `wkt_radius_m`, `utm_lat`/`_lon` (`references/georeferencing.md`);
   - `check` tests a package on disk;
   - `grscicoll` looks institution and collection codes up in GBIF's GRSciColl API. It is the
     tool's only network call, and its tests use recorded responses on a local server.

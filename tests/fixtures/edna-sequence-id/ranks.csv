@@ -1,0 +1,28 @@
+name,rank
+Animalia,kingdom
+Arthropoda,phylum
+Mollusca,phylum
+Porifera,phylum
+Chordata,phylum
+Insecta,class
+Gastropoda,class
+Demospongiae,class
+Mammalia,class
+Diptera,order
+Hymenoptera,order
+Lepidoptera,order
+Primates,order
+Syrphidae,family
+Apidae,family
+Noctuidae,family
+Planorbidae,family
+Spongillidae,family
+Hominidae,family
+Episyrphus,genus
+Bombus,genus
+Agrotis,genus
+Gyraulus,genus
+Homo,genus
+Episyrphus balteatus,species
+Bombus terrestris,species
+Homo sapiens,species

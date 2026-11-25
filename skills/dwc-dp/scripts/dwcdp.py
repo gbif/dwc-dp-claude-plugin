@@ -217,7 +217,182 @@ def connect(path, read_only=False):
         sys.exit("This needs the duckdb Python package: python3 -m pip install duckdb")
     if read_only and not os.path.exists(path):
         sys.exit(f"No database at {path}. Start with: dwcdp.py init <tables>")
-    return duckdb.connect(path, read_only=read_only)
+    con = duckdb.connect(path, read_only=read_only)
+    register_geo_functions(con)
+    return con
+
+
+# Georeferencing helpers, as SQL functions in run and sql (references/georeferencing.md).
+EARTH_RADIUS_M = 6371008.8  # the mean radius of the WGS84 ellipsoid
+
+
+def wkt_coordinates(wkt):
+    """(kind, parts) of a WKT geometry, with (lon, lat) pairs: points as one part per point, lines
+    and polygon rings as one part each. Polygons are [rings], outer ring first."""
+    m = re.fullmatch(r"\s*(MULTI)?(POINT|LINESTRING|POLYGON)\s*(?:ZM|Z|M)?\s*(\(.*\))\s*", wkt or "", re.I | re.S)
+    if not m:
+        raise ValueError(f"not a WKT point, line or polygon (single or multi): {str(wkt)[:80]!r}")
+    kind = m.group(2).upper()
+    text = m.group(3)
+
+    def parse(i):
+        """A nested list from the bracket at text[i]; leaves are coordinate strings."""
+        out, buf, i = [], "", i + 1
+        while i < len(text):
+            c = text[i]
+            if c == "(":
+                sub, i = parse(i)
+                out.append(sub)
+            elif c == ")":
+                if buf.strip():
+                    out.extend(x.strip() for x in buf.split(",") if x.strip())
+                return out, i
+            elif c == "," and not buf.strip():
+                pass
+            else:
+                buf += c
+            i += 1
+        raise ValueError(f"unbalanced brackets in WKT: {str(wkt)[:80]!r}")
+
+    tree, _ = parse(0)
+
+    def xy(s):
+        n = s.split()
+        if len(n) < 2:
+            raise ValueError(f"a coordinate needs two numbers: {s!r}")
+        return float(n[0]), float(n[1])
+
+    def flat(t):
+        return [xy(x) for x in t] if t and isinstance(t[0], str) else [p for sub in t for p in flat(sub)]
+
+    multi = bool(m.group(1))
+    if kind == "POINT":
+        parts = [[p] for p in flat(tree)]
+    elif kind == "LINESTRING":
+        parts = [flat(t) for t in tree] if multi else [flat(tree)]
+    else:
+        polys = tree if multi else [tree]
+        parts = [[flat(r) for r in poly] for poly in polys]
+    return kind, parts
+
+
+def wkt_center(wkt):
+    """(lat, lon) of a WKT geometry's center: the mean of points, the length-weighted center of
+    lines, the area-weighted center of polygons. Computed on a local equirectangular projection,
+    which suits features up to some tens of kilometres."""
+    kind, parts = wkt_coordinates(wkt)
+    verts = [p for part in parts for p in (part if kind != "POLYGON" else [q for ring in part for q in ring])]
+    if not verts:
+        raise ValueError(f"empty geometry: {str(wkt)[:80]!r}")
+    lons = [p[0] for p in verts]
+    if max(lons) - min(lons) > 180:
+        raise ValueError(f"crosses the antimeridian, which these helpers don't handle: {str(wkt)[:80]!r}")
+    import math
+    k = math.cos(math.radians(sum(p[1] for p in verts) / len(verts)))
+
+    def lines_center(lines):
+        tot = sx = sy = 0.0
+        for line in lines:
+            for (x1, y1), (x2, y2) in zip(line, line[1:]):
+                d = math.hypot((x2 - x1) * k, y2 - y1)
+                tot += d
+                sx += (x1 + x2) / 2 * d
+                sy += (y1 + y2) / 2 * d
+        return (sx / tot, sy / tot) if tot else None
+
+    c = None
+    if kind == "POLYGON":
+        tot = sx = sy = 0.0
+        for poly in parts:
+            for i, ring in enumerate(poly):
+                a = cx = cy = 0.0
+                for (x1, y1), (x2, y2) in zip(ring, ring[1:] + ring[:1]):
+                    cr = x1 * k * y2 - x2 * k * y1
+                    a += cr
+                    cx += (x1 * k + x2 * k) * cr
+                    cy += (y1 + y2) * cr
+                if a:
+                    sign = 1 if i == 0 else -1
+                    w = abs(a) / 2 * sign
+                    tot += w
+                    sx += cx / (3 * a) * w
+                    sy += cy / (3 * a) * w
+        c = (sx / tot / k, sy / tot) if tot else lines_center([r for poly in parts for r in poly])
+        if c and tot:
+            return c[1], c[0]
+    elif kind == "LINESTRING":
+        c = lines_center(parts)
+    if c is None:
+        return sum(p[1] for p in verts) / len(verts), sum(p[0] for p in verts) / len(verts)
+    return c[1], c[0]
+
+
+def distance_m(lat1, lon1, lat2, lon2):
+    """Great-circle distance in metres (haversine, on the mean earth radius)."""
+    import math
+    p1, p2 = math.radians(lat1), math.radians(lat2)
+    a = math.sin((p2 - p1) / 2) ** 2 + math.cos(p1) * math.cos(p2) * math.sin(math.radians(lon2 - lon1) / 2) ** 2
+    return 2 * EARTH_RADIUS_M * math.asin(math.sqrt(a))
+
+
+def wkt_radius(wkt):
+    """Metres, rounded up, from the center to the farthest vertex: a circle that holds the whole
+    geometry."""
+    import math
+    kind, parts = wkt_coordinates(wkt)
+    lat, lon = wkt_center(wkt)
+    verts = [p for part in parts for p in (part if kind != "POLYGON" else [q for ring in part for q in ring])]
+    return float(math.ceil(max(distance_m(lat, lon, p[1], p[0]) for p in verts)))
+
+
+def utm_to_latlon(zone, hemisphere, easting, northing):
+    """(lat, lon) from UTM, on the GRS80 ellipsoid (also WGS84's, to 0.1 mm). Krüger's series to
+    the third order, accurate to well under a metre within a zone. The datum stays the input's."""
+    import math
+    zone = int(zone)
+    h = str(hemisphere).strip().upper()[:1]
+    if not 1 <= zone <= 60 or h not in ("N", "S"):
+        raise ValueError(f"UTM zone {zone} {hemisphere!r}: the zone is 1-60 and the hemisphere N or S")
+    if not (0 < float(easting) < 1000000 and 0 <= float(northing) <= 10000000):
+        raise ValueError(f"UTM easting {easting} or northing {northing} is out of range; check the order and the units")
+    a, f, k0 = 6378137.0, 1 / 298.257222101, 0.9996
+    n = f / (2 - f)
+    A = a / (1 + n) * (1 + n * n / 4 + n ** 4 / 64)
+    beta = (n / 2 - 2 * n * n / 3 + 37 * n ** 3 / 96, n * n / 48 + n ** 3 / 15, 17 * n ** 3 / 480)
+    delta = (2 * n - 2 * n * n / 3 - 2 * n ** 3, 7 * n * n / 3 - 8 * n ** 3 / 5, 56 * n ** 3 / 15)
+    xi = (float(northing) - (10000000 if h == "S" else 0)) / (k0 * A)
+    eta = (float(easting) - 500000) / (k0 * A)
+    xi_ = xi - sum(b * math.sin(2 * j * xi) * math.cosh(2 * j * eta) for j, b in enumerate(beta, 1))
+    eta_ = eta - sum(b * math.cos(2 * j * xi) * math.sinh(2 * j * eta) for j, b in enumerate(beta, 1))
+    chi = math.asin(math.sin(xi_) / math.cosh(eta_))
+    lat = chi + sum(d * math.sin(2 * j * chi) for j, d in enumerate(delta, 1))
+    lon = zone * 6 - 183 + math.degrees(math.atan2(math.sinh(eta_), math.cos(xi_)))
+    return math.degrees(lat), lon
+
+
+def register_geo_functions(con):
+    from duckdb.typing import DOUBLE, INTEGER, VARCHAR
+
+    def guard(fn):
+        """fn with its name in its errors. DuckDB counts the parameters, so the wrapper keeps them."""
+        def run(*a):
+            try:
+                return fn(*a)
+            except (ValueError, ZeroDivisionError) as e:
+                raise ValueError(f"{fn.__name__}: {e}") from None
+        if fn.__code__.co_argcount == 1:
+            return lambda w: run(w)
+        return lambda z, h, e, n: run(z, h, e, n)
+
+    def wkt_center_lat(w): return wkt_center(w)[0]
+    def wkt_center_lon(w): return wkt_center(w)[1]
+    def wkt_radius_m(w): return wkt_radius(w)
+    def utm_lat(z, h, e, n): return utm_to_latlon(z, h, e, n)[0]
+    def utm_lon(z, h, e, n): return utm_to_latlon(z, h, e, n)[1]
+
+    for fn, args in ((wkt_center_lat, [VARCHAR]), (wkt_center_lon, [VARCHAR]), (wkt_radius_m, [VARCHAR]),
+                     (utm_lat, [INTEGER, VARCHAR, DOUBLE, DOUBLE]), (utm_lon, [INTEGER, VARCHAR, DOUBLE, DOUBLE])):
+        con.create_function(fn.__name__, guard(fn), args, DOUBLE, side_effects=False)
 
 
 def q(ident):
@@ -450,8 +625,8 @@ def cmd_load(args):
         ext = os.path.splitext(path[:-3])[1].lower().lstrip(".")
     con = connect(args.db)
     text = ext in ("csv", "tsv", "txt", "tab")
-    if args.encoding and not text:
-        sys.exit("--encoding is for text files (CSV, TSV, TXT).")
+    if (args.encoding or args.unwrap) and not text:
+        sys.exit("--encoding and --unwrap are for text files (CSV, TSV, TXT).")
     if args.unpivot and ext == "json":
         sys.exit("--unpivot is for tables: CSV, TSV, TXT, XLSX or Parquet.")
     tmp = None
@@ -461,6 +636,11 @@ def cmd_load(args):
             not_utf8(path)
         else:
             tmp = transcode(path, args.encoding)
+        if args.unwrap:
+            inner = unwrap_lines(tmp or path)
+            if tmp:
+                os.unlink(tmp)
+            tmp = inner
         opts = ["header = true", "all_varchar = true", "sample_size = -1"]
         if args.sep:
             opts.append(f"delim = {lit(args.sep.encode().decode('unicode_escape'))}")
@@ -497,7 +677,8 @@ def cmd_load(args):
         if seps:
             shown = "a tab" if seps[0] == "\t" else repr(seps[0])
             print(f"Worth checking: there is only one column, and its values contain {shown}. Each whole line may be wrapped in "
-                  "quotes, or the separator may be another one (--sep). Look at the first lines of the file.")
+                  "quotes (then load it again with --unwrap), or the separator may be another one (--sep). Look at the first "
+                  "lines of the file.")
 
 
 def not_utf8(path):
@@ -524,6 +705,22 @@ def not_utf8(path):
                          f"letters right, and load it with --encoding (for example --encoding latin-1).\n"
                          + ("The line has bytes 0x80-0x9F, which latin-1 reads as control characters and cp1252 as letters and "
                             "punctuation such as € and quotes." if c1 else ""))
+
+
+def unwrap_lines(path):
+    """A copy of a text file whose every line is one quoted field holding the real line, with the
+    lines unwrapped, in the system's temporary folder; the caller removes it."""
+    import gzip
+    import tempfile
+    opener = gzip.open if path.lower().endswith(".gz") else open
+    fd, tmp = tempfile.mkstemp(suffix=".csv", prefix="dwcdp-")
+    with opener(path, "rt", encoding="utf-8-sig", newline="") as src, os.fdopen(fd, "w", encoding="utf-8", newline="") as out:
+        for n, row in enumerate(csv.reader(src), 1):
+            if len(row) > 1:
+                os.unlink(tmp)
+                sys.exit(f"--unwrap: line {n} has {len(row)} fields, so the lines are not each wrapped in quotes. Load it without --unwrap.")
+            out.write((row[0] if row else "") + "\n")
+    return tmp
 
 
 def transcode(path, encoding):
@@ -2163,6 +2360,7 @@ def main():
     s.add_argument("--sep", help="column separator, e.g. ';' or '\\t'")
     s.add_argument("--sheet", help="sheet of an .xlsx file")
     s.add_argument("--encoding", help="the text file's encoding if it isn't UTF-8, e.g. latin-1, cp1252, utf-16")
+    s.add_argument("--unwrap", action="store_true", help="every line is wrapped in quotes as one field: unwrap the lines first")
     s.add_argument("--unpivot", metavar="ID[,ID]", help="a wide table: keep these columns, and turn every other column into rows")
     s.add_argument("--into", default="column,value", metavar="NAME,VALUE", help="with --unpivot: the names of the two new columns (default column,value)")
     s.set_defaults(func=cmd_load)

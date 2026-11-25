@@ -199,7 +199,7 @@ class SurveyMaterialRecipe(Base):
 
     def test_malaise_catches(self):
         src = os.path.join(FIXTURES, "survey-malaise-bulk")
-        files = ["catches.csv", "vouchers.csv", "extracts.csv", "marker.csv", "otu_table.tsv", "taxonomy.tsv"]
+        files = ["catches.csv", "vouchers.csv", "sorting.csv", "extracts.csv", "marker.csv", "otu_table.tsv", "taxonomy.tsv"]
         for f in files + ["mapping.sql"]:
             shutil.copy(os.path.join(src, f), self.dir)
         self.ok("init", "event", "survey", "occurrence", "material", "identification",
@@ -212,8 +212,45 @@ class SurveyMaterialRecipe(Base):
         self.assertEqual(q("SELECT isPartOfMaterialEntity_fk FROM material WHERE materialEntity_pk = 'NHMD-INS-7001'"), "C1")
         self.assertEqual(q("SELECT count(*) FROM nucleotide_analysis WHERE materialEntity_fk NOT IN ('C1-X', 'C2-X')"), "0")
         self.assertEqual(q("SELECT samplingEffortValue FROM survey WHERE event_fk = 'C1'"), "14.0")
+        # Fractions are parts of the catch, counted groups parts of a fraction, named by identification.
+        self.assertEqual(q("SELECT isPartOfMaterialEntity_fk FROM material WHERE materialEntity_pk = 'C1:small'"), "C1")
+        self.assertEqual(q("SELECT m.isPartOfMaterialEntity_fk || ' ' || m.objectQuantity || ' ' || i.scientificName FROM material m "
+                           "JOIN identification i ON i.materialEntity_fk = m.materialEntity_pk WHERE m.materialEntity_pk = 'C1:small:Collembola'"),
+                         "C1:small few Collembola")
         self.ok("package", "out", "--name", "malaise-2025")
         self.assertIn("No problems found", self.ok("check", "out"))
+
+
+class SequenceIdRecipe(Base):
+    """The sequence matching example of references/recipes/edna.md."""
+
+    def test_names_follow_the_match_types_and_the_ranks(self):
+        src = os.path.join(FIXTURES, "edna-sequence-id")
+        for f in ("sequence_id.csv", "ranks.csv", "mapping.sql"):
+            shutil.copy(os.path.join(src, f), self.dir)
+        self.ok("init", "nucleotide-sequence", "protocol", "identification")
+        self.ok("load", "sequence_id.csv", "--unwrap")
+        self.ok("load", "ranks.csv")
+        self.ok("run", "mapping.sql")
+        self.assertIn("No problems found", self.ok("validate"))
+        q = lambda sql: self.ok("sql", sql).split("\n")[2].strip()
+        name = lambda asv: q(f"SELECT coalesce(max(scientificName || '/' || taxonRank), '-') FROM identification WHERE nucleotideSequence_fk = '{asv}'")
+        self.assertEqual(name("asv1"), "Episyrphus balteatus/species")
+        self.assertEqual(name("asv2"), "Bombus/genus")
+        self.assertEqual(name("asv3"), "Agrotis/genus")
+        # No order in its classification: read by position, the family would land in order.
+        self.assertEqual(name("asv4"), "Gastropoda/class")
+        self.assertEqual(name("asv5"), "-")
+        self.assertEqual(name("asv7"), "-")
+        self.assertEqual(q("SELECT count(*) FROM nucleotide_sequence WHERE nucleotideSequence_pk = 'asv6'"), "0")
+        self.assertEqual(q("SELECT count(*) FROM nucleotide_sequence"), "6")
+        self.ok("package", "out", "--name", "sequence-id")
+        self.assertIn("No problems found", self.ok("check", "out"))
+
+    def test_unwrap_refuses_a_normal_csv(self):
+        with open(os.path.join(self.dir, "plain.csv"), "w") as fh:
+            fh.write("a,b\n1,2\n")
+        self.assertIn("not each wrapped in quotes", self.fails("load", "plain.csv", "--unwrap"))
 
 
 class SpecimensRecipe(Base):
@@ -1220,6 +1257,94 @@ class Loading(Base):
         self.write("otus.csv", b"sample,reads\nS1,5\n")
         self.ok("load", "otus.csv")
         self.assertIn('write it in double quotes ("positional")', self.fails("sql", "SELECT reads positional FROM src_otus"))
+
+
+class Georeferencing(Base):
+    """The WKT and UTM helpers that run and sql offer (references/georeferencing.md)."""
+
+    def setUp(self):
+        super().setUp()
+        sys.path.insert(0, os.path.dirname(SCRIPT))
+        import dwcdp
+        self.d = dwcdp
+
+    def test_utm_on_the_central_meridian_matches_the_meridian_arc(self):
+        # Independent of the series: integrate the meridian arc numerically, scale by k0, and convert back.
+        import math
+        a, f = 6378137.0, 1 / 298.257222101
+        e2 = f * (2 - f)
+        for lat in (10.0, 45.0, 56.0, 70.0):
+            steps = 20000
+            h = math.radians(lat) / steps
+            g = lambda p: a * (1 - e2) / (1 - e2 * math.sin(p) ** 2) ** 1.5
+            arc = h / 3 * (g(0) + g(math.radians(lat)) + sum((4 if i % 2 else 2) * g(i * h) for i in range(1, steps)))
+            got = self.d.utm_to_latlon(32, "N", 500000, 0.9996 * arc)
+            self.assertAlmostEqual(got[0], lat, places=7)
+            self.assertAlmostEqual(got[1], 9.0, places=9)
+
+    def test_utm_round_trips_with_the_forward_series(self):
+        import math
+        a, f, k0 = 6378137.0, 1 / 298.257222101, 0.9996
+        n = f / (2 - f)
+        A = a / (1 + n) * (1 + n * n / 4 + n ** 4 / 64)
+        alpha = (n / 2 - 2 * n * n / 3 + 5 * n ** 3 / 16, 13 * n * n / 48 - 3 * n ** 3 / 5, 61 * n ** 3 / 240)
+        c = 2 * math.sqrt(n) / (1 + n)
+
+        def forward(lat, lon, zone):
+            p, dl = math.radians(lat), math.radians(lon - (zone * 6 - 183))
+            t = math.sinh(math.atanh(math.sin(p)) - c * math.atanh(c * math.sin(p)))
+            xi, eta = math.atan2(t, math.cos(dl)), math.atanh(math.sin(dl) / math.sqrt(1 + t * t))
+            e = 500000 + k0 * A * (eta + sum(al * math.cos(2 * j * xi) * math.sinh(2 * j * eta) for j, al in enumerate(alpha, 1)))
+            nn = k0 * A * (xi + sum(al * math.sin(2 * j * xi) * math.cosh(2 * j * eta) for j, al in enumerate(alpha, 1)))
+            return e, nn + (10000000 if lat < 0 else 0)
+
+        for lat, lon, zone in ((55.6761, 12.5683, 32), (56.2, 8.1, 32), (-33.9, 18.4, 34), (64.1, -21.9, 27)):
+            e, nn = forward(lat, lon, zone)
+            back = self.d.utm_to_latlon(zone, "S" if lat < 0 else "N", e, nn)
+            # The third-order series agree to about a millimetre (1e-8 degrees).
+            self.assertAlmostEqual(back[0], lat, places=7)
+            self.assertAlmostEqual(back[1], lon, places=7)
+        # The easting of 0°, 0° in zone 31, 3° from its central meridian.
+        lat, lon = self.d.utm_to_latlon(31, "N", 166021.4431, 0)
+        self.assertAlmostEqual(lat, 0, places=8)
+        self.assertAlmostEqual(lon, 0, places=8)
+
+    def test_wkt_centers_and_radii(self):
+        self.assertEqual(self.d.wkt_center("LINESTRING(0 0, 2 0)"), (0.0, 1.0))
+        self.assertEqual(self.d.wkt_radius("LINESTRING(0 0, 2 0)"), 111196.0)
+        lat, lon = self.d.wkt_center("LINESTRING (0 0, 3 0, 3 1)")
+        self.assertAlmostEqual(lat, 0.125, places=4)
+        self.assertAlmostEqual(lon, 1.875, places=4)
+        lat, lon = self.d.wkt_center("POLYGON ((0 0, 4 0, 4 4, 0 4, 0 0), (2 0, 4 0, 4 4, 2 4, 2 0))")
+        self.assertAlmostEqual(lat, 2, places=6)
+        self.assertAlmostEqual(lon, 1, places=6)
+        self.assertEqual(self.d.wkt_center("MULTIPOINT ((10 40), (40 30), (20 20), (30 10))"), (25.0, 25.0))
+        self.assertEqual(self.d.wkt_center("LINESTRING Z (1 1 5, 3 1 7)"), (1.0, 2.0))
+
+    def test_in_a_mapping(self):
+        with open(os.path.join(self.dir, "routes.csv"), "w") as fh:
+            fh.write('trip,route,utm_e,utm_n\nT1,"LINESTRING (12.50 55.68, 12.56 55.68, 12.56 55.70)",724000,6176000\n')
+        with open(os.path.join(self.dir, "mapping.sql"), "w") as fh:
+            fh.write("DELETE FROM event;\n"
+                     "INSERT INTO event (event_pk, eventCategory, footprintWKT, footprintSRS, decimalLatitude, decimalLongitude, "
+                     "coordinateUncertaintyInMeters, geodeticDatum, georeferenceProtocol) "
+                     "SELECT trip, 'survey', route, 'EPSG:4326', round(wkt_center_lat(route), 5), round(wkt_center_lon(route), 5), "
+                     "wkt_radius_m(route), 'EPSG:4326', 'center of the route, radius to its farthest point' FROM src_routes "
+                     "UNION ALL SELECT trip || ':label', 'survey', NULL, NULL, round(utm_lat(32, 'N', CAST(utm_e AS DOUBLE), CAST(utm_n AS DOUBLE)), 5), "
+                     "round(utm_lon(32, 'N', CAST(utm_e AS DOUBLE), CAST(utm_n AS DOUBLE)), 5), NULL, 'EPSG:4258', NULL FROM src_routes;\n")
+        self.ok("init", "event")
+        self.ok("load", "routes.csv")
+        self.ok("run", "mapping.sql")
+        self.assertIn("No problems found", self.ok("validate"))
+        row = self.ok("sql", "SELECT decimalLatitude, decimalLongitude, coordinateUncertaintyInMeters FROM event WHERE event_pk = 'T1'").split("\n")[2].split()
+        # Length-weighted: the east-west leg is 0.06° of longitude at 55.68° N (0.0338° on the ground),
+        # the north-south leg 0.02°, so the center lies toward the first leg.
+        self.assertEqual(row[:2], ["55.68372", "12.54115"])
+        self.assertTrue(2000 < float(row[2]) < 4000, row)
+        label = self.ok("sql", "SELECT decimalLatitude, decimalLongitude FROM event WHERE event_pk = 'T1:label'").split("\n")[2].split()
+        self.assertTrue(55.6 < float(label[0]) < 55.8 and 12.5 < float(label[1]) < 12.7, label)
+        self.assertIn("wkt_center_lat: not a WKT", self.fails("sql", "SELECT wkt_center_lat('ROUTE 7')"))
+        self.assertIn("zone is 1-60", self.fails("sql", "SELECT utm_lat(61, 'N', 500000, 0)"))
 
 
 if __name__ == "__main__":

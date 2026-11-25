@@ -98,7 +98,15 @@ apply.
    preservation and disposition.
 3. **Vouchers:** each is material that is part of its catch (`isPartOfMaterialEntity_fk`). Each
    is also the evidence for an occurrence in the catch's event, with its own identification.
-4. **The extract** is derived from the catch. The COI analyses point to it, as in `edna.md`.
+4. **Size fractions and counted groups:** each catch was sieved into a large and a small fraction,
+   and the taxon groups in each were counted, some as numbers and some as `few`, `some` or `many`.
+   - A fraction is material that is part of its catch (`isPartOfMaterialEntity_fk`).
+   - A counted group is material that is part of its fraction. Its count is in `objectQuantity`,
+     as written, with `individuals` in `objectQuantityType`. The schema's own examples include
+     `many` with `individuals`.
+   - Its name is an identification of that material, at the rank the sorter used, such as an
+     order.
+5. **The extract** is derived from the catch. The COI analyses point to it, as in `edna.md`.
 
 ## Choices the data holder makes
 
@@ -143,7 +151,9 @@ apply.
   reported, and false otherwise. The field is required, so don't leave it out.
 - **Records outside the target** (bycatch, incidental species): occurrences without
   `surveyTarget_fk`. On the survey:
-  - `hasNonTargetTaxa` and `nonTargetTaxa` say they occurred;
+  - `hasNonTargetTaxa` and `nonTargetTaxa` say they occurred. Build `nonTargetTaxa` only from
+    names they trust: a weak DNA match or a contaminant (`edna.md`, "Names from a sequence
+    matching tool") is not a record of bycatch. Ask which names go in;
   - `areNonTargetTaxaFullyReported` says whether all were reported. Leave it empty unless their
     method says.
 - **Effort and its unit.**
@@ -160,7 +170,12 @@ apply.
   - ask which institution and collection hold the catches and vouchers, for `institutionCode`,
     `collectionCode` and their IDs on the material (SKILL.md, Stage 3);
   - specimens sorted out of a bulk sample are part of it, or derived from it. That is their
-    choice, as in `specimens.md`;
+    choice, as in `specimens.md`. The same goes for fractions: a sieved fraction is a part of the
+    catch, while an extract, a homogenate or anything else made from it is derived;
+  - groups counted in a sample can be material, as in the example, or occurrences of each group at
+    the sample's event (with `organismQuantity`, and based on the sample). Material keeps the
+    count with the fraction it came from. Occurrences give one record per group and sample. Show
+    them both and let them choose;
   - DNA from it follows `edna.md`.
 - **Fields the methods text doesn't settle,** such as `taxonCompletenessReported`: leave them
   empty, and tell them which.

@@ -112,6 +112,68 @@ taxonomy table. Load those with `--as` so their table names start with a letter 
 | S1-X | 12S | 12S_a2 | 880 | 6000 |
 | S1-X | COI | COI_a1 | 15012 | 15012 |
 
+## Names from a sequence matching tool
+
+Names often come from matching each sequence against a reference database: BLAST, vsearch, or
+GBIF's sequence ID tool (https://www.gbif.org/tools/sequence-id). Its export has, per sequence,
+`identity`, `matchType`, `scientificName` (for COI often a BOLD BIN such as `BOLD:AAA0001`) and
+`classification`. A match is not an identification yet: how far each one can be trusted is the data
+holder's rule.
+
+**The match types** of GBIF's sequence ID tool depend on identity alone (gbif/gbif-web,
+`vsearch.ctrl.js` and `vsearchParser.js`):
+
+| `matchType` | When |
+|---|---|
+| `BLAST_EXACT_MATCH` | identity of 99 % or more |
+| `BLAST_AMBIGUOUS_MATCH` | an exact match, with another name also an exact match within 1 % of it |
+| `BLAST_CLOSE_MATCH` | 97 % or more |
+| `BLAST_WEAK_MATCH` | below 97 %, however low |
+| `BLAST_NO_MATCH` | nothing found |
+
+Query coverage isn't part of it, so a short alignment can still be an exact match. Check the
+alignment length when the export has it.
+
+**Agree on a rule** for the most specific rank each match supports, before mapping. Offer this one,
+from a test run, for them to confirm or change:
+- exact: the most specific name;
+- ambiguous and close: the genus at most;
+- weak: the order at most from 85 % identity, and no name below that;
+- no match: no name.
+
+A sequence without a name is still a sequence, and can be published. Write the rule in a
+`protocol` row linked from each identification (`identificationProtocol_fk`). In
+`identificationRemarks`, give each identification its match type and identity.
+
+**Read the classification by rank, never by position.** The export joins names with `_` and leaves
+out ranks with no name. So `Animalia_Mollusca_Gastropoda_Planorbidae_Gyraulus` has no order, and
+read by position its family lands in `order`. Get each name's rank from a ranked source:
+- the reference database's own taxonomy;
+- a ranked list the data holder confirms;
+- with their agreement, a name lookup such as GBIF's species match, which sends the names only.
+
+Endings help to spot mistakes, but they don't settle a rank: family names end in `-idae` in
+zoology and `-aceae` in botany.
+
+**The BIN.** A BOLD BIN is an identifier of a sequence cluster, not a Linnaean name. The example
+keeps it in `verbatimIdentification` with the classification, and names the identification with
+the most specific Linnaean name the rule allows. Some data holders want the BIN as
+`scientificName`. How GBIF interprets a BIN there is not settled here: say so, and let them choose.
+
+**Contaminants and the unexpected.** Weak matches name taxa that weren't sampled, such as sponges
+or red algae in an insect trap. Human, dog and pig DNA came up with a 16S marker in a test run.
+Show them the names outside what their method can catch, and ask what is published. An agreed exclusion is
+written down in `mapping.sql`; a name is never dropped silently.
+
+The worked example is `tests/fixtures/edna-sequence-id/`. It is made up, in the layout of the tool's
+export, with one of each match type, a weak sponge match, a human sequence and a classification
+without an order:
+- the export loads with `load --unwrap`, since every one of its lines is wrapped in quotes;
+- `ranks.csv` gives each name's rank;
+- the agreed rule names five of the seven sequences: the sponge (79 % identity) and the sequence
+  with no match get none, and the human sequence stays out;
+- the mollusc is named at class, because its classification has no order.
+
 ## Choices the data holder makes
 
 - **What `processedTotalReadCount` holds.**
@@ -162,7 +224,9 @@ taxonomy table. Load those with `--as` so their table names start with a letter 
   - Their own name ("12S rRNA") may be recognised only loosely. Convert to the concept name only
     with their agreement, as the example does.
 - **When one protocol is two.** The same primers on two sequencing runs, or with two pipelines or
-  reference databases, can be two protocols. Ask.
+  reference databases, can be two protocols. Ask. Check which samples went into each run with
+  `sql` before naming the protocols: a run can hold samples from several years or sites, so name a
+  protocol after its run, not after the samples it seems to belong to.
 - **Occurrences.**
   - Not needed: the analyses and identifications carry the result.
   - If they want occurrences, they are inferred from the analyses. The conceptual model says these
@@ -183,6 +247,10 @@ taxonomy table. Load those with `--as` so their table names start with a letter 
   material that doesn't exist, and `validate` reports a broken `materialEntity_fk`.
 - **Taxonomy with empty ranks** (assigned only to family): take the lowest filled rank as
   `scientificName`, and set `taxonRank` to match.
+- **A read table, sequences and taxonomy that cover different OTUs.** Filtering steps (length,
+  chimeras, LULU) remove OTUs from one file and not the others, and a taxonomy can cover only some
+  OTUs. Count what is in each and in all of them (SKILL.md, Stage 1), and ask which set is
+  published. `processedTotalReadCount` follows that choice.
 - **Table names starting with a digit** (`12S_otu_table.tsv` becomes `src_12s_otu_table`): they
   have to be quoted in SQL. Load them with `--as`.
 
@@ -202,6 +270,12 @@ taxonomy table. Load those with `--as` so their table names start with a letter 
   1.0, looked at only for its tables (event, event-assertion, material, molecular-protocol,
   nucleotide-analysis, nucleotide-sequence, identification).
 - GBIF's `target_gene` vocabulary (the pinned copy).
+- GBIF's sequence ID tool: gbif/gbif-web (Apache-2.0) at `25b61d55c0`,
+  `packages/graphql-api/src/api-utils/vsearch.ctrl.js` (the thresholds 99 and 97) and
+  `src/helpers/vsearch/vsearchParser.js` (`getMatchType`, `getMatch`).
+- Family-group name endings: the International Code of Zoological Nomenclature, Article 29.2
+  (`-idae`), and the International Code of Nomenclature for algae, fungi, and plants, Article 18.1
+  (`-aceae`).
 - Primers in the example: MiFish-U (https://doi.org/10.1098/rsos.150088) and mlCOIintF/jgHCO2198
   (https://doi.org/10.1186/1742-9994-10-34). The sequences, reads and database versions are made
   up.
