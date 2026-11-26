@@ -1363,6 +1363,44 @@ def check_tables(con, present, report, descriptor_checked=False):
 
     check_identification_placement(con, present, report)
     check_occurrence_names(con, present, report)
+    check_gbif_id_links(con, present, report)
+
+
+# Links that GBIF's indexing of DwC-DP follows by the public identifier, not by the package key
+# (gbif/pipelines, spark-jobs dwcdp/mapping/config: OccurrenceEnrichment, IdentificationMapping,
+# ChronometricMapping). (table, key field, identifier field, target table)
+GBIF_ID_LINKS = [
+    ("occurrence", "organism_fk", "organismID", "organism"),
+    ("identification", "identifiedBy_fk", "identifiedByID", "agent"),
+    ("chronometric-age", "chronometricAgeDeterminedBy_fk", "chronometricAgeDeterminedByID", "agent"),
+]
+
+
+def check_gbif_id_links(con, present, report):
+    for name, fk, idf, target in GBIF_ID_LINKS:
+        src, tgt = present.get(name), present.get(target)
+        if not src or not src[2] or fk not in src[1] or not tgt or not tgt[2]:
+            continue
+        s, t = schemas()[name], schemas()[target]
+        tpk, tid = t["primaryKey"], t.get("weakPrimaryKey")
+        if not tid or tid not in tgt[1]:
+            continue
+        has_id = idf in src[1]
+        join = f"FROM {q(src[0])} r JOIN {q(tgt[0])} t ON t.{q(tpk)} = r.{q(fk)}"
+        missing = count(con, f"SELECT count(*) {join} WHERE {'r.' + q(idf) + ' IS NULL' if has_id else 'true'}")
+        if missing:
+            no_target_id = count(con, f"SELECT count(*) {join} WHERE {'r.' + q(idf) + ' IS NULL AND ' if has_id else ''}t.{q(tid)} IS NULL")
+            ex = examples(con, f"SELECT r.{q(fk)} {join} WHERE {'r.' + q(idf) + ' IS NULL' if has_id else 'true'} ORDER BY 1")
+            extra = (f" {no_target_id} of the {target} rows they point to {'has' if no_target_id == 1 else 'have'} no {tid} yet; give them one first."
+                     if no_target_id else "")
+            report.warning(name, f"{have(missing, src[2])} {fk} but no {idf}. GBIF's indexing follows this link by {idf} (the "
+                                 f"{target}'s {tid}), not by {fk}. Fill {idf} with the {tid} of the {target} that {fk} points to.{extra}",
+                           ex, idf)
+        if has_id:
+            n = count(con, f"SELECT count(*) {join} WHERE r.{q(idf)} IS NOT NULL AND r.{q(idf)} IS DISTINCT FROM t.{q(tid)}")
+            if n:
+                ex = examples(con, f"SELECT r.{q(fk)} || ' / ' || r.{q(idf)} {join} WHERE r.{q(idf)} IS NOT NULL AND r.{q(idf)} IS DISTINCT FROM t.{q(tid)} ORDER BY 1")
+                report.warning(name, f"{have(n, src[2])} an {idf} that is not the {tid} of the {target} that {fk} points to.", ex, idf)
 
 
 def check_occurrence_names(con, present, report):

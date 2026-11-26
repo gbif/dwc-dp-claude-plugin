@@ -496,6 +496,8 @@ class TrackingRecipe(Base):
         out = self.ok("validate")
         self.assertNotIn("Must be fixed", out)
         self.assertIn("'Calf → Juvenile'", out)
+        self.assertNotIn("organismID", out)
+        self.assertNotIn("accepted identification", out)
         self.ok("package", "out", "--name", "humpback-tracking")
         self.assertNotIn("Must be fixed", self.ok("check", "out"))
         q = lambda sql: self.ok("sql", sql).split("\n")[2].strip()
@@ -507,7 +509,8 @@ class TrackingRecipe(Base):
         self.assertEqual(q("SELECT string_agg(DISTINCT coalesce(CAST(coordinateUncertaintyInMeters AS INT), 0) || '=' || georeferenceRemarks[-1:], ',' "
                            "ORDER BY coalesce(CAST(coordinateUncertaintyInMeters AS INT), 0) || '=' || georeferenceRemarks[-1:]) FROM event WHERE georeferenceRemarks IS NOT NULL"),
                          "0=0,0=A,0=B,1500=1,250=3,500=2")
-        self.assertEqual(q("SELECT count(*) FROM identification"), "3")
+        self.assertEqual(q("SELECT count(*) FROM identification WHERE organism_fk IS NOT NULL"), "3")
+        self.assertEqual(q("SELECT count(*) FROM identification WHERE occurrence_fk IS NOT NULL AND isAcceptedIdentification"), "48")
         self.assertEqual(q("SELECT lifeStage FROM occurrence WHERE organism_fk = '98109' AND lifeStage IS NOT NULL"), "Calf")
         self.assertEqual(q("SELECT count(*) FROM event e JOIN event d ON d.event_pk = e.parentEvent_fk "
                            "WHERE e.eventDate LIKE '%Z' AND d.eventType <> 'Sensor'"), "0")
@@ -571,11 +574,16 @@ class AllTables(Base):
         for t in ordered:
             s = dwcdp.schema(t)
             fks = {f: target for f, _, target, _ in dwcdp.keys(s, "foreignKeys")}
+            wfks = {f: target for f, _, target, _ in dwcdp.keys(s, "weakForeignKeys")}
             cols, vals = [], []
             for f in s["fields"]:
                 n, c = f["name"], f.get("constraints", {})
-                if n == s.get("primaryKey"):
+                paired = n[:-2] + "_fk" if n.endswith("ID") else None
+                if n in (s.get("primaryKey"), s.get("weakPrimaryKey")):
                     v = f"'{t}:1'"
+                elif n in wfks and paired in fks and fks[paired] == wfks[n] != t and (t, paired) not in self.SKIP:
+                    # The public identifier beside each link, as GBIF's indexing follows some links by it.
+                    v = f"'{wfks[n]}:1'"
                 elif n in fks:
                     if fks[n] == t or (t, n) in self.SKIP:
                         continue
@@ -976,6 +984,27 @@ class OccurrenceNames(Base):
         out = self.ok("validate")
         self.assertIn("2 of 3 rows have no accepted identification", out)
         self.assertIn("1 occurrence has more than one accepted identification", out)
+
+
+class GbifIdLinks(Base):
+    def test_links_gbif_follows_by_identifier(self):
+        self.ok("init", "event", "organism", "occurrence", "identification")
+        with open(os.path.join(self.dir, "m.sql"), "w") as fh:
+            fh.write("INSERT INTO event (event_pk, eventCategory) VALUES ('e', 'occurrence');"
+                     "INSERT INTO organism (organism_pk, organismID) VALUES ('o1', 'whale-1'), ('o2', 'whale-2');"
+                     "INSERT INTO occurrence (occurrence_pk, event_fk, organism_fk, organismID, occurrenceStatus) VALUES "
+                     "('x1', 'e', 'o1', NULL, 'detected'), ('x2', 'e', 'o2', 'whale-1', 'detected');"
+                     "INSERT INTO identification (identification_pk, occurrence_fk, isAcceptedIdentification, scientificName) "
+                     "VALUES ('i1', 'x1', true, 'Megaptera novaeangliae'), ('i2', 'x2', true, 'Megaptera novaeangliae');")
+        self.ok("run", "m.sql")
+        out = self.ok("validate")
+        self.assertIn("1 of 2 rows has organism_fk but no organismID. GBIF's indexing follows this link by organismID", out)
+        self.assertIn("1 of 2 rows has an organismID that is not the organismID of the organism that organism_fk points to", out)
+        self.assertIn("'o2 / whale-1'", out)
+        with open(os.path.join(self.dir, "fix.sql"), "w") as fh:
+            fh.write("UPDATE occurrence SET organismID = o.organismID FROM organism o WHERE o.organism_pk = occurrence.organism_fk;")
+        self.ok("run", "fix.sql")
+        self.assertIn("No problems found", self.ok("validate"))
 
 
 class Vocabularies(Base):

@@ -78,13 +78,14 @@ SELECT "animal-id" || ':group', "animal-id", 'animal-group-id', 'animal group ID
 FROM src_reference WHERE nullif("animal-group-id", '') IS NOT NULL;
 
 -- 3. Occurrences: the whale at its tagging, and at each location.
-INSERT INTO occurrence (occurrence_pk, event_fk, organism_fk, occurrenceStatus, sex, lifeStage)
-SELECT "deployment-id" || ':attachment', "deployment-id" || ':attachment', "animal-id", 'detected',
+-- organismID as well as organism_fk: GBIF's indexing links an occurrence to its organism by organismID.
+INSERT INTO occurrence (occurrence_pk, event_fk, organism_fk, organismID, occurrenceStatus, sex, lifeStage)
+SELECT "deployment-id" || ':attachment', "deployment-id" || ':attachment', "animal-id", "animal-id", 'detected',
        CASE "animal-sex" WHEN 'm' THEN 'male' WHEN 'f' THEN 'female' END, "animal-life-stage"
 FROM src_reference;
 
-INSERT INTO occurrence (occurrence_pk, event_fk, organism_fk, occurrenceStatus, sex)
-SELECT f."event-id", f."event-id", f."individual-local-identifier", 'detected',
+INSERT INTO occurrence (occurrence_pk, event_fk, organism_fk, organismID, occurrenceStatus, sex)
+SELECT f."event-id", f."event-id", f."individual-local-identifier", f."individual-local-identifier", 'detected',
        CASE r."animal-sex" WHEN 'm' THEN 'male' WHEN 'f' THEN 'female' END
 FROM fixes f JOIN src_reference r ON r."animal-id" = f."individual-local-identifier";
 
@@ -109,3 +110,12 @@ FROM src_reference r,
                      ('outlier-comments', 'outlier comments', 'MVB000374', r."outlier-comments"))
        AS a(verbatim, type, mvb, value)
 WHERE nullif(a.value, '') IS NOT NULL;
+
+-- 6. For GBIF (SKILL.md, "Occurrences for GBIF"): GBIF's indexing takes an occurrence's name only
+-- from an accepted identification based on it, not from its organism's. So each occurrence also
+-- gets one, copied from the identification of its organism.
+INSERT INTO identification (identification_pk, identificationID, occurrence_fk, isAcceptedIdentification,
+                            scientificName, identificationRemarks)
+SELECT o.occurrence_pk || ':id', o.occurrence_pk || ':id', o.occurrence_pk, true, i.scientificName,
+       'Copied from the identification of organism ' || o.organism_fk || ', for GBIF''s indexing'
+FROM occurrence o JOIN identification i ON i.organism_fk = o.organism_fk AND i.isAcceptedIdentification;

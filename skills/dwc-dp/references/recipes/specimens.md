@@ -212,6 +212,14 @@ Each piece has its own number in `parts.csv`.
   - Names in `collectedBy`, `recordedBy` and `identifiedBy` are enough to start.
   - Add `agent` rows (and `collectedBy_fk`, `identifiedBy_fk` or `*-agent-role` rows) when they
     have identifiers such as ORCIDs, or several people per role in a given order.
+  - With `identifiedBy_fk`, also fill `identifiedByID` with the agent's `agentID`: GBIF's indexing
+    finds the identifier through it (SKILL.md, Stage 3).
+- **GBIF and the specimen behind an occurrence.** GBIF's indexing currently finds an occurrence's
+  material through `material.evidenceForOccurrenceID`. That field was in a draft of DwC-DP
+  (rs.gbif.org, `1.0_DEV`) but is not in DwC-DP 1.0, which has only `evidenceForOccurrence_fk`. So
+  it can't be filled without a custom field, which the guide says a package should not have, and
+  GBIF may not attach the material's details to the occurrence. Tell them. It is GBIF's to fix,
+  not theirs; the name still reaches GBIF through the identification (SKILL.md, Stage 7).
 
 ## Pitfalls
 

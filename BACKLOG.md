@@ -149,6 +149,17 @@ they are worked on locally from this file.
 
 ## Needs a human decision
 
+00. **GBIF's indexing joins material to occurrence by a field DwC-DP 1.0 doesn't have**
+   `needs-human`
+   - gbif/pipelines (spark-jobs `dwcdp/mapping/config`, at `57a9fc39b1`, 2026-09-28) reaches an
+     occurrence's evidence material through `material.evidenceForOccurrenceID`, in
+     `OccurrenceEnrichment`, `EventOccurrenceNestedContextMapping` and five other mappings.
+   - That field is in the `1.0_DEV` draft (rs.gbif.org `sandbox/experimental/data-packages/dwc-dp/1.0_DEV`)
+     but not in DwC-DP 1.0, which has only `evidenceForOccurrence_fk`.
+   - So a valid 1.0 package can't give GBIF that link, and material details may not reach the
+     indexed occurrence. Whether and how to raise it with GBIF is the maintainer's call. The plugin
+     says so in `specimens.md` and adds no custom field.
+
 0. **Where GBIF's analyser is more lenient than the guide, or warns where the schema allows**
    `needs-human`
    - `check` follows the analyser's levels. These may be worth raising with its maintainer:

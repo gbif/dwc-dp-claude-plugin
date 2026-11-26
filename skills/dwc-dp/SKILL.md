@@ -185,6 +185,14 @@ For each table they'll use, settle:
 - **the links** (`..._fk` fields): which of their columns says which visit a specimen came from,
   and so on. `describe <table>` lists each table's links with their meaning, such as "occurrence
   has context event".
+- **the identifier beside a link,** where GBIF needs it. GBIF's indexing follows three links by the
+  public identifier, not by the key (gbif/pipelines, the DwC-DP mapping):
+  - `occurrence.organismID`, beside `organism_fk`;
+  - `identification.identifiedByID`, beside `identifiedBy_fk`;
+  - `chronometric-age.chronometricAgeDeterminedByID`, beside `chronometricAgeDeterminedBy_fk`.
+
+  Fill each with the target's own identifier (`organism.organismID`, `agent.agentID`), so the
+  target needs one. `validate` warns when it is missing or doesn't match.
 
 Show them the result for a few records before mapping everything.
 

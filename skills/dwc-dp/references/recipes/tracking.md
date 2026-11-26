@@ -27,7 +27,7 @@ use the same `organism` table. This recipe covers tags.
 |---|---|
 | `event` | the study, one event per deployment, a tag-attachment event, and one event per location |
 | `organism` | "A particular organism…": each tracked animal, with the animal ID as `organismID` |
-| `occurrence` | "A dwc:Event that establishes the state of a dwc:Organism at a particular place and time": the animal at its tagging and at each location, all pointing to the organism (`organism_fk`) |
+| `occurrence` | "A dwc:Event that establishes the state of a dwc:Organism at a particular place and time": the animal at its tagging and at each location, all pointing to the organism (`organism_fk`, and `organismID`, which GBIF's indexing follows) |
 | `identification` | the animal's name, *of* the organism (`organism_fk`), once per animal instead of once per location |
 | `agent`, `event-agent-role` | the tag, as an agent of type machine (the schema counts machines as agents), and its role in the deployment |
 | `event-assertion` | deployment attributes without a field: attachment type, duty cycle, manipulation, readout method, outlier filter |
@@ -129,6 +129,7 @@ including three flagged outliers, and the paper's state-space model estimates.
   - 3 organisms, each with one identification and an animal group assertion;
   - 48 occurrences, all pointing to their organism;
   - 3 tags as agents;
+  - one identification per whale, and for GBIF a copy based on each of its 48 occurrences;
   - 15 deployment assertions.
 - **`validate` warns** that GBIF reads the life stage `Calf` as its concept `Juvenile`. That's the
   data holder's call: convert it, or keep their word.
@@ -136,8 +137,13 @@ including three flagged outliers, and the paper's state-space model estimates.
 ## Pitfalls
 
 - **One occurrence per location without `organism_fk`:** the track falls apart into unrelated
-  records. Every occurrence of the animal points to its organism.
-- **The name repeated on every occurrence:** names go in `identification`, once per organism.
+  records. Every occurrence of the animal points to its organism, with `organism_fk` and with the
+  organism's `organismID` in `organismID`: GBIF's indexing links them by the identifier.
+- **The name repeated on every occurrence:** names go in `identification`, once per organism. GBIF's
+  indexing currently reads an occurrence's name only from an accepted identification based on that
+  occurrence, not from its organism's. So for GBIF, add one per occurrence, copied from the
+  organism's, with `identificationRemarks` saying so (SKILL.md, Stage 7). The example does this as
+  its last step.
 - **Local times:** Movebank timestamps are UTC. Write them with `Z`.
 - **Deploy-on and deploy-off at 00:00:00 and 23:59:59:** these usually mark whole days. Ask before
   writing them as times.
