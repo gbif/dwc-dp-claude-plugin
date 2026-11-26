@@ -5,8 +5,8 @@
   "author": {
     "name": "Thomas Stjernegaard Jeppesen"
   },
-  "homepage": "https://github.com/thomasstjerne/dwc-dp-claude-plugin",
-  "repository": "https://github.com/thomasstjerne/dwc-dp-claude-plugin",
+  "homepage": "https://github.com/gbif/dwc-dp-claude-plugin",
+  "repository": "https://github.com/gbif/dwc-dp-claude-plugin",
   "license": "Apache-2.0",
   "keywords": ["gbif", "darwin-core", "dwc-dp", "data-package", "biodiversity"]
 }
