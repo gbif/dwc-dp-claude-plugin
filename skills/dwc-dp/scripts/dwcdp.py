@@ -218,6 +218,9 @@ def connect(path, read_only=False):
     if read_only and not os.path.exists(path):
         sys.exit(f"No database at {path}. Start with: dwcdp.py init <tables>")
     con = duckdb.connect(path, read_only=read_only)
+    # Nothing is downloaded without the data holder's word: an extension is installed only by
+    # load --install-excel.
+    con.execute("SET autoinstall_known_extensions = false")
     register_geo_functions(con)
     return con
 
@@ -651,6 +654,16 @@ def cmd_load(args):
             opts.append("delim = '\\t'")
         src = f"read_csv({lit(tmp or path)}, {', '.join(opts)})"
     elif ext in ("xlsx",):
+        installed = con.execute("SELECT installed FROM duckdb_extensions() WHERE extension_name = 'excel'").fetchone()
+        if not (installed and installed[0]):
+            if not args.install_excel:
+                sys.exit("Reading .xlsx needs DuckDB's excel extension, which isn't installed. Installing it downloads it once "
+                         "from DuckDB's extension repository (it sends none of their data). Ask the data holder first; then "
+                         "load again with --install-excel. Or save each sheet as CSV and load that.")
+            try:
+                con.execute("INSTALL excel")
+            except Exception as e:
+                sys.exit(f"Could not install the excel extension: {e}. Save each sheet as CSV and load that.")
         src = f"read_xlsx({lit(path)}, all_varchar = true{', sheet = ' + lit(args.sheet) if args.sheet else ''})"
     elif ext == "parquet":
         src = f"read_parquet({lit(path)})"
@@ -2432,6 +2445,7 @@ def main():
     s.add_argument("--as", dest="as_name", help="table name (src_ is added)")
     s.add_argument("--sep", help="column separator, e.g. ';' or '\\t'")
     s.add_argument("--sheet", help="sheet of an .xlsx file")
+    s.add_argument("--install-excel", action="store_true", help="install DuckDB's excel extension (a download) to read .xlsx; ask first")
     s.add_argument("--encoding", help="the text file's encoding if it isn't UTF-8, e.g. latin-1, cp1252, utf-16")
     s.add_argument("--unwrap", action="store_true", help="every line is wrapped in quotes as one field: unwrap the lines first")
     s.add_argument("--unpivot", metavar="ID[,ID]", help="a wide table: keep these columns, and turn every other column into rows")

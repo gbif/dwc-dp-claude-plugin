@@ -106,6 +106,9 @@ What `load` does and says:
 - **Wide tables,** with one column per OTU, species or sample: `--unpivot <id columns>` keeps those
   columns and turns every other column into a row, named with `--into` (for example
   `--into otu,reads`). Empty cells are left out, zeros kept, and it says how many of each.
+- **Spreadsheets** (`.xlsx`) need DuckDB's excel extension. If it isn't installed, `load` stops
+  and says so. Installing it is a download, so ask them first, then load with `--install-excel`.
+  Or save each sheet as CSV.
 - **Empty values become NULL.** Test them with `IS NULL`; `= ''` finds nothing.
 - **One column** whose values contain commas or semicolons: each line may be wrapped in quotes, or
   the separator is another one. Look at the file's first lines. Lines wrapped in quotes load with

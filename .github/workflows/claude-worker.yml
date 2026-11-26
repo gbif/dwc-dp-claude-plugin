@@ -2,9 +2,10 @@
 # a pull request, or a question with needs-human.
 name: claude-worker
 
+# The schedule is off until the agent setup (BACKLOG, phase 2) is done; run it by hand meanwhile.
 on:
-  schedule:
-    - cron: "17 2,14 * * *"
+  # schedule:
+  #   - cron: "17 2,14 * * *"
   workflow_dispatch:
     inputs:
       issue:

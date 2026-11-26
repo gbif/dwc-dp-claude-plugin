@@ -69,9 +69,9 @@ they are worked on locally from this file.
 - **`check`: compressed packages and tables** `ready` `tooling`
   - Read `.gz` tables and a gzipped package (guide section 3), with tests.
 - **`load`: spreadsheets without the excel extension** `ready` `tooling`
-  - Reading `.xlsx` needs DuckDB's excel extension, which downloads on first use.
-  - Find out whether it can be bundled or installed once, and otherwise document saving sheets as
-    CSV.
+  - Reading `.xlsx` needs DuckDB's excel extension. `load` no longer installs it silently: it stops,
+    and `--install-excel` installs it once the data holder agrees.
+  - Left: find out whether it can be bundled, so no download is needed.
 
 ## Done since
 

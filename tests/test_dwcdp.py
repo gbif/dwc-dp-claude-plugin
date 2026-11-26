@@ -1314,6 +1314,14 @@ class Loading(Base):
         self.write("blast.csv", b'"qseqid,pident,sseqid"\n"otu1,98.5,BOLD:A"\n')
         self.assertIn("Each whole line may be wrapped in quotes", self.ok("load", "blast.csv"))
 
+    def test_xlsx_waits_for_agreement_to_install_excel(self):
+        import duckdb
+        if duckdb.connect().execute("SELECT installed FROM duckdb_extensions() WHERE extension_name = 'excel'").fetchone()[0]:
+            self.skipTest("the excel extension is already installed here")
+        self.write("sheet.xlsx", b"not really a workbook")
+        out = self.fails("load", "sheet.xlsx")
+        self.assertIn("Ask the data holder first; then load again with --install-excel", out)
+
     def test_sql_file_with_temporary_views(self):
         self.write("otus.csv", b"sample,reads\nS1,5\nS2,7\nS2,1\n")
         self.ok("load", "otus.csv")
