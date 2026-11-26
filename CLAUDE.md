@@ -63,6 +63,8 @@ field, or a URL and section.
   - `in-progress`: taken;
   - `needs-human`: waiting for the maintainer;
   - `proposed`: waiting for the maintainer to accept;
+  - `feedback`: a data holder's notes from a session (`session-feedback.yml`). Not work in
+    itself: the maintainer turns it into issues, or an agent files `proposed` ones that link it;
   - kind: `survey`, `edna`, `specimens`, `observations`;
   - type: `tooling`, `recipe`, `docs`.
 

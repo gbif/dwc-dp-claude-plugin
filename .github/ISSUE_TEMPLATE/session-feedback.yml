@@ -1,0 +1,14 @@
+name: Session feedback
+description: Feedback from a session with the plugin, drafted at the end of the workflow
+labels: [feedback]
+body:
+  - type: markdown
+    attributes:
+      value: This repository is public. Check that the text holds nothing from your data you don't want to share.
+  - type: textarea
+    id: feedback
+    attributes:
+      label: Feedback
+      description: Paste dwc-dp-feedback.md from your working folder, as you edited it.
+    validations:
+      required: true

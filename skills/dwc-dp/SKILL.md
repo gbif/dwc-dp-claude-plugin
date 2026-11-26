@@ -334,7 +334,8 @@ own words, such as how many records per year or which names are most common. Ans
 question that needs several steps, write a script with temporary views and run it with
 `sql --file`.
 
-This is where the skill ends. Publishing the package is not part of it.
+This is where the skill ends. Publishing the package is not part of it. Before you leave them,
+offer the feedback in "Feedback on this skill" below.
 
 ## Read only if
 
@@ -354,4 +355,35 @@ This is where the skill ends. Publishing the package is not part of it.
 
 When something in DwC-DP is unclear or seems not to fit their data, say so plainly, and suggest
 they raise it in the Darwin Core repository's issues (https://github.com/tdwg/dwc/issues). Problems
-with this skill go to the plugin's repository.
+with this skill go to the plugin's repository, https://github.com/gbif/dwc-dp-claude-plugin.
+
+### Feedback on this skill
+
+Once the package passes `check`, or when they stop before it, ask them once whether you may write
+down feedback on this skill from the session, for them to post in the plugin's repository if they
+want to. Say why: each session with new kinds of data shows where the skill falls short, and their
+notes help it handle the next dataset better. A "no" ends it; don't ask again.
+
+If they agree, write `dwc-dp-feedback.md` in their folder, short and specific, with:
+
+- the plugin version (`version` in `<base>/../../.claude-plugin/plugin.json`), and their Python
+  and DuckDB versions;
+- the kind of data, in general terms: what was studied and how, the number and format of the
+  files, roughly how many rows, and the tables the package ended with;
+- what worked well;
+- what cost time, in order of cost: commands that failed or were missing, error messages that
+  didn't help, workarounds you had to write, and checks that missed a problem found later;
+- gaps in the recipes and references: questions they had to settle that nothing here covered, and
+  what they decided;
+- rules of this skill that were hard to follow or got in the way.
+
+Leave their data out. The repository is public, so the file holds no records or values from their
+files, no people's names, emails or ORCIDs, no coordinates or place names, no taxon names or sample
+codes that identify the dataset, no title of the dataset, and no paths from their machine. Describe
+the shape of a problem instead, with a made-up example: "a date column mixed `2021-06-03` and
+`3/6/21`". Include anything from their data only if they ask for it.
+
+Then show them the file, ask them to read it and change what they want, and tell them how to post
+it: open https://github.com/gbif/dwc-dp-claude-plugin/issues/new?template=session-feedback.yml,
+which needs a GitHub account, and paste the file. Posting is theirs to do: don't open the issue for
+them, with `gh` or otherwise.
