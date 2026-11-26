@@ -9,10 +9,13 @@ and writes the package.
 
 Status: in development, not released.
 
-## Try it locally
+## Install
+
+In Claude Code:
 
 ```text
-claude --plugin-dir /path/to/dwc-dp-claude-plugin
+/plugin marketplace add gbif/dwc-dp-claude-plugin
+/plugin install dwc-dp@dwc-dp-claude-plugin
 ```
 
 Then ask Claude something like "Help me turn the data in this folder into a Darwin Core Data
@@ -43,6 +46,12 @@ You need Python 3.9 or later and DuckDB's Python package, version 1.4 or later:
   package.
 
 ## Development
+
+To try a working copy without installing it:
+
+```text
+claude --plugin-dir /path/to/dwc-dp-claude-plugin
+```
 
 ```text
 python3 -m unittest discover tests
