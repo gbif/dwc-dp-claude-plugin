@@ -19,7 +19,7 @@ tables and the DwC-DP tables they are mapped into. Table names use underscores
   python3 dwcdp.py package out/                # write CSVs and datapackage.json
   python3 dwcdp.py check out/                  # check any DwC-DP package on disk
 
-Needs Python 3.8+ and the duckdb package (pip install duckdb).
+Needs Python 3.9+ and the duckdb package 1.4+ (pip install duckdb).
 """
 import argparse
 import csv

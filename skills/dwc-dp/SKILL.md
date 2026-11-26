@@ -11,8 +11,8 @@ interactions and media, and a dataset uses the few that fit it. Your job is to h
 turn their own files into such a package. Assume they are a biologist who knows their data well
 and has never thought about primary keys, foreign keys or normalisation.
 
-`scripts/dwcdp.py` is under this skill's base directory. It needs Python 3.8 or later and the
-`duckdb` package (`python3 -m pip install duckdb`). Run it as `python3 <base>/scripts/dwcdp.py
+`scripts/dwcdp.py` is under this skill's base directory. It needs Python 3.9 or later and the
+`duckdb` package, version 1.4 or later (`python3 -m pip install duckdb`). Run it as `python3 <base>/scripts/dwcdp.py
 <command>`, from the data holder's working folder, and see `--help` for each command. It keeps a
 working database, `dwcdp.duckdb`, in that folder.
 
