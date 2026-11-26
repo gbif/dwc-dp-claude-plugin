@@ -153,7 +153,7 @@ they are worked on locally from this file.
    `needs-human`
    - gbif/pipelines (spark-jobs `dwcdp/mapping/config`, at `57a9fc39b1`, 2026-09-28) reaches an
      occurrence's evidence material through `material.evidenceForOccurrenceID`, in
-     `OccurrenceEnrichment`, `EventOccurrenceNestedContextMapping` and five other mappings.
+     `OccurrenceEnrichment`, `EventOccurrenceNestedContextMapping` and six other mapping classes.
    - That field is in the `1.0_DEV` draft (rs.gbif.org `sandbox/experimental/data-packages/dwc-dp/1.0_DEV`)
      but not in DwC-DP 1.0, which has only `evidenceForOccurrence_fk`.
    - So a valid 1.0 package can't give GBIF that link, and material details may not reach the
