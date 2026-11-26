@@ -60,9 +60,13 @@ four specimens (one a lot of five), five determinations (one superseded, one wit
    - the catalogue number as `materialEntityID` and `catalogNumber`;
    - `collectionEvent_fk` and `evidenceForOccurrence_fk`;
    - `collectedBy`, `preparations`, `materialEntityCategory` `preserved`, and the label text as
-     `verbatimLabel`.
+     `verbatimLabel`;
+   - `institutionCode` and `collectionCode`. The export has none, so they are the data holder's
+     answer to the question in SKILL.md, Stage 3: institution `NHMD`, collection `COL`.
+     `institutionID` and `collectionID` stay empty, since the example makes no GRSciColl lookup.
 4. **The tissue:** its own material row with `derivedFromMaterialEntity_fk` pointing to the
-   specimen and `materialEntityCategory` `tissue`. Who took it and when is a `material-agent-role`
+   specimen and `materialEntityCategory` `tissue`. It is kept in another collection of the same
+   institution (`TIS`), so the codes differ by row. Who took it and when is a `material-agent-role`
    row (role `sampled by`, date in `agentRoleDate`).
 5. **Determinations:**
    - one identification per row, of the specimen (`materialEntity_fk`). It also points to the

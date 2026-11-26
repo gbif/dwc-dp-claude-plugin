@@ -27,21 +27,29 @@ SELECT catalogNumber || ':occurrence', catalogNumber || ':occurrence', fieldNumb
        nullif(sex, ''), count, 'individuals'
 FROM src_specimens;
 
+-- Where the material is kept. The export doesn't say, so the data holder was asked (SKILL.md,
+-- Stage 3, "Institution and collection"). Their answer: everything is in the care of institution
+-- NHMD, which also owns it; the pinned specimens are in collection COL and the tissue in collection
+-- TIS. institutionID and collectionID stay empty: they would come from a GRSciColl lookup the data
+-- holder agrees to (grscicoll), which this example doesn't make.
+CREATE OR REPLACE TEMP TABLE kept AS
+SELECT * FROM (VALUES ('specimen', 'NHMD', 'COL'), ('tissue', 'NHMD', 'TIS')) AS k(kind, institutionCode, collectionCode);
+
 -- The specimens. Agreed: the catalogue number is the identifier (the collection has no URIs), and
--- materialEntityCategory 'preserved'. institutionCode and collectionCode are not in the export,
--- so they stay empty until the data holder gives them.
-INSERT INTO material (materialEntity_pk, materialEntityID, catalogNumber, collectionEvent_fk,
-                      evidenceForOccurrence_fk, collectedBy, preparations, materialEntityCategory,
-                      verbatimLabel)
-SELECT catalogNumber, catalogNumber, catalogNumber, fieldNumber, catalogNumber || ':occurrence',
-       collector, preparation, 'preserved', label
-FROM src_specimens;
+-- materialEntityCategory 'preserved'.
+INSERT INTO material (materialEntity_pk, materialEntityID, catalogNumber, institutionCode, collectionCode,
+                      collectionEvent_fk, evidenceForOccurrence_fk, collectedBy, preparations,
+                      materialEntityCategory, verbatimLabel)
+SELECT s.catalogNumber, s.catalogNumber, s.catalogNumber, k.institutionCode, k.collectionCode,
+       s.fieldNumber, s.catalogNumber || ':occurrence', s.collector, s.preparation, 'preserved', s.label
+FROM src_specimens s, kept k WHERE k.kind = 'specimen';
 
 -- The tissue sample, derived from a specimen. Agreed: materialEntityCategory 'tissue'.
-INSERT INTO material (materialEntity_pk, materialEntityID, catalogNumber, derivedFromMaterialEntity_fk,
-                      preparations, materialEntityCategory)
-SELECT tissueNumber, tissueNumber, tissueNumber, catalogNumber, preparation, 'tissue'
-FROM src_tissues;
+INSERT INTO material (materialEntity_pk, materialEntityID, catalogNumber, institutionCode, collectionCode,
+                      derivedFromMaterialEntity_fk, preparations, materialEntityCategory)
+SELECT t.tissueNumber, t.tissueNumber, t.tissueNumber, k.institutionCode, k.collectionCode,
+       t.catalogNumber, t.preparation, 'tissue'
+FROM src_tissues t, kept k WHERE k.kind = 'tissue';
 
 -- Who took it and when, as a role of a person for the derived material (material-agent-role,
 -- with the date in agentRoleDate). Agreed: the role is called 'sampled by'. No derivation event is

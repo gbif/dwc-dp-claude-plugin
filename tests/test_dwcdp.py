@@ -274,6 +274,9 @@ class SpecimensRecipe(Base):
         q = lambda sql: self.ok("sql", sql).split("\n")[2].strip()
         self.assertEqual(q("SELECT count(*) FROM event"), "2")
         self.assertEqual(q("SELECT derivedFromMaterialEntity_fk FROM material WHERE materialEntity_pk = 'NHMD-TIS-77'"), "NHMD-COL-1002")
+        self.assertEqual(q("SELECT string_agg(DISTINCT materialEntityCategory || '=' || institutionCode || '/' || collectionCode, ' ' "
+                           "ORDER BY materialEntityCategory || '=' || institutionCode || '/' || collectionCode) FROM material"),
+                         "preserved=NHMD/COL tissue=NHMD/TIS")
         self.assertEqual(q("SELECT scientificName FROM identification WHERE materialEntity_fk = 'NHMD-COL-1002' AND isAcceptedIdentification"), "Carabus problematicus")
         self.assertEqual(q("SELECT scientificName || '/' || taxonFormula FROM identification WHERE verbatimIdentification = 'Amara aff. aenea'"), "Amara/A aff.")
         self.assertEqual(q("SELECT t.scientificName FROM identification_taxon t JOIN identification i ON i.identification_pk = t.identification_fk WHERE i.verbatimIdentification = 'Pterostichus cf. niger'"), "Pterostichus niger")
